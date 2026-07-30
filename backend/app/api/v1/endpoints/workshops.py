@@ -1,0 +1,157 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+from typing import List, Optional
+from app.db.session import get_db
+from app.models.models import Workshop, WorkshopBatch, WorkshopRegistration
+from app.schemas.schemas import (
+    WorkshopCreate, WorkshopResponse, WorkshopRegisterRequest,
+    WorkshopRegisterResponse, MessageResponse
+)
+from app.core.security import verify_supabase_token
+from app.core.config import settings
+import uuid
+
+router = APIRouter()
+
+@router.get("", response_model=List[WorkshopResponse])
+async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+    query = select(Workshop).options(selectinload(Workshop.batches))
+    if status_filter:
+        query = query.where(Workshop.status == status_filter)
+    else:
+        query = query.where(Workshop.status.in_(["Published", "Completed"]))
+    query = query.order_by(Workshop.featured.desc(), Workshop.id.desc())
+    result = await db.execute(query)
+    return result.scalars().all()
+
+@router.get("/{slug}", response_model=WorkshopResponse)
+async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
+    query = select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.slug == slug)
+    result = await db.execute(query)
+    workshop = result.scalar_one_or_none()
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    return workshop
+
+@router.post("/{id}/register", response_model=WorkshopRegisterResponse)
+async def register_for_workshop(
+    id: int,
+    data: WorkshopRegisterRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    workshop = await db.get(Workshop, id)
+    if not workshop or workshop.status != "Published":
+        raise HTTPException(status_code=404, detail="Workshop not available for registration")
+    
+    batch = None
+    if data.batch_id:
+        batch = await db.get(WorkshopBatch, data.batch_id)
+        if not batch or batch.workshop_id != id:
+            raise HTTPException(status_code=400, detail="Invalid batch selected")
+        if batch.remaining_seats <= 0 or batch.status != "Active":
+            raise HTTPException(status_code=400, detail="Selected batch is fully booked or closed")
+    else:
+        # Fetch batches for workshop
+        batches_res = await db.execute(select(WorkshopBatch).where(WorkshopBatch.workshop_id == id))
+        batches = batches_res.scalars().all()
+        if len(batches) == 1:
+            batch = batches[0]
+            if batch.remaining_seats <= 0:
+                raise HTTPException(status_code=400, detail="Workshop batch is fully booked")
+        elif len(batches) > 1:
+            raise HTTPException(status_code=400, detail="Batch selection is required")
+
+    # Generate mock/real Razorpay Order ID
+    mock_order_id = f"order_{uuid.uuid4().hex[:12]}"
+    
+    registration = WorkshopRegistration(
+        workshop_id=id,
+        batch_id=batch.id if batch else None,
+        name=data.name,
+        mobile=data.mobile,
+        email=data.email,
+        address=data.address,
+        city=data.city,
+        state=data.state,
+        pin_code=data.pin_code,
+        payment_status="Pending",
+        amount=workshop.price,
+        razorpay_order_id=mock_order_id,
+        additional_notes=data.additional_notes
+    )
+    
+    db.add(registration)
+    await db.commit()
+    await db.refresh(registration)
+    
+    return WorkshopRegisterResponse(
+        registration_id=registration.id,
+        razorpay_order_id=mock_order_id,
+        amount=workshop.price,
+        currency="INR",
+        key_id=settings.RAZORPAY_KEY_ID
+    )
+
+@router.post("", response_model=WorkshopResponse, status_code=status.HTTP_201_CREATED)
+async def create_workshop(
+    data: WorkshopCreate,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    existing = await db.execute(select(Workshop).where(Workshop.slug == data.slug))
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Workshop slug already exists")
+    
+    workshop_data = data.model_dump()
+    batches_data = workshop_data.pop("batches", [])
+    
+    workshop = Workshop(**workshop_data)
+    db.add(workshop)
+    await db.flush()
+    
+    for b_data in batches_data:
+        batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
+        db.add(batch)
+        
+    await db.commit()
+    
+    # Reload with batches
+    res = await db.execute(select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.id == workshop.id))
+    return res.scalar_one()
+
+@router.put("/{id}", response_model=WorkshopResponse)
+async def update_workshop(
+    id: int,
+    data: WorkshopCreate,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    workshop = await db.get(Workshop, id)
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    
+    workshop_data = data.model_dump()
+    batches_data = workshop_data.pop("batches", [])
+    
+    for key, value in workshop_data.items():
+        setattr(workshop, key, value)
+        
+    await db.commit()
+    res = await db.execute(select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.id == id))
+    return res.scalar_one()
+
+@router.delete("/{id}", response_model=MessageResponse)
+async def delete_workshop(
+    id: int,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    workshop = await db.get(Workshop, id)
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    
+    await db.delete(workshop)
+    await db.commit()
+    return MessageResponse(message="Workshop deleted successfully")
