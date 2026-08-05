@@ -7,7 +7,7 @@
     "backend": {
       "root": "backend",
       "runtime": "python",
-      "entrypoint": "main.py"
+      "entrypoint": "app/main.py"
     }
   },
   "rewrites": [
