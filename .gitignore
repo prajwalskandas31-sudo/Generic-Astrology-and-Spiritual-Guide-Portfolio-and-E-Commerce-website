@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *.pyo
+venv/
+backend/venv/
+
 
 # Environment
 .env
