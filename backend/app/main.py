@@ -21,6 +21,14 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
+@app.get("/", tags=["Root"])
+async def root():
+    return {
+        "message": "Welcome to Veda Brahma Shri Pradeep Nadig API",
+        "docs": "/docs",
+        "health": f"{settings.API_V1_STR}/health"
+    }
+
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])
 async def health_check():
     return {
@@ -28,3 +36,4 @@ async def health_check():
         "project": settings.PROJECT_NAME,
         "database": "PostgreSQL (Supabase)"
     }
+
