@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-slate-900 font-sans">
+    <div className="min-h-screen bg-amber-900 flex flex-col items-center justify-center p-4 text-slate-900 font-sans">
       <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-amber-100/20 space-y-8 relative">
         <Link
           href="/"
@@ -55,8 +55,8 @@ export default function AdminLoginPage() {
         </Link>
 
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-amber-700 text-amber-100 flex items-center justify-center mx-auto shadow-md">
-            <Sparkles className="w-6 h-6 text-amber-300" />
+          <div className="w-12 h-12 rounded-2xl bg-amber-700 text-amber-950 flex items-center justify-center mx-auto shadow-md">
+            <Sparkles className="w-6 h-6 text-amber-900" />
           </div>
           <h1 className="text-2xl font-serif font-bold text-slate-900">
             Admin Portal Login

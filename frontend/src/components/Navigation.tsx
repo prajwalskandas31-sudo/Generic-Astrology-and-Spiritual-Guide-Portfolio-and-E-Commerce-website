@@ -37,8 +37,8 @@ export default function Navigation({ siteName = "Veda Brahma Shri Pradeep Nadig"
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo / Name */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-amber-700 text-amber-100 flex items-center justify-center font-serif font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-amber-300" />
+            <div className="w-10 h-10 rounded-full bg-amber-700 text-amber-950 flex items-center justify-center font-serif font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+              <Sparkles className="w-5 h-5 text-amber-900" />
             </div>
             <div className="flex flex-col">
               <span className="font-serif font-bold text-lg sm:text-xl text-amber-950 tracking-tight leading-snug group-hover:text-amber-700 transition-colors">

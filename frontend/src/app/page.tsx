@@ -54,51 +54,91 @@ export default async function HomePage() {
 
   return (
     <PublicLayout settings={settings}>
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[85vh] flex items-center justify-center bg-slate-950 text-white overflow-hidden py-24 px-4 sm:px-6 lg:px-8">
-        {/* Background Image with Dark Vignette Overlay */}
+      {/* 1. HERO SECTION WITH SHANKARI CREATIONS BRANDING */}
+      <section className="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-r from-amber-100 via-orange-50 to-amber-100 text-slate-900 overflow-hidden py-16 px-4 sm:px-6 lg:px-8 border-b border-amber-200/80">
+        {/* Background Image with Soft Warm Overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30 scale-105 transition-transform duration-1000"
+          className="absolute inset-0 bg-cover bg-center opacity-10 scale-105 transition-transform duration-1000"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=1600')`,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-amber-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-amber-100/90 via-amber-50/70 to-transparent pointer-events-none" />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs sm:text-sm font-medium uppercase tracking-widest backdrop-blur-xs">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Preserving Sacred Vedic Traditions</span>
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* LEFT COLUMN: SHAANKARI CREATIONS LOGO */}
+          <div className="lg:col-span-3 flex flex-col items-center justify-center text-center order-2 lg:order-1">
+            <div className="w-52 h-52 sm:w-60 sm:h-60 rounded-3xl bg-white/40 backdrop-blur-md p-4 border border-amber-200/60 shadow-sm flex flex-col items-center justify-center group hover:scale-105 transition-transform">
+              <img
+                src="/shaankari-logo.png"
+                alt="Shaankari Creations Logo"
+                className="w-full h-full object-contain filter drop-shadow-md"
+              />
+            </div>
+            <span className="text-xs font-serif font-bold text-amber-900 mt-3 uppercase tracking-wider">
+              Shaankari Creations
+            </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-amber-50 tracking-tight leading-tight">
-            {heroTitle}
-          </h1>
+          {/* CENTER COLUMN: MAIN CONTENT & BUTTONS */}
+          <div className="lg:col-span-6 text-center space-y-6 order-1 lg:order-2">
+            
+            {/* Shaankari Creations & By Pradeep Nadig Sub-heading */}
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-200/90 border border-amber-300 text-amber-950 text-xs sm:text-sm font-bold uppercase tracking-widest backdrop-blur-xs shadow-xs">
+                <Sparkles className="w-4 h-4 text-amber-700" />
+                <span>Shaankari Creations</span>
+              </div>
+              <p className="text-sm sm:text-base font-serif italic font-bold text-amber-900 tracking-wide mt-1">
+                by Pradeep Nadig
+              </p>
+            </div>
 
-          <p className="text-lg sm:text-2xl text-amber-100/90 font-light max-w-3xl mx-auto leading-relaxed">
-            {heroSubtitle}
-          </p>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-amber-950 tracking-tight leading-tight">
+              {heroTitle}
+            </h1>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/services"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-amber-600 hover:bg-amber-500 text-amber-950 font-bold rounded-xl shadow-xl hover:shadow-amber-500/20 transition-all text-lg group"
-            >
-              <span>Explore Offerings</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/workshops"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 border border-amber-300/30 text-amber-100 font-semibold rounded-xl backdrop-blur-md transition-all text-lg"
-            >
-              <span>View Workshops</span>
-            </Link>
+            <p className="text-base sm:text-xl text-amber-900/90 font-light max-w-2xl mx-auto leading-relaxed">
+              {heroSubtitle}
+            </p>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/services"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-lg hover:shadow-amber-700/20 transition-all text-base sm:text-lg group"
+              >
+                <span>Explore Offerings</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/workshops"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-amber-50 border border-amber-300 text-amber-950 font-bold rounded-xl shadow-xs transition-all text-base sm:text-lg"
+              >
+                <span>View Workshops</span>
+              </Link>
+            </div>
           </div>
+
+          {/* RIGHT COLUMN: MR. PRADEEP NADIG PHOTO SLOT */}
+          <div className="lg:col-span-3 flex flex-col items-center justify-center text-center order-3">
+            <div className="w-52 h-52 sm:w-60 sm:h-60 rounded-3xl bg-white/40 backdrop-blur-md p-4 border border-amber-200/60 shadow-sm flex flex-col items-center justify-center group hover:scale-105 transition-transform overflow-hidden">
+              <img
+                src="/pradeep-nadig-cutout.png"
+                alt="Shri Pradeep Nadig"
+                className="w-full h-full object-contain filter drop-shadow-md"
+              />
+            </div>
+            <span className="text-xs font-serif font-bold text-amber-900 mt-3 uppercase tracking-wider">
+              Shri Pradeep Nadig
+            </span>
+          </div>
+
         </div>
       </section>
 
       {/* 2. HORIZONTAL NAVIGATION BUTTONS BAR */}
-      <section className="bg-amber-900 border-y border-amber-800 py-6 px-4 sm:px-6 lg:px-8 shadow-inner">
+      <section className="bg-amber-100/70 border-b border-amber-200/80 py-6 px-4 sm:px-6 lg:px-8 shadow-xs">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {navButtons.map((btn) => {
@@ -107,11 +147,11 @@ export default async function HomePage() {
                 <Link
                   key={btn.name}
                   href={btn.href}
-                  className="flex flex-col items-center justify-center p-3 rounded-xl bg-amber-950/60 hover:bg-amber-800 border border-amber-700/50 text-amber-100 hover:text-white transition-all text-center group shadow-xs hover:scale-105"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl bg-white hover:bg-amber-50 border border-amber-200 text-amber-950 transition-all text-center group shadow-xs hover:border-amber-400 hover:scale-105"
                 >
-                  <IconComp className="w-5 h-5 text-amber-400 group-hover:text-amber-200 mb-1.5 transition-transform" />
-                  <span className="font-semibold text-xs sm:text-sm tracking-tight">{btn.name}</span>
-                  <span className="text-[10px] text-amber-300/70 font-normal hidden sm:inline">{btn.count}</span>
+                  <IconComp className="w-5 h-5 text-amber-700 group-hover:text-amber-800 mb-1.5 transition-transform" />
+                  <span className="font-bold text-xs sm:text-sm tracking-tight">{btn.name}</span>
+                  <span className="text-[10px] text-amber-800/70 font-normal hidden sm:inline">{btn.count}</span>
                 </Link>
               );
             })}
@@ -125,11 +165,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Image Box */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-amber-100">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-amber-100 via-orange-50 to-amber-200 flex items-center justify-center h-[450px]">
                 <img
-                  src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800"
+                  src="/pradeep-nadig-cutout.png"
                   alt="Veda Brahma Shri Pradeep Nadig"
-                  className="w-full h-[450px] object-cover object-center"
+                  className="w-full h-full object-contain p-4 filter drop-shadow-xl"
                 />
               </div>
               {/* Floating Badge */}

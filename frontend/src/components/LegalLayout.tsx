@@ -50,7 +50,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
         </article>
       </main>
 
-      <footer className="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t border-slate-800">
+      <footer className="bg-gradient-to-b from-amber-100/90 via-amber-50 to-orange-100/80 text-amber-950 font-medium py-6 text-center text-xs border-t border-amber-200/80">
         <p>&copy; {new Date().getFullYear()} Veda Brahma Shri Pradeep Nadig. All rights reserved.</p>
       </footer>
     </div>

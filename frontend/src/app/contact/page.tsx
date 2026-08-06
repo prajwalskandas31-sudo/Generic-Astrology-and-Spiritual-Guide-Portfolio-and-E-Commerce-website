@@ -21,15 +21,15 @@ export default async function ContactPage() {
   return (
     <PublicLayout settings={settings} showContactCTA={false}>
       {/* Header */}
-      <section className="bg-gradient-to-b from-amber-950 via-slate-950 to-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8 text-center border-b border-amber-900/40">
+      <section className="bg-gradient-to-r from-amber-100 via-orange-50 to-amber-100 text-slate-900 border-b border-amber-200/80 py-16 px-4 sm:px-6 lg:px-8 text-center border-b border-amber-200/80">
         <div className="max-w-4xl mx-auto space-y-4">
-          <span className="px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest">
+          <span className="px-3.5 py-1.5 rounded-full bg-amber-200/80 border border-amber-400/50 text-amber-900 text-xs font-semibold uppercase tracking-widest">
             Reach Out Directly
           </span>
-          <h1 className="text-4xl sm:text-5xl font-serif font-bold text-amber-50">
+          <h1 className="text-4xl sm:text-5xl font-serif font-bold text-amber-950">
             Contact Shri Pradeep Nadig
           </h1>
-          <p className="text-amber-100/80 text-base sm:text-lg max-w-2xl mx-auto font-light">
+          <p className="text-amber-900/80 text-base sm:text-lg max-w-2xl mx-auto font-light">
             We are here to assist with ritual bookings, astrological consultations, and workshop enquiries.
           </p>
         </div>

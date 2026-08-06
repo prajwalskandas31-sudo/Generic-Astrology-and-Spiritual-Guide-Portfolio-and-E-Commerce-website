@@ -67,7 +67,7 @@ export default function GalleryClient({ items }: GalleryClientProps) {
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-5 text-white">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-400">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-800">
                 {item.category || "Media"}
               </span>
               <h3 className="font-serif font-bold text-base mt-0.5">{item.title}</h3>
@@ -75,7 +75,7 @@ export default function GalleryClient({ items }: GalleryClientProps) {
                 <p className="text-xs text-slate-300 mt-1 line-clamp-2">{item.description}</p>
               )}
             </div>
-            <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-xs">
+            <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-amber-900/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-xs">
               {item.media_type === "Video" ? <Play className="w-4 h-4 ml-0.5" /> : <ZoomIn className="w-4 h-4" />}
             </div>
           </div>
@@ -86,11 +86,11 @@ export default function GalleryClient({ items }: GalleryClientProps) {
       {selectedItem && (
         <div
           onClick={() => setSelectedItem(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-amber-900/90 backdrop-blur-sm animate-fadeIn"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-4xl w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800"
+            className="relative max-w-4xl w-full bg-amber-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800"
           >
             <button
               onClick={() => setSelectedItem(null)}
@@ -106,7 +106,7 @@ export default function GalleryClient({ items }: GalleryClientProps) {
               />
             </div>
             <div className="p-6 text-white space-y-2">
-              <span className="text-xs font-semibold uppercase text-amber-400">
+              <span className="text-xs font-semibold uppercase text-amber-800">
                 {selectedItem.category}
               </span>
               <h3 className="text-xl font-serif font-bold">{selectedItem.title}</h3>
