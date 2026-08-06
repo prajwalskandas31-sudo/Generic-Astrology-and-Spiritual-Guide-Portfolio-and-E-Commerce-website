@@ -6,7 +6,26 @@ from app.api.v1.endpoints import (
 
 api_router = APIRouter()
 
+@api_router.get("/", tags=["API v1 Root"])
+async def api_v1_root():
+    return {
+        "version": "v1",
+        "endpoints": [
+            "/offerings",
+            "/workshops",
+            "/classes",
+            "/blogs",
+            "/gallery",
+            "/media",
+            "/faq",
+            "/enquiries",
+            "/settings",
+            "/payments"
+        ]
+    }
+
 api_router.include_router(offerings.router, prefix="/offerings", tags=["Offerings"])
+
 api_router.include_router(workshops.router, prefix="/workshops", tags=["Workshops"])
 api_router.include_router(payments.router, prefix="/payments", tags=["Payments"])
 api_router.include_router(classes_api.router, prefix="/classes", tags=["Classes"])
