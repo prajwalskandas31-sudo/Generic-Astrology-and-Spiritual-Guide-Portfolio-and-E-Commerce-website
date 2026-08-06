@@ -1,3 +1,13 @@
+import {
+  FALLBACK_SETTINGS,
+  FALLBACK_OFFERINGS,
+  FALLBACK_WORKSHOPS,
+  FALLBACK_CLASSES,
+  FALLBACK_BLOGS,
+  FALLBACK_FAQS,
+  FALLBACK_GALLERY,
+} from "./fallback-data";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -24,25 +34,60 @@ export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): 
 
 // --- Public Endpoints ---
 export async function getSettings() {
-  return fetchAPI<Record<string, any>>("/settings");
+  try {
+    return await fetchAPI<Record<string, any>>("/settings");
+  } catch (error) {
+    console.warn("Backend API unavailable for getSettings, using fallback data.");
+    return FALLBACK_SETTINGS;
+  }
 }
 
 export async function getOfferings(type?: string) {
-  const query = type ? `?type=${encodeURIComponent(type)}` : "";
-  return fetchAPI<import("../types").Offering[]>(`/offerings${query}`);
+  try {
+    const query = type ? `?type=${encodeURIComponent(type)}` : "";
+    return await fetchAPI<import("../types").Offering[]>(`/offerings${query}`);
+  } catch (error) {
+    console.warn("Backend API unavailable for getOfferings, using fallback data.");
+    if (type) {
+      return FALLBACK_OFFERINGS.filter((o) => o.type === type);
+    }
+    return FALLBACK_OFFERINGS;
+  }
 }
 
 export async function getOfferingBySlug(slug: string) {
-  return fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`);
+  try {
+    return await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`);
+  } catch (error) {
+    console.warn(`Backend API unavailable for getOfferingBySlug(${slug}), using fallback data.`);
+    const item = FALLBACK_OFFERINGS.find((o) => o.slug === slug);
+    if (!item) throw error;
+    return item;
+  }
 }
 
 export async function getWorkshops(status_filter?: string) {
-  const query = status_filter ? `?status_filter=${encodeURIComponent(status_filter)}` : "";
-  return fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
+  try {
+    const query = status_filter ? `?status_filter=${encodeURIComponent(status_filter)}` : "";
+    return await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
+  } catch (error) {
+    console.warn("Backend API unavailable for getWorkshops, using fallback data.");
+    if (status_filter) {
+      return FALLBACK_WORKSHOPS.filter((w) => w.status === status_filter);
+    }
+    return FALLBACK_WORKSHOPS;
+  }
 }
 
 export async function getWorkshopBySlug(slug: string) {
-  return fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`);
+  try {
+    return await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`);
+  } catch (error) {
+    console.warn(`Backend API unavailable for getWorkshopBySlug(${slug}), using fallback data.`);
+    const item = FALLBACK_WORKSHOPS.find((w) => w.slug === slug);
+    if (!item) throw error;
+    return item;
+  }
 }
 
 export async function registerWorkshop(workshopId: number, data: any) {
@@ -86,27 +131,66 @@ export async function submitEnquiry(data: {
 }
 
 export async function getClasses() {
-  return fetchAPI<import("../types").ClassItem[]>("/classes");
+  try {
+    return await fetchAPI<import("../types").ClassItem[]>("/classes");
+  } catch (error) {
+    console.warn("Backend API unavailable for getClasses, using fallback data.");
+    return FALLBACK_CLASSES;
+  }
 }
 
 export async function getBlogs(category?: string) {
-  const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return fetchAPI<import("../types").Blog[]>(`/blogs${query}`);
+  try {
+    const query = category ? `?category=${encodeURIComponent(category)}` : "";
+    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`);
+  } catch (error) {
+    console.warn("Backend API unavailable for getBlogs, using fallback data.");
+    if (category) {
+      return FALLBACK_BLOGS.filter((b) => b.category === category);
+    }
+    return FALLBACK_BLOGS;
+  }
 }
 
 export async function getBlogBySlug(slug: string) {
-  return fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`);
+  try {
+    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`);
+  } catch (error) {
+    console.warn(`Backend API unavailable for getBlogBySlug(${slug}), using fallback data.`);
+    const item = FALLBACK_BLOGS.find((b) => b.slug === slug);
+    if (!item) throw error;
+    return item;
+  }
 }
 
 export async function getGallery() {
-  return fetchAPI<import("../types").GalleryItem[]>("/gallery");
+  try {
+    return await fetchAPI<import("../types").GalleryItem[]>("/gallery");
+  } catch (error) {
+    console.warn("Backend API unavailable for getGallery, using fallback data.");
+    return FALLBACK_GALLERY;
+  }
 }
 
 export async function getFAQ(category?: string) {
-  const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return fetchAPI<import("../types").FAQItem[]>(`/faq${query}`);
+  try {
+    const query = category ? `?category=${encodeURIComponent(category)}` : "";
+    return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`);
+  } catch (error) {
+    console.warn("Backend API unavailable for getFAQ, using fallback data.");
+    if (category) {
+      return FALLBACK_FAQS.filter((f) => f.category === category);
+    }
+    return FALLBACK_FAQS;
+  }
 }
 
 export async function getMediaLibrary() {
-  return fetchAPI<import("../types").MediaItem[]>("/media");
+  try {
+    return await fetchAPI<import("../types").MediaItem[]>("/media");
+  } catch (error) {
+    console.warn("Backend API unavailable for getMediaLibrary, using fallback data.");
+    return [];
+  }
 }
+
