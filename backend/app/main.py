@@ -35,6 +35,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def normalize_path_middleware(request, call_next):
+    path = request.scope.get("path", "")
+    if "//" in path:
+        import re
+        request.scope["path"] = re.sub(r"/+", "/", path)
+    return await call_next(request)
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["Root"])

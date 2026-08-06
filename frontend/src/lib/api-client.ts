@@ -8,10 +8,12 @@ import {
   FALLBACK_GALLERY,
 } from "./fallback-data";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
 export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE_URL}${cleanEndpoint}`;
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
