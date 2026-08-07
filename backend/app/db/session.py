@@ -35,7 +35,16 @@ connect_args = {}
 if "supabase.co" in primary_url or "onrender" in primary_url:
     connect_args["ssl"] = "require"
 
-engine = create_async_engine(primary_url, echo=False, future=True, connect_args=connect_args)
+engine = create_async_engine(
+    primary_url,
+    echo=False,
+    future=True,
+    pool_pre_ping=True,
+    pool_size=3,
+    max_overflow=2,
+    pool_recycle=300,
+    connect_args=connect_args
+)
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 Base = declarative_base()
