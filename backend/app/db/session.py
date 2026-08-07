@@ -31,9 +31,14 @@ def format_db_url(url: str) -> str:
 
 primary_url = format_db_url(settings.DATABASE_URL)
 
+import ssl
+ssl_ctx = ssl.create_default_context()
+ssl_ctx.check_hostname = False
+ssl_ctx.verify_mode = ssl.CERT_NONE
+
 connect_args = {}
-if "supabase.co" in primary_url or "onrender" in primary_url:
-    connect_args["ssl"] = "require"
+if "supabase" in primary_url or "onrender" in primary_url or "postgres" in primary_url:
+    connect_args["ssl"] = ssl_ctx
 
 engine = create_async_engine(
     primary_url,
