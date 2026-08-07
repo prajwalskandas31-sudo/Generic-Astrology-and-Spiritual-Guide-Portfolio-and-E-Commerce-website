@@ -8,7 +8,7 @@ import {
   FALLBACK_GALLERY,
 } from "./fallback-data";
 
-const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "https://generic-astrology-and-spiritual-guide.onrender.com/api/v1";
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
 if (typeof window !== "undefined" && !process.env.NEXT_PUBLIC_API_URL) {

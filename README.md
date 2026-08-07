@@ -171,7 +171,7 @@ npm run build
 2. Set Root Directory: `frontend`
 3. Framework Preset: `Next.js`
 4. Add Environment Variables:
-   - `NEXT_PUBLIC_API_URL`: Your deployed backend API URL (e.g. `https://pradeep-api.onrender.com/api/v1`)
+   - `NEXT_PUBLIC_API_URL`: Your deployed backend API URL (`https://generic-astrology-and-spiritual-guide.onrender.com/api/v1`)
    - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase Project URL
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase Anon Key
 5. Click **Deploy**.
