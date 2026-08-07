@@ -22,6 +22,20 @@ const registrationSchema = z.object({
 
 type RegistrationFormData = z.infer<typeof registrationSchema>;
 
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window !== "undefined" && (window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export interface WorkshopRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -90,23 +104,63 @@ export default function WorkshopRegistrationModal({
         additional_notes: data.additional_notes || undefined,
       });
 
-      // 2. Perform Razorpay Checkout
-      const mockPaymentId = `pay_${Math.random().toString(36).substring(2, 12)}`;
-      const mockSignature = `sig_${Math.random().toString(36).substring(2, 16)}`;
+      // 2. Load Razorpay SDK Script
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        throw new Error("Razorpay SDK failed to load. Please check your internet connection.");
+      }
 
-      // 3. Verify Payment on Backend (decrements available seats)
-      await verifyPayment({
-        registration_id: regResult.registration_id,
-        razorpay_order_id: regResult.razorpay_order_id,
-        razorpay_payment_id: mockPaymentId,
-        razorpay_signature: mockSignature,
+      // 3. Perform Razorpay Checkout
+      const razorpayKey = regResult.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_key";
+
+      const options = {
+        key: razorpayKey,
+        amount: Math.round((regResult.amount || workshop.price) * 100),
+        currency: regResult.currency || "INR",
+        name: "Veda Brahma Shri Pradeep Nadig",
+        description: workshop.title,
+        order_id: regResult.razorpay_order_id,
+        handler: async function (response: any) {
+          try {
+            // Verify Payment on Backend (decrements available seats)
+            await verifyPayment({
+              registration_id: regResult.registration_id,
+              razorpay_order_id: response.razorpay_order_id || regResult.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            setConfirmedRegistrationId(regResult.registration_id);
+            setIsSuccess(true);
+          } catch (err: any) {
+            setErrorMessage(err.message || "Payment verification failed.");
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsSubmitting(false);
+            setErrorMessage("Payment process was closed before completion. Please complete payment to secure your seat.");
+          },
+        },
+        prefill: {
+          name: data.name,
+          email: data.email || "",
+          contact: data.mobile,
+        },
+        theme: {
+          color: "#b45309",
+        },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.on("payment.failed", function (response: any) {
+        setIsSubmitting(false);
+        setErrorMessage(`Payment failed: ${response.error?.description || "Transaction declined."}`);
       });
-
-      setConfirmedRegistrationId(regResult.registration_id);
-      setIsSuccess(true);
+      paymentObject.open();
     } catch (err: any) {
-      setErrorMessage(err.message || "Registration or payment verification failed.");
-    } finally {
+      setErrorMessage(err.message || "Registration initialization failed.");
       setIsSubmitting(false);
     }
   };

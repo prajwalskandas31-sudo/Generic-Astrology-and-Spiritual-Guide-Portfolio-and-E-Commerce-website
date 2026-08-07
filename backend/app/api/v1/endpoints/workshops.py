@@ -63,9 +63,28 @@ async def register_for_workshop(
         elif len(batches) > 1:
             raise HTTPException(status_code=400, detail="Batch selection is required")
 
-    # Generate mock/real Razorpay Order ID
-    mock_order_id = f"order_{uuid.uuid4().hex[:12]}"
-    
+    # Generate Razorpay Order ID (try real Razorpay API if credentials exist)
+    order_id = f"order_{uuid.uuid4().hex[:12]}"
+    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET and settings.RAZORPAY_KEY_ID != "rzp_test_key":
+        try:
+            import razorpay
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))
+            order_data = {
+                "amount": int(workshop.price * 100),
+                "currency": "INR",
+                "receipt": f"reg_{uuid.uuid4().hex[:8]}",
+                "notes": {
+                    "workshop_id": str(id),
+                    "workshop_title": workshop.title,
+                    "customer_name": data.name,
+                    "customer_mobile": data.mobile
+                }
+            }
+            rzp_order = client.order.create(data=order_data)
+            order_id = rzp_order.get("id", order_id)
+        except Exception as e:
+            print(f"[Razorpay Order Creation Warning]: {e}")
+
     registration = WorkshopRegistration(
         workshop_id=id,
         batch_id=batch.id if batch else None,
@@ -78,7 +97,7 @@ async def register_for_workshop(
         pin_code=data.pin_code,
         payment_status="Pending",
         amount=workshop.price,
-        razorpay_order_id=mock_order_id,
+        razorpay_order_id=order_id,
         additional_notes=data.additional_notes
     )
     
@@ -88,7 +107,7 @@ async def register_for_workshop(
     
     return WorkshopRegisterResponse(
         registration_id=registration.id,
-        razorpay_order_id=mock_order_id,
+        razorpay_order_id=order_id,
         amount=workshop.price,
         currency="INR",
         key_id=settings.RAZORPAY_KEY_ID

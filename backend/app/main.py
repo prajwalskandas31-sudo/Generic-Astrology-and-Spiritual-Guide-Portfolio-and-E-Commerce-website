@@ -43,6 +43,18 @@ async def normalize_path_middleware(request, call_next):
         request.scope["path"] = re.sub(r"/+", "/", path)
     return await call_next(request)
 
+from fastapi.responses import JSONResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    error_trace = traceback.format_exc()
+    logger.error(f"Unhandled exception on {request.url.path}: {error_trace}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "trace": error_trace.splitlines()[-5:]}
+    )
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["Root"])

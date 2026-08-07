@@ -11,6 +11,12 @@ import {
 const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
+if (typeof window !== "undefined" && !process.env.NEXT_PUBLIC_API_URL) {
+  console.warn(
+    "[API Client Warning]: NEXT_PUBLIC_API_URL is not configured in Vercel environment variables. Defaulting to " + rawBaseUrl
+  );
+}
+
 export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = `${API_BASE_URL}${cleanEndpoint}`;
