@@ -36,7 +36,10 @@ ssl_ctx = ssl.create_default_context()
 ssl_ctx.check_hostname = False
 ssl_ctx.verify_mode = ssl.CERT_NONE
 
-connect_args = {}
+connect_args = {
+    "statement_cache_size": 0,
+    "prepared_statement_cache_size": 0,
+}
 if "supabase" in primary_url or "onrender" in primary_url or "postgres" in primary_url:
     connect_args["ssl"] = ssl_ctx
 
