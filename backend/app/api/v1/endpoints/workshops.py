@@ -17,23 +17,31 @@ router = APIRouter()
 
 @router.get("", response_model=List[WorkshopResponse])
 async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = Depends(get_db)):
-    query = select(Workshop).options(selectinload(Workshop.batches))
-    if status_filter:
-        query = query.where(Workshop.status == status_filter)
-    else:
-        query = query.where(Workshop.status.in_(["Published", "Completed"]))
-    query = query.order_by(Workshop.featured.desc(), Workshop.id.desc())
-    result = await db.execute(query)
-    return result.scalars().all()
+    try:
+        query = select(Workshop).options(selectinload(Workshop.batches))
+        if status_filter:
+            query = query.where(Workshop.status == status_filter)
+        else:
+            query = query.where(Workshop.status.in_(["Published", "Completed"]))
+        query = query.order_by(Workshop.featured.desc(), Workshop.id.desc())
+        result = await db.execute(query)
+        return result.scalars().all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Workshops Error: {str(e)}")
 
 @router.get("/{slug}", response_model=WorkshopResponse)
 async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
-    query = select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.slug == slug)
-    result = await db.execute(query)
-    workshop = result.scalar_one_or_none()
-    if not workshop:
-        raise HTTPException(status_code=404, detail="Workshop not found")
-    return workshop
+    try:
+        query = select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.slug == slug)
+        result = await db.execute(query)
+        workshop = result.scalar_one_or_none()
+        if not workshop:
+            raise HTTPException(status_code=404, detail="Workshop not found")
+        return workshop
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Workshop Detail Error: {str(e)}")
 
 @router.post("/{id}/register", response_model=WorkshopRegisterResponse)
 async def register_for_workshop(

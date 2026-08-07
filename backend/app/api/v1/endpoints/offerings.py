@@ -11,21 +11,29 @@ router = APIRouter()
 
 @router.get("", response_model=List[OfferingResponse])
 async def get_offerings(type: Optional[str] = None, db: AsyncSession = Depends(get_db)):
-    query = select(Offering).where(Offering.status == "Published")
-    if type:
-        query = query.where(Offering.type == type)
-    query = query.order_by(Offering.display_order.asc(), Offering.id.desc())
-    result = await db.execute(query)
-    return result.scalars().all()
+    try:
+        query = select(Offering).where(Offering.status == "Published")
+        if type:
+            query = query.where(Offering.type == type)
+        query = query.order_by(Offering.display_order.asc(), Offering.id.desc())
+        result = await db.execute(query)
+        return result.scalars().all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Offerings Error: {str(e)}")
 
 @router.get("/{slug}", response_model=OfferingResponse)
 async def get_offering_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
-    query = select(Offering).where(Offering.slug == slug)
-    result = await db.execute(query)
-    offering = result.scalar_one_or_none()
-    if not offering:
-        raise HTTPException(status_code=404, detail="Offering not found")
-    return offering
+    try:
+        query = select(Offering).where(Offering.slug == slug)
+        result = await db.execute(query)
+        offering = result.scalar_one_or_none()
+        if not offering:
+            raise HTTPException(status_code=404, detail="Offering not found")
+        return offering
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Offering Detail Error: {str(e)}")
 
 @router.post("", response_model=OfferingResponse, status_code=status.HTTP_201_CREATED)
 async def create_offering(

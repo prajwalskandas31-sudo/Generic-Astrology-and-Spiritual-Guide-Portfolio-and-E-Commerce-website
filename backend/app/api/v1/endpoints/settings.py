@@ -11,9 +11,12 @@ router = APIRouter()
 
 @router.get("", response_model=Dict[str, Any])
 async def get_all_settings(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Setting))
-    settings_items = result.scalars().all()
-    return {s.key: s.value for s in settings_items}
+    try:
+        result = await db.execute(select(Setting))
+        settings_items = result.scalars().all()
+        return {s.key: s.value for s in settings_items}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Settings Error: {str(e)}")
 
 @router.put("/{key}", response_model=MessageResponse)
 async def update_setting(
