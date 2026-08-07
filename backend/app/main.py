@@ -61,13 +61,10 @@ async def root():
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])
 async def health_check():
-    safe_db_url = settings.DATABASE_URL
-    if "@" in safe_db_url:
-        safe_db_url = safe_db_url.split("@")[-1]
     return {
         "status": "healthy",
         "project": settings.PROJECT_NAME,
-        "database_host": safe_db_url
+        "database": "PostgreSQL (Supabase)"
     }
 
 
