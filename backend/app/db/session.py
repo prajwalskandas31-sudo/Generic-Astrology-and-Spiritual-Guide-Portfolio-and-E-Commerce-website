@@ -19,6 +19,7 @@ def format_db_url(url: str) -> str:
             # Remove libpq parameters that cause TargetServerAttributeNotMatched or pooler issues in asyncpg
             qs.pop("target_session_attrs", None)
             qs.pop("channel_binding", None)
+            qs.pop("sslmode", None)
             
             new_query = urlencode(qs, doseq=True)
             parsed = parsed._replace(query=new_query)
@@ -30,7 +31,11 @@ def format_db_url(url: str) -> str:
 
 primary_url = format_db_url(settings.DATABASE_URL)
 
-engine = create_async_engine(primary_url, echo=False, future=True)
+connect_args = {}
+if "supabase.co" in primary_url or "onrender" in primary_url:
+    connect_args["ssl"] = "require"
+
+engine = create_async_engine(primary_url, echo=False, future=True, connect_args=connect_args)
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 Base = declarative_base()
