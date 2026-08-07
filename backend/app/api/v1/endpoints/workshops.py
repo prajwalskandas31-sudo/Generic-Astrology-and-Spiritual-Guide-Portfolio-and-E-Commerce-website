@@ -75,7 +75,9 @@ async def register_for_workshop(
 
     # Generate Razorpay Order ID (try real Razorpay API if credentials exist)
     order_id = f"order_{uuid.uuid4().hex[:12]}"
-    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET and settings.RAZORPAY_KEY_ID != "rzp_test_key":
+    is_real_order = False
+
+    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET and settings.RAZORPAY_KEY_ID.startswith("rzp_"):
         try:
             import razorpay
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))
@@ -92,6 +94,7 @@ async def register_for_workshop(
             }
             rzp_order = client.order.create(data=order_data)
             order_id = rzp_order.get("id", order_id)
+            is_real_order = True
         except Exception as e:
             print(f"[Razorpay Order Creation Warning]: {e}")
 
@@ -120,7 +123,8 @@ async def register_for_workshop(
         razorpay_order_id=order_id,
         amount=workshop.price,
         currency="INR",
-        key_id=settings.RAZORPAY_KEY_ID
+        key_id=settings.RAZORPAY_KEY_ID,
+        is_real_order=is_real_order
     )
 
 @router.post("", response_model=WorkshopResponse, status_code=status.HTTP_201_CREATED)

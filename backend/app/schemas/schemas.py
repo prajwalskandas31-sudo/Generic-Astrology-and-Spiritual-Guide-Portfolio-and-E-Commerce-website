@@ -220,6 +220,7 @@ class WorkshopRegisterResponse(BaseModel):
     amount: float
     currency: str = "INR"
     key_id: str
+    is_real_order: bool = False
 
 class PaymentVerifyRequest(BaseModel):
     registration_id: int
