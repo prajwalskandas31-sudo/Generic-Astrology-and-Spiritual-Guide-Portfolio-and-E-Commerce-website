@@ -40,14 +40,13 @@ connect_args = {}
 if "supabase" in primary_url or "onrender" in primary_url or "postgres" in primary_url:
     connect_args["ssl"] = ssl_ctx
 
+from sqlalchemy.pool import NullPool
+
 engine = create_async_engine(
     primary_url,
     echo=False,
     future=True,
-    pool_pre_ping=True,
-    pool_size=3,
-    max_overflow=2,
-    pool_recycle=300,
+    poolclass=NullPool,
     connect_args=connect_args
 )
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
