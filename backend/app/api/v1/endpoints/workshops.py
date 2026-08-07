@@ -15,6 +15,8 @@ import uuid
 
 router = APIRouter()
 
+from fastapi.responses import JSONResponse
+
 @router.get("", response_model=List[WorkshopResponse])
 async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
@@ -27,7 +29,7 @@ async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = 
         result = await db.execute(query)
         return result.scalars().all()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Workshops Error: {str(e)}")
+        return JSONResponse(status_code=500, content={"detail": f"Workshops Error: {str(e)}", "error_type": type(e).__name__})
 
 @router.get("/{slug}", response_model=WorkshopResponse)
 async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
@@ -41,7 +43,7 @@ async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Workshop Detail Error: {str(e)}")
+        return JSONResponse(status_code=500, content={"detail": f"Workshop Detail Error: {str(e)}", "error_type": type(e).__name__})
 
 @router.post("/{id}/register", response_model=WorkshopRegisterResponse)
 async def register_for_workshop(

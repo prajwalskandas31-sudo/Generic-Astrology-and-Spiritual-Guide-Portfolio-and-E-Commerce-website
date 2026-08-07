@@ -9,6 +9,8 @@ from app.core.security import verify_supabase_token
 
 router = APIRouter()
 
+from fastapi.responses import JSONResponse
+
 @router.get("", response_model=List[OfferingResponse])
 async def get_offerings(type: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
@@ -19,7 +21,7 @@ async def get_offerings(type: Optional[str] = None, db: AsyncSession = Depends(g
         result = await db.execute(query)
         return result.scalars().all()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Offerings Error: {str(e)}")
+        return JSONResponse(status_code=500, content={"detail": f"Offerings Error: {str(e)}", "error_type": type(e).__name__})
 
 @router.get("/{slug}", response_model=OfferingResponse)
 async def get_offering_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
@@ -33,7 +35,7 @@ async def get_offering_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Offering Detail Error: {str(e)}")
+        return JSONResponse(status_code=500, content={"detail": f"Offering Detail Error: {str(e)}", "error_type": type(e).__name__})
 
 @router.post("", response_model=OfferingResponse, status_code=status.HTTP_201_CREATED)
 async def create_offering(
