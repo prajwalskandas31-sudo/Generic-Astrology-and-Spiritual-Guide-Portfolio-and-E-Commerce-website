@@ -5,8 +5,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Pradeep Nadig Portfolio & Management API"
     API_V1_STR: str = "/api/v1"
     
-    # Database - PostgreSQL
-    DATABASE_URL: str = "postgresql://postgres:PradeepNadig1!@db.dtvjzkhsnfarlodjymbr.supabase.co:5432/postgres"
+    # Database - PostgreSQL (IPv4 Pooler)
+    DATABASE_URL: str = "postgresql://postgres.dtvjzkhsnfarlodjymbr:PradeepNadig1!@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres"
     
     # Supabase Auth
     SUPABASE_URL: str = "https://your-supabase-project.supabase.co"
