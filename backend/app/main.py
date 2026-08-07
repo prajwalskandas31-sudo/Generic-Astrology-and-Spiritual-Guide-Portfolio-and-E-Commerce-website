@@ -10,12 +10,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        logger.info("Initializing database tables and seed data...")
-        await seed_database()
-        logger.info("Database initialization complete.")
-    except Exception as e:
-        logger.error(f"Error during database initialization: {e}")
     yield
 
 app = FastAPI(
