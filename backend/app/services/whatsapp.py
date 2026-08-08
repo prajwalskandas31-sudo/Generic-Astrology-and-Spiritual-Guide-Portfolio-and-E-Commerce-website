@@ -1,13 +1,17 @@
 import httpx
 import sys
+import logging
 from typing import List, Dict, Optional
 from app.core.config import settings
 
+logger = logging.getLogger("uvicorn")
+
 def safe_print(msg: str):
     try:
-        print(msg)
-    except UnicodeEncodeError:
-        print(msg.encode("ascii", "replace").decode("ascii"))
+        print(msg, flush=True)
+        logger.info(msg)
+    except Exception:
+        pass
 
 async def send_whatsapp_message(to_phone: str, text: str):
     """

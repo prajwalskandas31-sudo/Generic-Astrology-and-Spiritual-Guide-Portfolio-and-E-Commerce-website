@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     RAZORPAY_SECRET: str = "rzp_test_secret"
     
     # WhatsApp Cloud API
-    WHATSAPP_TOKEN: str = "mock_whatsapp_token"
-    WHATSAPP_PHONE_ID: str = "mock_phone_id"
+    WHATSAPP_TOKEN: str = "EAAX8xwSWXz4BSMMZBR1OzwZBnEZCH3epw4nZBaQiTSufo9S0U0Gm1njToROrWZAxFCz8ZB49HuQmxRVcjo6I2OqCXCuULcDwcquTKWHndPmwzgPrWhZCY94rQIgJvH3nZB0XPgMvUyjXkwy8Elx543VwVc5kmrfZBFVXP9ZCzvuyrtdZB4b7yPevIGvAumy49Cy6AZDZD"
+    WHATSAPP_PHONE_ID: str = "1211611855373954"
     WHATSAPP_VERIFY_TOKEN: str = "pradeep_whatsapp_webhook_verify_token"
     
     # Google Calendar
