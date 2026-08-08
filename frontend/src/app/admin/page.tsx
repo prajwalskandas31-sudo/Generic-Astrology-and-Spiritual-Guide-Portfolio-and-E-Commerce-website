@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
               <CreditCard className="w-4 h-4 text-amber-700" />
               <span>Recent Registrations</span>
             </h2>
-            <Link href="/admin/enquiries" className="text-xs font-semibold text-amber-800 hover:underline">
+            <Link href="/admin/enquiries?tab=registrations" className="text-xs font-semibold text-amber-800 hover:underline">
               View All &rarr;
             </Link>
           </div>

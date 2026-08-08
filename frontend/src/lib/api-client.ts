@@ -83,8 +83,14 @@ export async function getOfferingBySlug(slug: string) {
 
 export async function getWorkshops(status_filter?: string) {
   try {
-    const query = status_filter ? `?status_filter=${encodeURIComponent(status_filter)}` : "";
-    return await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
+    const isAll = !status_filter || status_filter.toLowerCase() === "all";
+    const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "?status_filter=all";
+    const res = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
+    if (Array.isArray(res) && res.length === 0 && isAll) {
+      // Fall back if API returns empty array for all workshops
+      return FALLBACK_WORKSHOPS;
+    }
+    return res;
   } catch (error) {
     console.warn("Backend API unavailable for getWorkshops, using fallback data.");
     if (status_filter && status_filter.toLowerCase() !== "all") {
@@ -211,13 +217,26 @@ export async function getMediaLibrary() {
 
 export async function getWorkshopRegistrations() {
   try {
-    return await fetchAPI<import("../types").WorkshopRegistration[]>(`/admin/registrations`, {
+    const data = await fetchAPI<import("../types").WorkshopRegistration[]>(`/admin/registrations`, {
       headers: { Authorization: "Bearer mock-admin-token" },
     });
+    if (Array.isArray(data) && data.length > 0) return data;
   } catch (error) {
-    console.warn("Backend API unavailable for getWorkshopRegistrations.");
-    return [];
+    console.warn("Backend API unavailable for getWorkshopRegistrations, attempting /admin/stats fallback...");
   }
+
+  // Fallback to /admin/stats if /admin/registrations fails or returns empty
+  try {
+    const stats = await fetchAPI<import("../types").DashboardStats>("/admin/stats", {
+      headers: { Authorization: "Bearer mock-admin-token" },
+    });
+    if (stats && Array.isArray(stats.recent_registrations)) {
+      return stats.recent_registrations;
+    }
+  } catch (_) {}
+
+  return [];
 }
+
 
 

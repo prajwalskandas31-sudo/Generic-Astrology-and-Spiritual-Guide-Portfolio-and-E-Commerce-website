@@ -39,6 +39,16 @@ export default function AdminRequestsPage() {
   const [isPerformingAction, setIsPerformingAction] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab");
+      if (tabParam === "registrations" || tabParam === "archived" || tabParam === "active") {
+        setActiveTab(tabParam as any);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (activeTab === "registrations") {
       loadRegistrations();
     } else {
@@ -52,12 +62,42 @@ export default function AdminRequestsPage() {
       const data = await fetchAPI<RequestThread[]>(`/requests?tab=${activeTab}`, {
         headers: { Authorization: "Bearer mock-admin-token" },
       });
-      setRequests(data);
+      if (Array.isArray(data) && data.length > 0) {
+        setRequests(data);
+        setIsLoading(false);
+        return;
+      }
     } catch (err: any) {
-      console.error("Failed to load request threads:", err);
-    } finally {
-      setIsLoading(false);
+      console.warn("Failed to load request threads, attempting /admin/stats fallback:", err);
     }
+
+    try {
+      const stats = await fetchAPI<any>("/admin/stats", {
+        headers: { Authorization: "Bearer mock-admin-token" },
+      });
+      if (stats && Array.isArray(stats.recent_enquiries)) {
+        const mapped: RequestThread[] = stats.recent_enquiries.map((enq: any) => ({
+          id: enq.id,
+          request_id: `REQ-${enq.id}`,
+          request_type: enq.enquiry_type || "Enquiry",
+          service_name: enq.category || "General Enquiry",
+          customer: {
+            name: enq.name,
+            phone: enq.mobile,
+            email: enq.email,
+          },
+          city: enq.city,
+          notes: enq.additional_notes,
+          status: enq.status || "NEW",
+          amount: 0,
+          payment_status: "N/A",
+          created_at: enq.created_at || new Date().toISOString(),
+          message_logs: [],
+        }));
+        setRequests(mapped);
+      }
+    } catch (_) {}
+    setIsLoading(false);
   };
 
   const loadRegistrations = async () => {

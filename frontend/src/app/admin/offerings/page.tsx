@@ -31,7 +31,7 @@ export default function AdminOfferingsPage() {
   const loadOfferings = async () => {
     setIsLoading(true);
     try {
-      const data = await getOfferings();
+      const data = await getOfferings(undefined, "all");
       setOfferings(data);
     } catch (_) {
     } finally {
