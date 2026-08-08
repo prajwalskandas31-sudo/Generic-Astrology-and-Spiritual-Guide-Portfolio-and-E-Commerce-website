@@ -1,6 +1,6 @@
 export interface Offering {
   id: number;
-  type: "Service" | "Consultation";
+  type: "Service" | "Consultation" | "Pooja";
   title: string;
   slug: string;
   short_description?: string;
@@ -112,7 +112,7 @@ export interface FAQItem {
 export interface Enquiry {
   id: number;
   request_id?: string;
-  enquiry_type: "Service" | "Consultation" | "Class";
+  enquiry_type: "Service" | "Consultation" | "Class" | "Pooja" | "Class Enquiry";
   name: string;
   mobile: string;
   email: string;

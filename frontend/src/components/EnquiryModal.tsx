@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { X, Send, CheckCircle2, Loader2, MessageSquare } from "lucide-react";
-import { submitEnquiry } from "@/lib/api-client";
+import { submitEnquiry, getOfferings, getClasses } from "@/lib/api-client";
+import { FALLBACK_OFFERINGS, FALLBACK_CLASSES } from "@/lib/fallback-data";
+import { Offering, ClassItem } from "@/types";
 
 const enquirySchema = z.object({
-  enquiry_type: z.enum(["Service", "Consultation", "Class Enquiry"]),
+  enquiry_type: z.enum(["Service", "Pooja", "Consultation", "Class Enquiry", "General Enquiry"]),
   name: z.string().min(2, "Full Name is required (min 2 characters)"),
   mobile: z.string().min(10, "Valid 10-digit mobile number is required"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
@@ -22,7 +24,7 @@ type EnquiryFormData = z.infer<typeof enquirySchema>;
 export interface EnquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultType?: "Service" | "Consultation" | "Class Enquiry";
+  defaultType?: "Service" | "Pooja" | "Consultation" | "Class Enquiry" | "General Enquiry";
   defaultCategory?: string;
   categoryOptions?: string[];
 }
@@ -32,31 +34,49 @@ export default function EnquiryModal({
   onClose,
   defaultType = "Service",
   defaultCategory = "",
-  categoryOptions = [
-    "Ganapathi Homa",
-    "Navagraha Homa",
-    "Vedic Astrology Consultation",
-    "Horoscope Matching",
-    "Daily Sandhyavandana & Mantras",
-    "Advanced Rudram Chanting",
-    "General Enquiry",
-  ],
+  categoryOptions: customCategoryOptions,
 }: EnquiryModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [submittedRequestId, setSubmittedRequestId] = useState<string>("");
 
+  const [offerings, setOfferings] = useState<Offering[]>(FALLBACK_OFFERINGS);
+  const [classesList, setClassesList] = useState<ClassItem[]>(FALLBACK_CLASSES);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const [offs, cls] = await Promise.all([
+          getOfferings().catch(() => FALLBACK_OFFERINGS),
+          getClasses().catch(() => FALLBACK_CLASSES),
+        ]);
+        if (isMounted) {
+          if (offs && offs.length > 0) setOfferings(offs);
+          if (cls && cls.length > 0) setClassesList(cls);
+        }
+      } catch (_) {}
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
+
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<EnquiryFormData>({
     resolver: zodResolver(enquirySchema),
     defaultValues: {
       enquiry_type: defaultType,
-      category: defaultCategory || categoryOptions[0],
+      category: defaultCategory || "",
       name: "",
       mobile: "",
       email: "",
@@ -65,8 +85,54 @@ export default function EnquiryModal({
     },
   });
 
-  if (!isOpen) return null;
+  const selectedType = watch("enquiry_type", defaultType);
 
+  // Compute category options dynamically based on enquiry_type
+  const dynamicCategoryOptions = useMemo(() => {
+    if (customCategoryOptions && customCategoryOptions.length > 0) {
+      return customCategoryOptions;
+    }
+
+    let list: string[] = [];
+    if (selectedType === "Service") {
+      list = offerings.filter((o) => o.type === "Service").map((o) => o.title);
+    } else if (selectedType === "Pooja") {
+      list = offerings.filter((o) => o.type === "Pooja").map((o) => o.title);
+    } else if (selectedType === "Consultation") {
+      list = offerings.filter((o) => o.type === "Consultation").map((o) => o.title);
+    } else if (selectedType === "Class Enquiry") {
+      list = classesList.map((c) => c.name);
+    } else {
+      list = ["General Guidance & Enquiry"];
+    }
+
+    // Ensure fallback items if empty
+    if (list.length === 0) {
+      if (selectedType === "Service") list = ["Mahaganapathi Homa", "Navagraha Homa"];
+      else if (selectedType === "Pooja") list = ["Sri Satyanarayana Vratha & Pooja"];
+      else if (selectedType === "Consultation") list = ["Vedic Astrology Consultation"];
+      else if (selectedType === "Class Enquiry") list = ["Daily Sandhyavandana & Mantras"];
+      else list = ["General Guidance & Enquiry"];
+    }
+
+    // Append Other option
+    return [...list, "Other / Custom Request"];
+  }, [selectedType, offerings, classesList, customCategoryOptions]);
+
+  // Keep category value in sync when options change or default is passed
+  useEffect(() => {
+    if (!isOpen) return;
+    if (defaultCategory && dynamicCategoryOptions.includes(defaultCategory)) {
+      setValue("category", defaultCategory);
+    } else if (dynamicCategoryOptions.length > 0) {
+      const currentCat = watch("category");
+      if (!dynamicCategoryOptions.includes(currentCat)) {
+        setValue("category", dynamicCategoryOptions[0]);
+      }
+    }
+  }, [isOpen, selectedType, defaultCategory, dynamicCategoryOptions, setValue, watch]);
+
+  if (!isOpen) return null;
 
   const onSubmit = async (data: EnquiryFormData) => {
     setIsSubmitting(true);
@@ -130,7 +196,6 @@ export default function EnquiryModal({
             </button>
           </div>
         ) : (
-
           <div className="space-y-6">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-900 text-xs font-semibold rounded-full uppercase">
@@ -161,9 +226,11 @@ export default function EnquiryModal({
                   {...register("enquiry_type")}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
                 >
-                  <option value="Service">Service / Ritual Request</option>
+                  <option value="Service">Service / Homa Request</option>
+                  <option value="Pooja">Sacred Pooja Request</option>
                   <option value="Consultation">Astrology Consultation</option>
                   <option value="Class Enquiry">Vedic Class Enquiry</option>
+                  <option value="General Enquiry">General Guidance &amp; Enquiry</option>
                 </select>
                 {errors.enquiry_type && (
                   <p className="text-xs text-red-600 mt-1">{errors.enquiry_type.message}</p>
@@ -173,13 +240,13 @@ export default function EnquiryModal({
               {/* Category Dropdown */}
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Category *
+                  Category / Specific Service *
                 </label>
                 <select
                   {...register("category")}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white font-medium text-slate-800"
                 >
-                  {categoryOptions.map((opt) => (
+                  {dynamicCategoryOptions.map((opt) => (
                     <option key={opt} value={opt}>
                       {opt}
                     </option>
@@ -292,3 +359,4 @@ export default function EnquiryModal({
     </div>
   );
 }
+

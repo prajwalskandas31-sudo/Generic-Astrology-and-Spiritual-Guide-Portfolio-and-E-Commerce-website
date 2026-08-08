@@ -224,6 +224,136 @@ export const FALLBACK_OFFERINGS: Offering[] = [
     faq: [
       { question: "What details are required?", answer: "Date of birth, exact time of birth, and place of birth." }
     ]
+  },
+  {
+    id: 13,
+    type: "Pooja",
+    title: "Sri Satyanarayana Vratha & Pooja",
+    slug: "satyanarayana-pooja",
+    short_description: "A revered Vedic ritual dedicated to Lord Satyanarayana for family prosperity, peace, and fulfillment of noble desires.",
+    full_description: "Sri Satyanarayana Vratha & Pooja is traditionally performed on Purnima (Full Moon), Ekadashi, or during family milestones to seek Lord Vishnu's grace, invite peace, wealth, and spiritual well-being.",
+    images: ["https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=800"],
+    display_order: 13,
+    status: "Published",
+    seo_title: "Sri Satyanarayana Vratha & Pooja | Shri Pradeep Nadig",
+    seo_description: "Perform authentic Sri Satyanarayana Vratha with Veda Brahma Shri Pradeep Nadig for family harmony and prosperity.",
+    faq: [
+      { question: "When is the ideal time to perform Satyanarayana Pooja?", answer: "Full Moon (Purnima) days, Ekadashi, housewarmings, or anniversaries." },
+      { question: "How long does the Pooja take?", answer: "Approximately 2 to 2.5 hours." }
+    ]
+  },
+  {
+    id: 14,
+    type: "Pooja",
+    title: "Sri Rudrabhishekam Pooja",
+    slug: "rudrabhishekam-pooja",
+    short_description: "Sacred bathing ritual and elaborate worship of Shiva Linga accompanied by Sri Rudram chanting for health and protection.",
+    full_description: "Sri Rudrabhishekam Pooja involves ritualistic sacred bathing (Abhisheka) to Lord Shiva with Panchamrutha accompanied by Sri Rudram and Chamakam chanting, bestowing health, longevity, and liberation from negative karma.",
+    images: ["https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800"],
+    display_order: 14,
+    status: "Published",
+    seo_title: "Sri Rudrabhishekam Pooja | Shri Pradeep Nadig",
+    seo_description: "Seek Shiva's grace and inner peace through traditional Sri Rudrabhishekam Pooja.",
+    faq: [
+      { question: "What materials are used for Abhisheka?", answer: "Milk, curd, honey, ghee, sugar, tender coconut water, and sacred Bilva leaves." },
+      { question: "Duration?", answer: "About 2 to 3 hours." }
+    ]
+  },
+  {
+    id: 15,
+    type: "Pooja",
+    title: "Mahalakshmi Kanakadhara Pooja",
+    slug: "mahalakshmi-kanakadhara-pooja",
+    short_description: "Special ritual dedicated to Goddess Mahalakshmi for financial prosperity, business growth, and abundance.",
+    full_description: "Mahalakshmi Kanakadhara Pooja is performed with Kanakadhara Stotram recitations to invoke Goddess Lakshmi's eternal blessings for financial stability, wealth abundance, and removal of debts.",
+    images: ["https://images.unsplash.com/photo-1609101824149-4dbcf69b0c0f?q=80&w=800"],
+    display_order: 15,
+    status: "Published",
+    seo_title: "Mahalakshmi Kanakadhara Pooja | Shri Pradeep Nadig",
+    seo_description: "Invoke Goddess Lakshmi for financial growth and family prosperity.",
+    faq: [
+      { question: "Who should perform Kanakadhara Pooja?", answer: "Recommended for business owners, families, and anyone seeking financial stability." }
+    ]
+  },
+  {
+    id: 16,
+    type: "Pooja",
+    title: "Swayamvara Parvathi Pooja",
+    slug: "swayamvara-parvathi-pooja",
+    short_description: "Powerful Vedic ritual dedicated to Goddess Parvathi for resolving marriage delays and ensuring marital harmony.",
+    full_description: "Swayamvara Parvathi Pooja is a sacred ritual specifically recommended for overcoming obstacles in finding a suitable life partner, eliminating delays in marriage, and strengthening affection between couples.",
+    images: ["https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800"],
+    display_order: 16,
+    status: "Published",
+    seo_title: "Swayamvara Parvathi Pooja | Shri Pradeep Nadig",
+    seo_description: "Perform Swayamvara Parvathi Pooja to remove marriage delays and foster marital peace.",
+    faq: [
+      { question: "Can this Pooja be performed on behalf of someone?", answer: "Yes, parents or close relatives can perform the Sankalpa in the person's name." }
+    ]
+  },
+  {
+    id: 17,
+    type: "Pooja",
+    title: "Sri Saraswati Vidya Pooja",
+    slug: "saraswati-pooja",
+    short_description: "Invoke Goddess Saraswati for academic excellence, wisdom, memory power, and creative mastery.",
+    full_description: "Sri Saraswati Vidya Pooja is performed for students, scholars, artists, and educators to enhance intellect, concentration, public speaking abilities, and success in studies and competitive examinations.",
+    images: ["https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=800"],
+    display_order: 17,
+    status: "Published",
+    seo_title: "Sri Saraswati Vidya Pooja | Shri Pradeep Nadig",
+    seo_description: "Seek Goddess Saraswati's divine blessings for wisdom, memory power, and academic success.",
+    faq: [
+      { question: "When is Saraswati Pooja recommended?", answer: "Before academic exams, initiation of learning (Vidyarambha), or on Vasant Panchami/Navaratri." }
+    ]
+  },
+  {
+    id: 18,
+    type: "Pooja",
+    title: "Sundarakanda Parayana & Pooja",
+    slug: "sundarakanda-parayana-pooja",
+    short_description: "Sacred chanting of Ramayana's Sundarakanda chapter for courage, victory, and Lord Hanuman's protection.",
+    full_description: "Sundarakanda Parayana & Pooja invokes Lord Hanuman and Sri Rama to grant immense courage, mental fortitude, resolution of complex problems, and protection from negative energies.",
+    images: ["https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=800"],
+    display_order: 18,
+    status: "Published",
+    seo_title: "Sundarakanda Parayana & Pooja | Shri Pradeep Nadig",
+    seo_description: "Experience the strength of Sundarakanda Parayana guided by Shri Pradeep Nadig.",
+    faq: [
+      { question: "What are the benefits?", answer: "Promotes inner strength, removes fear, and grants success in challenging endeavors." }
+    ]
+  },
+  {
+    id: 19,
+    type: "Pooja",
+    title: "Sri Sudarshana Pooja",
+    slug: "sudarshana-pooja",
+    short_description: "Dedicated to Lord Sudarshana (Vishnu's Chakra) for protection against enemies, ill-health, and evil influences.",
+    full_description: "Sri Sudarshana Pooja invokes Lord Sudarshana to eliminate negative vibrations, black eye (Drishti dosha), health ailments, and grant immediate divine protection.",
+    images: ["https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800"],
+    display_order: 19,
+    status: "Published",
+    seo_title: "Sri Sudarshana Pooja | Shri Pradeep Nadig",
+    seo_description: "Divine protection and relief from negative influences through Sri Sudarshana Pooja.",
+    faq: [
+      { question: "Duration?", answer: "Approximately 2 to 2.5 hours." }
+    ]
+  },
+  {
+    id: 20,
+    type: "Pooja",
+    title: "Durga Saptashati Parayana & Pooja",
+    slug: "durga-saptashati-pooja",
+    short_description: "Recitation of 700 sacred mantras of Devi Mahatmyam for victory over hardships and supreme protection.",
+    full_description: "Durga Saptashati Parayana & Pooja is an auspicious ritual worshipping the Divine Mother in her various manifestations, bringing destruction of negativity, supreme peace, and material and spiritual well-being.",
+    images: ["https://images.unsplash.com/photo-1609101824149-4dbcf69b0c0f?q=80&w=800"],
+    display_order: 20,
+    status: "Published",
+    seo_title: "Durga Saptashati Parayana & Pooja | Shri Pradeep Nadig",
+    seo_description: "Sacred Durga Saptashati Parayana for divine grace, victory, and protection.",
+    faq: [
+      { question: "Duration?", answer: "Usually 3 to 4 hours." }
+    ]
   }
 ];
 

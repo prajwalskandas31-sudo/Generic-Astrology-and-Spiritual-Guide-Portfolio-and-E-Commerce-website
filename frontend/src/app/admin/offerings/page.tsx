@@ -14,7 +14,7 @@ export default function AdminOfferingsPage() {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
 
   // Form fields
-  const [type, setType] = useState<"Service" | "Consultation">("Service");
+  const [type, setType] = useState<"Service" | "Consultation" | "Pooja">("Service");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [shortDesc, setShortDesc] = useState("");
@@ -154,6 +154,7 @@ export default function AdminOfferingsPage() {
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm bg-white"
               >
                 <option value="Service">Service (Ritual / Homa)</option>
+                <option value="Pooja">Pooja (Sacred Pooja / Parayana)</option>
                 <option value="Consultation">Consultation (Astrology)</option>
               </select>
             </div>
