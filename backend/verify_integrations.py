@@ -1,4 +1,5 @@
 import asyncio
+import time
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 
@@ -7,6 +8,9 @@ async def test_whatsapp_workflow():
     print("TESTING WHATSAPP WEBHOOK & CALENDAR INTEGRATION")
     print("==================================================")
     
+    test_mobile = f"9199{int(time.time())}"[-10:]
+    test_mobile = f"91{test_mobile}"
+
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         headers = {"Authorization": "Bearer mock-admin-token"}
@@ -15,7 +19,7 @@ async def test_whatsapp_workflow():
         enquiry_payload = {
             "enquiry_type": "Consultation",
             "name": "Integration Test Visitor",
-            "mobile": "919999888877",
+            "mobile": test_mobile,
             "email": "testvisitor@example.com",
             "city": "Bengaluru",
             "category": "Vedic Astrology Consultation",
@@ -31,7 +35,7 @@ async def test_whatsapp_workflow():
         print("\n--- Testing Keyword: 'Confirm' ---")
         webhook_payload_confirm = {
             "message": "Confirm",
-            "sender": "919880012345",
+            "sender": test_mobile,
             "enquiry_id": enquiry_id
         }
         res = await client.post("/api/v1/webhooks/whatsapp", json=webhook_payload_confirm)
@@ -52,7 +56,7 @@ async def test_whatsapp_workflow():
         print("\n--- Testing Keyword: 'Contact Manually' ---")
         webhook_payload_contact = {
             "message": "Contact Manually",
-            "sender": "919880012345",
+            "sender": test_mobile,
             "enquiry_id": enquiry_id
         }
         res = await client.post("/api/v1/webhooks/whatsapp", json=webhook_payload_contact)
@@ -63,7 +67,7 @@ async def test_whatsapp_workflow():
         print("\n--- Testing Keyword: 'Reject' ---")
         webhook_payload_reject = {
             "message": "Reject",
-            "sender": "919880012345",
+            "sender": test_mobile,
             "enquiry_id": enquiry_id
         }
         res = await client.post("/api/v1/webhooks/whatsapp", json=webhook_payload_reject)
