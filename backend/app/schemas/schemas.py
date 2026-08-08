@@ -194,6 +194,7 @@ class EnquiryCreate(BaseModel):
 
 class EnquiryResponse(EnquiryCreate):
     id: int
+    request_id: Optional[str] = None
     status: str
     created_at: datetime.datetime
     updated_at: datetime.datetime
@@ -216,6 +217,7 @@ class WorkshopRegisterRequest(BaseModel):
 
 class WorkshopRegisterResponse(BaseModel):
     registration_id: int
+    request_id: Optional[str] = None
     razorpay_order_id: str
     amount: float
     currency: str = "INR"
@@ -247,6 +249,86 @@ class WorkshopRegistrationResponse(BaseModel):
     created_at: datetime.datetime
     model_config = ConfigDict(from_attributes=True)
 
+# --- Customer & Request Schemas ---
+class CustomerResponse(BaseModel):
+    id: int
+    customer_id: Optional[str] = None
+    name: str
+    phone: str
+    email: Optional[str] = None
+    preferred_language: str = "English"
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class MessageLogResponse(BaseModel):
+    id: int
+    message_id: Optional[str] = None
+    request_id: Optional[int] = None
+    customer_id: int
+    direction: str
+    channel: str
+    message_type: str
+    message_content: str
+    action_id: Optional[str] = None
+    timestamp: datetime.datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class RequestCreate(BaseModel):
+    request_type: str  # Service | Consultation | Workshop | Class Enquiry
+    name: str
+    phone: str
+    email: Optional[str] = None
+    offering_id: Optional[int] = None
+    workshop_id: Optional[int] = None
+    batch_id: Optional[int] = None
+    service_name: Optional[str] = None
+    workshop_name: Optional[str] = None
+    preferred_date: Optional[str] = None
+    preferred_time: Optional[str] = None
+    language: Optional[str] = "English"
+    notes: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    pin_code: Optional[str] = None
+
+class RequestResponse(BaseModel):
+    id: int
+    request_id: str
+    customer_id: int
+    request_type: str
+    offering_id: Optional[int] = None
+    workshop_id: Optional[int] = None
+    batch_id: Optional[int] = None
+    service_name: Optional[str] = None
+    workshop_name: Optional[str] = None
+    preferred_date: Optional[str] = None
+    preferred_time: Optional[str] = None
+    selected_date: Optional[str] = None
+    selected_time: Optional[str] = None
+    language: Optional[str] = None
+    notes: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    pin_code: Optional[str] = None
+    amount: float = 0.0
+    payment_status: str
+    status: str
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    completed_at: Optional[datetime.datetime] = None
+    customer: Optional[CustomerResponse] = None
+    message_logs: List[MessageLogResponse] = []
+    model_config = ConfigDict(from_attributes=True)
+
+class RequestActionRequest(BaseModel):
+    action: str  # ACCEPT | CHANGE_TIME | REJECT | MARK_COMPLETED | ARCHIVE | SELECT_TIME
+    selected_date: Optional[str] = None
+    selected_time: Optional[str] = None
+    reason: Optional[str] = None
+
 # --- Settings Schema ---
 class SettingUpdate(BaseModel):
     value: Any
@@ -262,3 +344,4 @@ class DashboardStats(BaseModel):
     recent_enquiries: List[EnquiryResponse]
     upcoming_workshops: List[WorkshopResponse]
     recent_registrations: List[WorkshopRegistrationResponse]
+

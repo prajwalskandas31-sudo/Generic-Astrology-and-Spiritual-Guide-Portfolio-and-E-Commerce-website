@@ -1,192 +1,502 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Enquiry, WorkshopRegistration } from "@/types";
+import { RequestThread, MessageLog } from "@/types";
 import { fetchAPI } from "@/lib/api-client";
-import { MessageSquare, CreditCard, Check, Loader2, Filter } from "lucide-react";
+import {
+  MessageSquare,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Archive,
+  Check,
+  Search,
+  Loader2,
+  Calendar,
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  FileText,
+  CreditCard,
+  History,
+  X,
+  Send,
+  AlertCircle
+} from "lucide-react";
 
-export default function AdminEnquiriesPage() {
-  const [activeTab, setActiveTab] = useState<"enquiries" | "registrations">("enquiries");
-  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
-  const [registrations, setRegistrations] = useState<WorkshopRegistration[]>([]);
+export default function AdminRequestsPage() {
+  const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
+  const [requests, setRequests] = useState<RequestThread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [selectedLogsRequest, setSelectedLogsRequest] = useState<RequestThread | null>(null);
+  const [timePickerRequest, setTimePickerRequest] = useState<RequestThread | null>(null);
+  const [selectedTimeInput, setSelectedTimeInput] = useState("10:00 AM");
+  const [isPerformingAction, setIsPerformingAction] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    loadRequests();
+  }, [activeTab]);
 
-  const loadData = async () => {
+  const loadRequests = async () => {
     setIsLoading(true);
     try {
-      const enqData = await fetchAPI<Enquiry[]>("/enquiries", {
+      const data = await fetchAPI<RequestThread[]>(`/requests?tab=${activeTab}`, {
         headers: { Authorization: "Bearer mock-admin-token" },
       });
-      setEnquiries(enqData);
-
-      const stats = await fetchAPI<any>("/admin/stats", {
-        headers: { Authorization: "Bearer mock-admin-token" },
-      });
-      if (stats.recent_registrations) {
-        setRegistrations(stats.recent_registrations);
-      }
-    } catch (_) {
+      setRequests(data);
+    } catch (err: any) {
+      console.error("Failed to load request threads:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUpdateStatus = async (id: number, newStatus: string) => {
+  const handleAction = async (requestId: string, actionName: string, extraPayload: any = {}) => {
+    setIsPerformingAction(true);
     try {
-      await fetchAPI(`/enquiries/${id}/status`, {
-        method: "PUT",
+      await fetchAPI(`/requests/${requestId}/action`, {
+        method: "POST",
         headers: { Authorization: "Bearer mock-admin-token" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ action: actionName, ...extraPayload }),
       });
-      loadData();
+      setTimePickerRequest(null);
+      await loadRequests();
     } catch (err: any) {
-      alert("Error updating status: " + err.message);
+      alert(`Action error: ${err.message || "Failed to execute action"}`);
+    } finally {
+      setIsPerformingAction(false);
+    }
+  };
+
+  const filteredRequests = requests.filter((req) => {
+    const matchesSearch =
+      req.request_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (req.customer?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (req.customer?.phone || "").includes(searchTerm) ||
+      (req.service_name || req.workshop_name || "").toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType =
+      typeFilter === "all"
+        ? true
+        : req.request_type.toLowerCase() === typeFilter.toLowerCase();
+
+    return matchesSearch && matchesType;
+  });
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "NEW":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">🟡 NEW</span>;
+      case "PENDING":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-200">🟠 PENDING</span>;
+      case "CONFIRMED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🟢 CONFIRMED</span>;
+      case "RESCHEDULE_REQUESTED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">🔵 RESCHEDULE</span>;
+      case "REJECTED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">🔴 REJECTED</span>;
+      case "CANCELLED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">⚪ CANCELLED</span>;
+      case "COMPLETED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">✓ COMPLETED</span>;
+      case "ARCHIVED":
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700 border border-gray-300">📦 ARCHIVED</span>;
+      default:
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800">{status}</span>;
     }
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div>
         <h1 className="text-3xl font-serif font-bold text-slate-900 flex items-center gap-2">
-          <MessageSquare className="w-7 h-7 text-amber-700" />
-          <span>Manage Enquiries &amp; Registrations</span>
+          <MessageSquare className="w-8 h-8 text-amber-700" />
+          <span>Request Threads &amp; WhatsApp Conversations</span>
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Inspect incoming visitor enquiries and workshop payment registrations. Update enquiry status or initiate WhatsApp responses.
+          Every customer request appears as a separate thread. Click simple action buttons to confirm, reschedule, or complete requests.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-slate-200">
-        <button
-          onClick={() => setActiveTab("enquiries")}
-          className={`px-6 py-3 font-semibold text-xs transition-all border-b-2 ${
-            activeTab === "enquiries"
-              ? "border-amber-700 text-amber-900"
-              : "border-transparent text-slate-500 hover:text-slate-900"
-          }`}
-        >
-          Visitor Enquiries ({enquiries.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("registrations")}
-          className={`px-6 py-3 font-semibold text-xs transition-all border-b-2 ${
-            activeTab === "registrations"
-              ? "border-amber-700 text-amber-900"
-              : "border-transparent text-slate-500 hover:text-slate-900"
-          }`}
-        >
-          Workshop Registrations ({registrations.length})
-        </button>
+      {/* Controls & Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        {/* Tabs */}
+        <div className="flex bg-slate-100 p-1 rounded-xl w-fit">
+          <button
+            onClick={() => setActiveTab("active")}
+            className={`px-5 py-2 font-semibold text-xs rounded-lg transition-all ${
+              activeTab === "active"
+                ? "bg-white text-amber-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            ACTIVE REQUESTS
+          </button>
+          <button
+            onClick={() => setActiveTab("archived")}
+            className={`px-5 py-2 font-semibold text-xs rounded-lg transition-all ${
+              activeTab === "archived"
+                ? "bg-white text-amber-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            COMPLETED / ARCHIVED
+          </button>
+        </div>
+
+        {/* Search & Type Filter */}
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              placeholder="Search Request ID, Name, Phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 w-64"
+            />
+          </div>
+
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500"
+          >
+            <option value="all">All Request Types</option>
+            <option value="consultation">Consultations</option>
+            <option value="service">Services</option>
+            <option value="workshop">Workshops</option>
+            <option value="class enquiry">Classes</option>
+          </select>
+        </div>
       </div>
 
+      {/* Main Content List */}
       {isLoading ? (
-        <div className="py-16 text-center text-slate-500 flex items-center justify-center gap-2">
-          <Loader2 className="w-5 h-5 animate-spin text-amber-700" />
-          <span>Loading records...</span>
+        <div className="py-20 text-center text-slate-500 flex items-center justify-center gap-2">
+          <Loader2 className="w-6 h-6 animate-spin text-amber-700" />
+          <span>Loading request threads...</span>
         </div>
-      ) : activeTab === "enquiries" ? (
-        /* ENQUIRIES TABLE */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
-                <th className="p-4">ID</th>
-                <th className="p-4">Name &amp; Mobile</th>
-                <th className="p-4">Type</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">City</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Update Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {enquiries.map((enq) => (
-                <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="p-4 font-mono font-bold">#{enq.id}</td>
-                  <td className="p-4">
-                    <div className="font-bold text-slate-900">{enq.name}</div>
-                    <div className="text-slate-500">{enq.mobile}</div>
-                  </td>
-                  <td className="p-4 font-semibold text-amber-800">{enq.enquiry_type}</td>
-                  <td className="p-4 font-medium text-slate-800">{enq.category}</td>
-                  <td className="p-4 text-slate-600">{enq.city || "N/A"}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                        enq.status === "Confirmed"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : enq.status === "Rejected"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-amber-100 text-amber-900"
-                      }`}
-                    >
-                      {enq.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <select
-                      value={enq.status}
-                      onChange={(e) => handleUpdateStatus(enq.id, e.target.value)}
-                      className="px-2.5 py-1 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium"
-                    >
-                      <option value="New">New</option>
-                      <option value="Contacted">Contacted</option>
-                      <option value="Confirmed">Confirmed</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Rejected">Rejected</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      ) : filteredRequests.length === 0 ? (
+        <div className="py-16 text-center bg-white rounded-2xl border border-slate-200 p-8 space-y-3">
+          <MessageSquare className="w-12 h-12 text-slate-300 mx-auto" />
+          <h3 className="text-lg font-bold text-slate-800">No requests found</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            {activeTab === "active"
+              ? "There are no active pending requests. New customer form submissions will automatically generate threads here."
+              : "No completed or archived request records found."}
+          </p>
         </div>
       ) : (
-        /* REGISTRATIONS TABLE */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
-                <th className="p-4">Reg ID</th>
-                <th className="p-4">Name &amp; Address</th>
-                <th className="p-4">Mobile &amp; City</th>
-                <th className="p-4">Amount</th>
-                <th className="p-4">Payment Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {registrations.map((reg) => (
-                <tr key={reg.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="p-4 font-mono font-bold">#{reg.id}</td>
-                  <td className="p-4">
-                    <div className="font-bold text-slate-900">{reg.name}</div>
-                    <div className="text-slate-500 text-[11px] max-w-xs truncate">{reg.address}</div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-semibold text-slate-800">{reg.mobile}</div>
-                    <div className="text-slate-500">{reg.city}, {reg.state} - {reg.pin_code}</div>
-                  </td>
-                  <td className="p-4 font-bold text-amber-900">₹{reg.amount}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                        reg.payment_status === "Paid"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-amber-100 text-amber-900"
-                      }`}
-                    >
-                      {reg.payment_status}
+        <div className="space-y-4">
+          {filteredRequests.map((req) => (
+            <div
+              key={req.id}
+              className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden hover:shadow-md transition-shadow"
+            >
+              {/* Card Header */}
+              <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono font-bold text-amber-900 text-sm bg-amber-100/70 px-2.5 py-1 rounded-lg">
+                    {req.request_id}
+                  </span>
+                  <h3 className="font-serif font-bold text-slate-900 text-base">
+                    {req.request_type} &mdash; {req.customer?.name || "Customer"}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  {getStatusBadge(req.status)}
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    {new Date(req.created_at).toLocaleDateString()} {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card Content Grid */}
+              <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600">
+                {/* Column 1: Customer Information */}
+                <div className="space-y-2 border-b md:border-b-0 md:border-r border-slate-100 pb-4 md:pb-0 md:pr-4">
+                  <span className="font-bold text-slate-900 uppercase tracking-wider text-[10px] text-slate-400 block mb-2">
+                    Customer Information
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <User className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span className="font-semibold text-slate-800">{req.customer?.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span className="font-mono text-slate-700">+{req.customer?.phone}</span>
+                  </div>
+                  {req.customer?.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                      <span className="truncate text-slate-600">{req.customer.email}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-slate-500">
+                    <span className="font-medium">Preferred Lang:</span>
+                    <span className="font-semibold text-slate-700">{req.customer?.preferred_language || req.language || "English"}</span>
+                  </div>
+                </div>
+
+                {/* Column 2: Request Information */}
+                <div className="space-y-2 border-b md:border-b-0 md:border-r border-slate-100 pb-4 md:pb-0 md:pr-4">
+                  <span className="font-bold text-slate-900 uppercase tracking-wider text-[10px] text-slate-400 block mb-2">
+                    Request Information
+                  </span>
+                  <div>
+                    <span className="text-slate-400">Service/Item: </span>
+                    <strong className="text-slate-900 font-semibold">{req.service_name || req.workshop_name || req.request_type}</strong>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span>Preferred Date: </span>
+                    <strong className="text-slate-800">{req.preferred_date || "N/A"}</strong>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span>Preferred Time: </span>
+                    <strong className="text-slate-800">{req.preferred_time || "N/A"}</strong>
+                  </div>
+                  {req.selected_time && (
+                    <div className="p-1.5 bg-emerald-50 rounded-lg text-emerald-800 font-semibold">
+                      Selected Slot: {req.selected_date || req.preferred_date} at {req.selected_time}
+                    </div>
+                  )}
+                  {req.city && (
+                    <div className="flex items-center gap-1.5 text-slate-500">
+                      <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                      <span>{req.city}{req.state ? `, ${req.state}` : ""}</span>
+                    </div>
+                  )}
+                  {req.notes && (
+                    <div className="mt-1 text-slate-500 italic bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      &quot;{req.notes}&quot;
+                    </div>
+                  )}
+                </div>
+
+                {/* Column 3: Payment & Activity Summary */}
+                <div className="space-y-3 flex flex-col justify-between">
+                  <div>
+                    <span className="font-bold text-slate-900 uppercase tracking-wider text-[10px] text-slate-400 block mb-2">
+                      Payment &amp; Logs
                     </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    {req.amount > 0 ? (
+                      <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 space-y-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-amber-900 font-bold">Amount: ₹{req.amount}</span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${req.payment_status === "Paid" ? "bg-emerald-200 text-emerald-900" : "bg-amber-200 text-amber-900"}`}>
+                            {req.payment_status}
+                          </span>
+                        </div>
+                        {req.razorpay_order_id && (
+                          <div className="text-[10px] text-slate-500 font-mono">
+                            Order: {req.razorpay_order_id}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-slate-400 italic">No payment required</div>
+                    )}
+
+                    <div className="mt-3 text-slate-500 flex items-center gap-1.5">
+                      <History className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{req.message_logs?.length || 0} activity log events</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedLogsRequest(req)}
+                    className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>View Action History Logs</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons Bar */}
+              <div className="bg-slate-50/70 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
+                {req.status !== "CONFIRMED" && req.status !== "COMPLETED" && req.status !== "CANCELLED" && (
+                  <button
+                    onClick={() => handleAction(req.request_id, "ACCEPT")}
+                    disabled={isPerformingAction}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>ACCEPT</span>
+                  </button>
+                )}
+
+                {req.status !== "COMPLETED" && req.status !== "CANCELLED" && (
+                  <button
+                    onClick={() => setTimePickerRequest(req)}
+                    disabled={isPerformingAction}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>CHANGE TIME</span>
+                  </button>
+                )}
+
+                {req.status !== "REJECTED" && req.status !== "CANCELLED" && req.status !== "COMPLETED" && (
+                  <button
+                    onClick={() => handleAction(req.request_id, "REJECT")}
+                    disabled={isPerformingAction}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                    <span>REJECT</span>
+                  </button>
+                )}
+
+                {req.status !== "COMPLETED" && (
+                  <button
+                    onClick={() => handleAction(req.request_id, "MARK_COMPLETED")}
+                    disabled={isPerformingAction}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>MARK COMPLETED</span>
+                  </button>
+                )}
+
+                {req.status !== "ARCHIVED" && (
+                  <button
+                    onClick={() => handleAction(req.request_id, "ARCHIVE")}
+                    disabled={isPerformingAction}
+                    className="px-4 py-2 bg-slate-600 hover:bg-slate-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                  >
+                    <Archive className="w-3.5 h-3.5" />
+                    <span>ARCHIVE</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Change Time Modal */}
+      {timePickerRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-serif font-bold text-lg text-slate-900">
+                Reschedule Request: {timePickerRequest.request_id}
+              </h3>
+              <button onClick={() => setTimePickerRequest(null)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600">
+              Select available time slot to dispatch to customer {timePickerRequest.customer?.name} via WhatsApp:
+            </p>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Time Slot</label>
+                <select
+                  value={selectedTimeInput}
+                  onChange={(e) => setSelectedTimeInput(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="10:00 AM">10:00 AM</option>
+                  <option value="11:00 AM">11:00 AM</option>
+                  <option value="12:00 PM">12:00 PM</option>
+                  <option value="04:00 PM">04:00 PM</option>
+                  <option value="05:00 PM">05:00 PM</option>
+                  <option value="06:00 PM">06:00 PM</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-2">
+                <button
+                  onClick={() => setTimePickerRequest(null)}
+                  className="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleAction(timePickerRequest.request_id, "CHANGE_TIME", { selected_time: selectedTimeInput })}
+                  disabled={isPerformingAction}
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-md"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Send Time Options</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Message History Modal */}
+      {selectedLogsRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-serif font-bold text-lg text-slate-900">
+                  Action &amp; Message History
+                </h3>
+                <span className="font-mono text-xs font-semibold text-amber-800">
+                  {selectedLogsRequest.request_id} &mdash; {selectedLogsRequest.customer?.name}
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedLogsRequest(null)}
+                className="p-1 rounded-full text-slate-400 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto space-y-3 flex-1 pr-2">
+              {(!selectedLogsRequest.message_logs || selectedLogsRequest.message_logs.length === 0) ? (
+                <div className="text-center py-8 text-slate-400 text-xs">No message logs recorded yet.</div>
+              ) : (
+                selectedLogsRequest.message_logs.map((log: MessageLog) => (
+                  <div
+                    key={log.id}
+                    className={`p-3.5 rounded-xl border text-xs space-y-1 ${
+                      log.direction === "OUTBOUND"
+                        ? "bg-amber-50/60 border-amber-200 ml-6"
+                        : "bg-slate-50 border-slate-200 mr-6"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center text-[10px] text-slate-500 font-mono">
+                      <span className="font-bold text-slate-700">
+                        {log.direction} ({log.channel}) &bull; {log.message_type}
+                      </span>
+                      <span>{new Date(log.timestamp).toLocaleString()}</span>
+                    </div>
+                    <p className="whitespace-pre-line text-slate-800 font-sans">{log.message_content}</p>
+                    {log.action_id && (
+                      <div className="text-[9px] text-slate-400 font-mono">
+                        Action ID: {log.action_id}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 text-right">
+              <button
+                onClick={() => setSelectedLogsRequest(null)}
+                className="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white font-semibold rounded-xl text-xs"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

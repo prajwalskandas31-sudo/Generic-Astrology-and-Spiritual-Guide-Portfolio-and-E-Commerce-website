@@ -66,11 +66,13 @@ export default function EnquiryModal({
 
   if (!isOpen) return null;
 
+  const [submittedRequestId, setSubmittedRequestId] = useState<string>("");
+
   const onSubmit = async (data: EnquiryFormData) => {
     setIsSubmitting(true);
     setErrorMessage("");
     try {
-      await submitEnquiry({
+      const res = await submitEnquiry({
         enquiry_type: data.enquiry_type,
         name: data.name,
         mobile: data.mobile,
@@ -79,6 +81,9 @@ export default function EnquiryModal({
         category: data.category,
         additional_notes: data.additional_notes || undefined,
       });
+      if (res && res.request_id) {
+        setSubmittedRequestId(res.request_id);
+      }
       setIsSuccess(true);
       reset();
     } catch (err: any) {
@@ -106,8 +111,13 @@ export default function EnquiryModal({
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h3 className="text-2xl font-serif font-bold text-slate-900">Enquiry Received!</h3>
+            {submittedRequestId && (
+              <div className="inline-block px-3 py-1 bg-amber-100 text-amber-900 font-mono font-bold text-xs rounded-lg">
+                Request ID: {submittedRequestId}
+              </div>
+            )}
             <p className="text-slate-600 text-sm leading-relaxed max-w-sm mx-auto">
-              Thank you! Your enquiry has been submitted. Shri Pradeep or his team will connect with you shortly on WhatsApp.
+              Thank you! Your request has been submitted. Shri Pradeep or his team will connect with you shortly on WhatsApp.
             </p>
             <button
               onClick={() => {
@@ -120,6 +130,7 @@ export default function EnquiryModal({
             </button>
           </div>
         ) : (
+
           <div className="space-y-6">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-900 text-xs font-semibold rounded-full uppercase">

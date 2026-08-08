@@ -82,6 +82,8 @@ export default function WorkshopRegistrationModal({
     },
   });
 
+  const [confirmedRequestId, setConfirmedRequestId] = useState<string>("");
+
   const watchBatchId = watch("batch_id") || defaultBatch;
 
   if (!isOpen) return null;
@@ -103,6 +105,10 @@ export default function WorkshopRegistrationModal({
         pin_code: data.pin_code,
         additional_notes: data.additional_notes || undefined,
       });
+
+      if (regResult && (regResult as any).request_id) {
+        setConfirmedRequestId((regResult as any).request_id);
+      }
 
       // 2. Load Razorpay SDK Script
       const scriptLoaded = await loadRazorpayScript();
@@ -189,8 +195,9 @@ export default function WorkshopRegistrationModal({
             <p className="text-slate-600 text-sm leading-relaxed max-w-md mx-auto">
               Your workshop seat for <strong>{workshop.title}</strong> has been secured! A confirmation details message and calendar invite has been sent.
             </p>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 font-mono">
-              Registration ID: #{confirmedRegistrationId} | Amount Paid: ₹{workshop.price}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 font-mono space-y-1">
+              {confirmedRequestId && <div className="font-bold text-amber-900">Request ID: {confirmedRequestId}</div>}
+              <div>Registration ID: #{confirmedRegistrationId} | Amount Paid: ₹{workshop.price}</div>
             </div>
             <button
               onClick={onClose}

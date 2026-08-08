@@ -205,3 +205,74 @@ class Setting(Base):
     value = Column(JSON, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+
+class Customer(Base):
+    __tablename__ = "customers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    customer_id = Column(String(50), unique=True, index=True, nullable=True)
+    name = Column(String(255), nullable=False)
+    phone = Column(String(50), index=True, nullable=False)
+    email = Column(String(255), nullable=True)
+    preferred_language = Column(String(50), default="English")
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    requests = relationship("Request", back_populates="customer", cascade="all, delete-orphan")
+    message_logs = relationship("MessageLog", back_populates="customer", cascade="all, delete-orphan")
+
+
+class Request(Base):
+    __tablename__ = "requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    request_id = Column(String(50), unique=True, index=True, nullable=False)
+    customer_id = Column(Integer, ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    request_type = Column(String(50), nullable=False, index=True)  # Service | Consultation | Workshop | Class Enquiry
+    offering_id = Column(Integer, ForeignKey("offerings.id", ondelete="SET NULL"), nullable=True)
+    workshop_id = Column(Integer, ForeignKey("workshops.id", ondelete="SET NULL"), nullable=True)
+    batch_id = Column(Integer, ForeignKey("workshop_batches.id", ondelete="SET NULL"), nullable=True)
+    service_name = Column(String(255), nullable=True)
+    workshop_name = Column(String(255), nullable=True)
+    preferred_date = Column(String(100), nullable=True)
+    preferred_time = Column(String(100), nullable=True)
+    selected_date = Column(String(100), nullable=True)
+    selected_time = Column(String(100), nullable=True)
+    language = Column(String(50), default="English")
+    notes = Column(Text, nullable=True)
+    address = Column(Text, nullable=True)
+    city = Column(String(100), nullable=True)
+    state = Column(String(100), nullable=True)
+    pin_code = Column(String(20), nullable=True)
+    amount = Column(Float, default=0.0)
+    payment_status = Column(String(50), default="Pending")  # Pending | Paid | Failed
+    razorpay_order_id = Column(String(255), nullable=True)
+    razorpay_payment_id = Column(String(255), nullable=True)
+    razorpay_signature = Column(String(500), nullable=True)
+    status = Column(String(50), default="NEW", index=True)  # NEW | PENDING | CONFIRMED | RESCHEDULE_REQUESTED | CANCELLED | REJECTED | COMPLETED | ARCHIVED
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+
+    customer = relationship("Customer", back_populates="requests")
+    message_logs = relationship("MessageLog", back_populates="request", cascade="all, delete-orphan")
+
+
+class MessageLog(Base):
+    __tablename__ = "message_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(String(255), nullable=True, index=True)
+    request_id = Column(Integer, ForeignKey("requests.id", ondelete="CASCADE"), nullable=True)
+    customer_id = Column(Integer, ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    direction = Column(String(20), nullable=False)  # INBOUND | OUTBOUND
+    channel = Column(String(20), default="WHATSAPP")  # WHATSAPP | ADMIN | EMAIL
+    message_type = Column(String(50), nullable=False)  # REQUEST_CREATED | REQUEST_CONFIRMATION | ADMIN_ACCEPTED | ADMIN_REJECTED | TIME_SELECTED | RESCHEDULE_REQUESTED | CUSTOMER_CONFIRMED | FREE_TEXT_MESSAGE | DISAMBIGUATION
+    message_content = Column(Text, nullable=False)
+    action_id = Column(String(100), nullable=True)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+
+    customer = relationship("Customer", back_populates="message_logs")
+    request = relationship("Request", back_populates="message_logs")
+

@@ -10,6 +10,8 @@ from app.core.config import settings
 
 router = APIRouter()
 
+from app.models.models import Request as RequestModel, MessageLog
+
 @router.post("/verify", response_model=MessageResponse)
 async def verify_payment(
     data: PaymentVerifyRequest,
@@ -47,5 +49,32 @@ async def verify_payment(
             if batch.remaining_seats == 0:
                 batch.status = "Full"
     
+    # Update associated Request thread
+    req_res = await db.execute(
+        select(RequestModel).where(
+            (RequestModel.razorpay_order_id == data.razorpay_order_id) |
+            (RequestModel.workshop_id == registration.workshop_id)
+        ).order_by(RequestModel.id.desc())
+    )
+    req_obj = req_res.scalars().first()
+
+    if req_obj:
+        req_obj.payment_status = "Paid"
+        req_obj.razorpay_payment_id = data.razorpay_payment_id
+        req_obj.razorpay_signature = data.razorpay_signature
+        req_obj.status = "CONFIRMED"
+
+        pay_log = MessageLog(
+            request_id=req_obj.id,
+            customer_id=req_obj.customer_id,
+            direction="INBOUND",
+            channel="ADMIN",
+            message_type="PAYMENT_CONFIRMED",
+            message_content=f"Payment of ₹{registration.amount} verified for {req_obj.request_id}. Payment ID: {data.razorpay_payment_id}",
+            action_id=f"req:{req_obj.request_id}:PAYMENT"
+        )
+        db.add(pay_log)
+
     await db.commit()
     return MessageResponse(message="Payment verification successful. Workshop registration confirmed!")
+

@@ -45,6 +45,8 @@ async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": f"Workshop Detail Error: {str(e)}", "error_type": type(e).__name__})
 
+from app.services.requests_service import create_request
+
 @router.post("/{id}/register", response_model=WorkshopRegisterResponse)
 async def register_for_workshop(
     id: int,
@@ -117,15 +119,37 @@ async def register_for_workshop(
     db.add(registration)
     await db.commit()
     await db.refresh(registration)
+
+    # Automatically create Workshop Request thread
+    req_obj = await create_request(
+        request_type="Workshop",
+        name=data.name,
+        phone=data.mobile,
+        email=data.email,
+        workshop_id=id,
+        batch_id=batch.id if batch else None,
+        workshop_name=workshop.title,
+        address=data.address,
+        city=data.city,
+        state=data.state,
+        pin_code=data.pin_code,
+        notes=data.additional_notes,
+        amount=workshop.price,
+        payment_status="Pending",
+        razorpay_order_id=order_id,
+        db=db
+    )
     
     return WorkshopRegisterResponse(
         registration_id=registration.id,
+        request_id=req_obj.request_id,
         razorpay_order_id=order_id,
         amount=workshop.price,
         currency="INR",
         key_id=settings.RAZORPAY_KEY_ID,
         is_real_order=is_real_order
     )
+
 
 @router.post("", response_model=WorkshopResponse, status_code=status.HTTP_201_CREATED)
 async def create_workshop(

@@ -9,6 +9,8 @@ from app.core.security import verify_supabase_token
 
 router = APIRouter()
 
+from app.services.requests_service import create_request
+
 @router.post("", response_model=EnquiryResponse, status_code=status.HTTP_201_CREATED)
 async def create_enquiry(
     data: EnquiryCreate,
@@ -18,7 +20,23 @@ async def create_enquiry(
     db.add(enquiry)
     await db.commit()
     await db.refresh(enquiry)
-    return enquiry
+
+    # Automatically create request thread & Customer record
+    req_obj = await create_request(
+        request_type=data.enquiry_type,
+        name=data.name,
+        phone=data.mobile,
+        email=data.email,
+        service_name=data.category,
+        notes=data.additional_notes,
+        city=data.city,
+        db=db
+    )
+
+    enq_resp = EnquiryResponse.model_validate(enquiry)
+    enq_resp.request_id = req_obj.request_id
+    return enq_resp
+
 
 @router.get("", response_model=List[EnquiryResponse])
 async def list_enquiries(

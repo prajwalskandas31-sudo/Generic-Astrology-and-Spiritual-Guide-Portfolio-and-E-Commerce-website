@@ -111,6 +111,7 @@ export interface FAQItem {
 
 export interface Enquiry {
   id: number;
+  request_id?: string;
   enquiry_type: "Service" | "Consultation" | "Class";
   name: string;
   mobile: string;
@@ -129,6 +130,7 @@ export interface Enquiry {
 
 export interface WorkshopRegistration {
   id: number;
+  request_id?: string;
   workshop_id: number;
   batch_id?: number;
   name: string;
@@ -143,6 +145,62 @@ export interface WorkshopRegistration {
   razorpay_order_id?: string;
   razorpay_payment_id?: string;
   created_at?: string;
+}
+
+export interface Customer {
+  id: number;
+  customer_id?: string;
+  name: string;
+  phone: string;
+  email?: string;
+  preferred_language?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface MessageLog {
+  id: number;
+  message_id?: string;
+  request_id?: number;
+  customer_id: number;
+  direction: "INBOUND" | "OUTBOUND";
+  channel: "WHATSAPP" | "ADMIN" | "EMAIL";
+  message_type: string;
+  message_content: string;
+  action_id?: string;
+  timestamp: string;
+}
+
+export interface RequestThread {
+  id: number;
+  request_id: string;
+  customer_id: number;
+  request_type: string;
+  offering_id?: number;
+  workshop_id?: number;
+  batch_id?: number;
+  service_name?: string;
+  workshop_name?: string;
+  preferred_date?: string;
+  preferred_time?: string;
+  selected_date?: string;
+  selected_time?: string;
+  language?: string;
+  notes?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pin_code?: string;
+  amount: number;
+  payment_status: string;
+  razorpay_order_id?: string;
+  razorpay_payment_id?: string;
+  status: "NEW" | "PENDING" | "CONFIRMED" | "RESCHEDULE_REQUESTED" | "CANCELLED" | "REJECTED" | "COMPLETED" | "ARCHIVED";
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+  customer?: Customer;
+  message_logs?: MessageLog[];
 }
 
 export interface DashboardStats {

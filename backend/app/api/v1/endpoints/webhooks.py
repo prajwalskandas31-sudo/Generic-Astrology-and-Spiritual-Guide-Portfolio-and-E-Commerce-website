@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+import datetime
+
 from app.db.session import get_db
-from app.models.models import Enquiry
+from app.models.models import Customer, Request as RequestModel, MessageLog
 from app.schemas.schemas import MessageResponse
 from app.core.config import settings
-from app.services.whatsapp import send_whatsapp_message
-from app.services.calendar_service import create_google_calendar_event
+from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list
+from app.services.requests_service import execute_request_action
 
 router = APIRouter()
 
@@ -19,17 +23,20 @@ async def verify_whatsapp_webhook(
         return int(hub_challenge) if hub_challenge and hub_challenge.isdigit() else hub_challenge
     raise HTTPException(status_code=403, detail="Verification token mismatch")
 
+
 @router.post("/whatsapp", response_model=MessageResponse)
-async def process_whatsapp_reply(
+async def process_whatsapp_webhook(
     request: Request,
     db: AsyncSession = Depends(get_db)
 ):
     body = await request.json()
     
-    message_text = ""
+    wa_msg_id = None
     sender = ""
-    enquiry_id = None
+    message_text = ""
+    interactive_action_id = None
     
+    # Parse Meta WhatsApp Cloud API Structure
     if "entry" in body and len(body["entry"]) > 0:
         changes = body["entry"][0].get("changes", [])
         if changes and "value" in changes[0]:
@@ -37,86 +44,162 @@ async def process_whatsapp_reply(
             messages = val.get("messages", [])
             if messages:
                 msg = messages[0]
+                wa_msg_id = msg.get("id")
                 sender = msg.get("from", "")
-                if msg.get("type") == "text":
+                m_type = msg.get("type", "")
+                
+                if m_type == "text":
                     message_text = msg.get("text", {}).get("body", "").strip()
-    elif "message" in body:
+                elif m_type == "interactive":
+                    interactive_obj = msg.get("interactive", {})
+                    i_type = interactive_obj.get("type")
+                    if i_type == "button_reply":
+                        interactive_action_id = interactive_obj.get("button_reply", {}).get("id")
+                        message_text = interactive_obj.get("button_reply", {}).get("title", "")
+                    elif i_type == "list_reply":
+                        interactive_action_id = interactive_obj.get("list_reply", {}).get("id")
+                        message_text = interactive_obj.get("list_reply", {}).get("title", "")
+
+    # Fallback parsing for custom webhook payloads
+    elif "message" in body or "action_id" in body:
         message_text = body.get("message", "").strip()
-        sender = body.get("sender", "")
-        enquiry_id = body.get("enquiry_id")
+        sender = body.get("sender", body.get("from", ""))
+        wa_msg_id = body.get("message_id", body.get("event_id"))
+        interactive_action_id = body.get("action_id", body.get("button_id"))
 
-    if not message_text:
-        return MessageResponse(message="No text message parsed from webhook")
+    clean_sender = sender.replace("+", "").replace(" ", "").replace("-", "").strip()
+    if not clean_sender and not interactive_action_id:
+        return MessageResponse(message="No sender or valid message payload in webhook")
 
-    first_word = message_text.split()[0].capitalize() if message_text else ""
-    action_taken = "Message processed"
+    # DUPLICATE PROTECTION: Check if message_id has already been processed
+    if wa_msg_id:
+        existing_log = await db.execute(
+            select(MessageLog).where(MessageLog.message_id == wa_msg_id)
+        )
+        if existing_log.scalar_one_or_none():
+            return MessageResponse(message=f"Duplicate event '{wa_msg_id}' ignored.")
 
-    enquiry = None
-    if enquiry_id:
-        enquiry = await db.get(Enquiry, enquiry_id)
+    action_taken = "Processed"
 
-    # KEYWORD 1: CONFIRM
-    if first_word == "Confirm":
-        if enquiry:
-            enquiry.status = "Confirmed"
-            await db.commit()
+    # SCENARIO 1: Interactive Button / List Click (Carries req:<request_id>:<action_name>)
+    if interactive_action_id and interactive_action_id.startswith("req:"):
+        parts = interactive_action_id.split(":")
+        if len(parts) >= 3:
+            req_id_str = parts[1]
+            act_name = parts[2]
             
-            # Trigger Google Calendar Event Creation
-            await create_google_calendar_event(
-                summary=f"Vedic {enquiry.enquiry_type}: {enquiry.category} with {enquiry.name}",
-                description=f"Confirmed enquiry #{enquiry.id}. Notes: {enquiry.additional_notes or 'N/A'}",
-                location=f"{enquiry.city or 'Bengaluru'}",
-                start_time="2026-08-10T10:00:00+05:30",
-                end_time="2026-08-10T11:30:00+05:30",
-                attendee_emails=[enquiry.email, "pradeep@vedabrahma.com"]
-            )
-            
-            # Trigger WhatsApp Message to Visitor
+            try:
+                updated_req = await execute_request_action(
+                    request_id_str=req_id_str,
+                    action_name=act_name,
+                    action_payload={"selected_time": message_text if "TIME_" in act_name else None},
+                    db=db,
+                    sender_channel="WHATSAPP"
+                )
+                action_taken = f"Executed interactive action '{act_name}' for Request '{req_id_str}'"
+                return MessageResponse(message=f"Success: {action_taken}")
+            except Exception as e:
+                return MessageResponse(message=f"Action execution error: {str(e)}")
+
+    # SCENARIO 2: Free-text WhatsApp Customer Reply
+    if clean_sender:
+        # Step A: Locate Customer
+        cust_res = await db.execute(select(Customer).where(Customer.phone == clean_sender))
+        customer = cust_res.scalar_one_or_none()
+
+        if not customer:
             await send_whatsapp_message(
-                to_phone=enquiry.mobile,
-                text=f"Hari Om {enquiry.name}! Your request for '{enquiry.category}' has been CONFIRMED by Shri Pradeep Nadig. Calendar invitation has been dispatched."
+                to_phone=clean_sender,
+                text="Hari Om! Thank you for reaching out to Veda Brahma Shri Pradeep Nadig. Please submit a request on our website to begin."
             )
-            action_taken = "Confirmed enquiry, created Calendar event & notified visitor"
+            return MessageResponse(message="Unknown customer, sent greeting.")
+
+        # Step B: Locate active requests for this customer
+        req_res = await db.execute(
+            select(RequestModel)
+            .where(
+                (RequestModel.customer_id == customer.id) &
+                (RequestModel.status.in_(["NEW", "PENDING", "CONFIRMED", "RESCHEDULE_REQUESTED"]))
+            )
+            .order_by(RequestModel.id.desc())
+        )
+        active_requests = req_res.scalars().all()
+
+        if len(active_requests) == 0:
+            # No active requests
+            await send_whatsapp_message(
+                to_phone=clean_sender,
+                text=f"Hari Om {customer.name}! We have received your message. You currently have no active requests. To book a consultation or workshop, please visit our website."
+            )
+            action_taken = "No active requests found, sent guidance message."
+
+        elif len(active_requests) == 1:
+            # Exactly 1 active request -> Associate message directly
+            target_req = active_requests[0]
+            
+            first_word = message_text.split()[0].capitalize() if message_text else ""
+            if first_word in ["Confirm", "Accepted"]:
+                await execute_request_action(target_req.request_id, "CONFIRM_REQUEST", {}, db, sender_channel="WHATSAPP")
+                action_taken = f"Confirmed active request {target_req.request_id}"
+            elif first_word in ["Reject", "Cancel", "Declined"]:
+                await execute_request_action(target_req.request_id, "CANCEL_REQUEST", {}, db, sender_channel="WHATSAPP")
+                action_taken = f"Cancelled active request {target_req.request_id}"
+            else:
+                # Log inbound message against request
+                log = MessageLog(
+                    message_id=wa_msg_id,
+                    request_id=target_req.id,
+                    customer_id=customer.id,
+                    direction="INBOUND",
+                    channel="WHATSAPP",
+                    message_type="FREE_TEXT_MESSAGE",
+                    message_content=message_text,
+                    action_id=f"req:{target_req.request_id}:TEXT"
+                )
+                db.add(log)
+                await db.commit()
+                
+                await send_whatsapp_message(
+                    to_phone=clean_sender,
+                    text=f"Hari Om {customer.name}! Message received regarding Request {target_req.request_id}. We will get back to you shortly."
+                )
+                action_taken = f"Logged message against request {target_req.request_id}"
+
         else:
-            action_taken = "Keyword 'Confirm' detected"
+            # Multiple active requests -> Disambiguate without using AI!
+            prompt_msg = (
+                f"🙏 Hari Om {customer.name}!\n\n"
+                f"We found multiple active requests for your mobile number.\n"
+                f"Please tap below to select the request you are referring to:"
+            )
 
-    # KEYWORD 2: REJECT
-    elif first_word in ["Reject", "Declined"]:
-        if enquiry:
-            enquiry.status = "Rejected"
+            buttons = []
+            for req_item in active_requests[:3]:  # WhatsApp max 3 buttons
+                lbl = f"{req_item.request_type[:7]} {req_item.request_id[-5:]}"
+                buttons.append({
+                    "id": f"req:{req_item.request_id}:SELECT_REQ",
+                    "title": lbl
+                })
+
+            # Log disambiguation prompt
+            disambig_log = MessageLog(
+                message_id=wa_msg_id,
+                request_id=None,
+                customer_id=customer.id,
+                direction="OUTBOUND",
+                channel="WHATSAPP",
+                message_type="DISAMBIGUATION",
+                message_content=prompt_msg,
+                action_id="req:DISAMBIGUATE"
+            )
+            db.add(disambig_log)
             await db.commit()
-            
-            await send_whatsapp_message(
-                to_phone=enquiry.mobile,
-                text=f"Hari Om {enquiry.name}. Regarding your request for '{enquiry.category}', Shri Pradeep is currently unavailable for the requested slot. Thank you."
-            )
-            action_taken = "Rejected enquiry & sent polite notification to visitor"
-        else:
-            action_taken = "Keyword 'Reject' detected"
 
-    # KEYWORD 3: CONTACT MANUALLY
-    elif "Contact" in first_word or "Contact Manually" in message_text:
-        if enquiry:
-            enquiry.status = "Contacted"
-            await db.commit()
-            
-            await send_whatsapp_message(
-                to_phone=enquiry.mobile,
-                text=f"Hari Om {enquiry.name}! Shri Pradeep Nadig will contact you directly on {enquiry.mobile} shortly regarding '{enquiry.category}'."
+            await send_whatsapp_buttons(
+                to_phone=clean_sender,
+                body_text=prompt_msg,
+                buttons=buttons
             )
-            action_taken = "Set status to Contacted & sent manual contact notification"
-        else:
-            action_taken = "Keyword 'Contact Manually' detected"
+            action_taken = f"Sent interactive disambiguation menu for {len(active_requests)} active requests."
 
-    # DEFAULT: TEXT FORWARDING
-    else:
-        if enquiry:
-            await send_whatsapp_message(
-                to_phone=enquiry.mobile,
-                text=f"Message from Shri Pradeep: {message_text}"
-            )
-            action_taken = f"Forwarded admin reply to visitor: {message_text}"
-
-    return MessageResponse(
-        message=f"WhatsApp webhook processed successfully. Action: {action_taken}. Received: '{message_text}'"
-    )
+    return MessageResponse(message=f"WhatsApp webhook processed. Action: {action_taken}")
