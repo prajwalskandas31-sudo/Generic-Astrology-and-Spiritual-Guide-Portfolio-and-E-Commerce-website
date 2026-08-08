@@ -32,6 +32,7 @@ async def send_whatsapp_message(to_phone: str, text: str):
         async with httpx.AsyncClient() as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
+                safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
                 return res.json()
             except Exception as e:
                 safe_print(f"[WHATSAPP API ERROR]: {e}")
@@ -94,6 +95,7 @@ async def send_whatsapp_buttons(
         async with httpx.AsyncClient() as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
+                safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
                 return res.json()
             except Exception as e:
                 safe_print(f"[WHATSAPP API ERROR]: {e}")
@@ -153,6 +155,7 @@ async def send_whatsapp_list(
         async with httpx.AsyncClient() as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
+                safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
                 return res.json()
             except Exception as e:
                 safe_print(f"[WHATSAPP API ERROR]: {e}")
@@ -194,6 +197,7 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
         async with httpx.AsyncClient() as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
+                safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
                 return res.json()
             except Exception as e:
                 safe_print(f"[WHATSAPP API ERROR]: {e}")
