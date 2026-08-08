@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, HTTPException, Query
+from fastapi import APIRouter, Depends, Request, HTTPException, Query, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
@@ -20,7 +20,7 @@ async def verify_whatsapp_webhook(
     hub_verify_token: str = Query(None, alias="hub.verify_token")
 ):
     if hub_mode == "subscribe" and hub_verify_token == settings.WHATSAPP_VERIFY_TOKEN:
-        return int(hub_challenge) if hub_challenge and hub_challenge.isdigit() else hub_challenge
+        return Response(content=str(hub_challenge), media_type="text/plain")
     raise HTTPException(status_code=403, detail="Verification token mismatch")
 
 

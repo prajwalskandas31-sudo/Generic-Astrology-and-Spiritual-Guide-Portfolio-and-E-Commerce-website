@@ -18,7 +18,7 @@ async def send_whatsapp_message(to_phone: str, text: str):
     safe_print(f"[WHATSAPP OUTBOUND TEXT] To: +{clean_phone} | Message:\n{text}\n")
 
     if settings.WHATSAPP_TOKEN and settings.WHATSAPP_TOKEN != "mock_whatsapp_token":
-        url = f"https://graph.facebook.com/v18.0/{settings.WHATSAPP_PHONE_ID}/messages"
+        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
         headers = {
             "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
             "Content-Type": "application/json"
@@ -56,7 +56,7 @@ async def send_whatsapp_buttons(
     safe_print(f"[WHATSAPP OUTBOUND BUTTONS] To: +{clean_phone} | Body: {body_text} | Buttons: {button_titles}")
 
     if settings.WHATSAPP_TOKEN and settings.WHATSAPP_TOKEN != "mock_whatsapp_token":
-        url = f"https://graph.facebook.com/v18.0/{settings.WHATSAPP_PHONE_ID}/messages"
+        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
         headers = {
             "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
             "Content-Type": "application/json"
@@ -123,7 +123,7 @@ async def send_whatsapp_list(
     safe_print(f"[WHATSAPP OUTBOUND LIST] To: +{clean_phone} | Body: {body_text} | Button: {button_title}")
 
     if settings.WHATSAPP_TOKEN and settings.WHATSAPP_TOKEN != "mock_whatsapp_token":
-        url = f"https://graph.facebook.com/v18.0/{settings.WHATSAPP_PHONE_ID}/messages"
+        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
         headers = {
             "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
             "Content-Type": "application/json"
@@ -175,7 +175,7 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
     safe_print(f"[WHATSAPP OUTBOUND IMAGE] To: +{clean_phone} | Image: {image_url} | Caption: {caption}")
 
     if settings.WHATSAPP_TOKEN and settings.WHATSAPP_TOKEN != "mock_whatsapp_token":
-        url = f"https://graph.facebook.com/v18.0/{settings.WHATSAPP_PHONE_ID}/messages"
+        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
         headers = {
             "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
             "Content-Type": "application/json"
