@@ -96,6 +96,20 @@ async def process_whatsapp_webhook(
                     db=db,
                     sender_channel="WHATSAPP"
                 )
+                if wa_msg_id and updated_req:
+                    btn_log = MessageLog(
+                        request_id=updated_req.id,
+                        customer_id=updated_req.customer_id,
+                        direction="INBOUND",
+                        channel="WHATSAPP",
+                        message_type=f"BUTTON_REPLY_{act_name}",
+                        message_content=message_text,
+                        message_id=wa_msg_id,
+                        action_id=interactive_action_id
+                    )
+                    db.add(btn_log)
+                    await db.commit()
+
                 action_taken = f"Executed interactive action '{act_name}' for Request '{req_id_str}'"
                 return MessageResponse(message=f"Success: {action_taken}")
             except Exception as e:

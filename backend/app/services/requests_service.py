@@ -286,12 +286,7 @@ async def execute_request_action(
         await db.commit()
 
         # Send WhatsApp confirmation to client
-        buttons = [
-            {"id": f"req:{req.request_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
-            {"id": f"req:{req.request_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
-            {"id": f"req:{req.request_id}:CANCEL_REQUEST", "title": "CANCEL"}
-        ]
-        await send_whatsapp_buttons(to_phone=cust.phone, body_text=confirm_msg, buttons=buttons)
+        await send_whatsapp_message(to_phone=cust.phone, text=confirm_msg)
 
     elif act in ["CHANGE_TIME", "CHANGE_REQUEST_TIME", "RESCHEDULE_REQUESTED"]:
         if not validate_status_transition(req.status, "RESCHEDULE_REQUESTED"):
