@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from app.models.models import Customer, Request, MessageLog, Offering, Workshop
+from app.models.models import Customer, Request, MessageLog, Offering, Workshop, Enquiry
 from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list
 
 def validate_status_transition(current_status: str, new_status: str) -> bool:
@@ -262,6 +262,12 @@ async def execute_request_action(
         if action_payload.get("selected_time"):
             req.selected_time = action_payload.get("selected_time")
         req.updated_at = datetime.datetime.utcnow()
+
+        enq_res = await db.execute(
+            select(Enquiry).where(Enquiry.mobile == cust.phone).order_by(Enquiry.id.desc())
+        )
+        for enq in enq_res.scalars().all():
+            enq.status = "Confirmed"
 
         confirm_msg = (
             f"🙏 Namaste {cust.name},\n\n"
