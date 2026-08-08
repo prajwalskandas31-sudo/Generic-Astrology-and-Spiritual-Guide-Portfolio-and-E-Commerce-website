@@ -84,7 +84,7 @@ export async function getOfferingBySlug(slug: string) {
 export async function getWorkshops(status_filter?: string) {
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
-    const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "?status_filter=all";
+    const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
     const res = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
     if (Array.isArray(res) && res.length === 0 && isAll) {
       // Fall back if API returns empty array for all workshops
