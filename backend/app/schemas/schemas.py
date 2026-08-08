@@ -215,6 +215,11 @@ class WorkshopRegisterRequest(BaseModel):
     pin_code: str
     additional_notes: Optional[str] = None
 
+class WorkshopBroadcastRequest(BaseModel):
+    recipient_phones: List[str]
+    message_text: str
+    image_url: Optional[str] = None
+
 class WorkshopRegisterResponse(BaseModel):
     registration_id: int
     request_id: Optional[str] = None

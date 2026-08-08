@@ -7,8 +7,10 @@ from app.db.session import get_db
 from app.models.models import Workshop, WorkshopBatch, WorkshopRegistration
 from app.schemas.schemas import (
     WorkshopCreate, WorkshopResponse, WorkshopRegisterRequest,
-    WorkshopRegisterResponse, MessageResponse
+    WorkshopRegisterResponse, MessageResponse, WorkshopRegistrationResponse,
+    WorkshopBroadcastRequest
 )
+from app.services.whatsapp import send_whatsapp_message, send_whatsapp_image
 from app.core.security import verify_supabase_token
 from app.core.config import settings
 import uuid
@@ -213,3 +215,38 @@ async def delete_workshop(
     await db.delete(workshop)
     await db.commit()
     return MessageResponse(message="Workshop deleted successfully")
+
+@router.get("/{id}/registrations", response_model=List[WorkshopRegistrationResponse])
+async def get_workshop_registrations_by_id(
+    id: int,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    res = await db.execute(
+        select(WorkshopRegistration)
+        .where(WorkshopRegistration.workshop_id == id)
+        .order_by(WorkshopRegistration.id.desc())
+    )
+    return res.scalars().all()
+
+@router.post("/{id}/broadcast", response_model=MessageResponse)
+async def broadcast_workshop_whatsapp(
+    id: int,
+    data: WorkshopBroadcastRequest,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    workshop = await db.get(Workshop, id)
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    
+    sent_count = 0
+    for phone in data.recipient_phones:
+        if data.image_url:
+            await send_whatsapp_image(phone, data.image_url, caption=data.message_text)
+        else:
+            await send_whatsapp_message(phone, data.message_text)
+        sent_count += 1
+        
+    return MessageResponse(message=f"WhatsApp broadcast dispatched successfully to {sent_count} participants.")
+

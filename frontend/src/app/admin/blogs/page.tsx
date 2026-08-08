@@ -71,6 +71,17 @@ export default function AdminBlogsPage() {
     }
   };
 
+  const handleEdit = (blog: Blog) => {
+    setEditingId(blog.id);
+    setTitle(blog.title);
+    setSlug(blog.slug);
+    setCoverImage(blog.cover_image || "");
+    setAuthor(blog.author || "Veda Brahma Shri Pradeep Nadig");
+    setCategory(blog.category || "Vedic Traditions");
+    setContent(blog.content || "");
+    setIsEditing(true);
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this blog post?")) return;
     try {
@@ -89,6 +100,8 @@ export default function AdminBlogsPage() {
     setTitle("");
     setSlug("");
     setCoverImage("");
+    setAuthor("Veda Brahma Shri Pradeep Nadig");
+    setCategory("Vedic Traditions");
     setContent("");
     setIsEditing(false);
   };
@@ -241,6 +254,9 @@ export default function AdminBlogsPage() {
                   <td className="p-4 font-semibold text-amber-800">{b.category || "General"}</td>
                   <td className="p-4 text-slate-600">{b.author}</td>
                   <td className="p-4 text-right space-x-2">
+                    <button onClick={() => handleEdit(b)} className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg">
+                      <Edit3 className="w-4 h-4" />
+                    </button>
                     <button onClick={() => handleDelete(b.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg">
                       <Trash2 className="w-4 h-4" />
                     </button>

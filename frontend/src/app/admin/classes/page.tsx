@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { ClassItem } from "@/types";
 import { getClasses, fetchAPI } from "@/lib/api-client";
-import { GraduationCap, Plus, Trash2, Loader2 } from "lucide-react";
+import { GraduationCap, Plus, Trash2, Edit3, Loader2 } from "lucide-react";
 
 export default function AdminClassesPage() {
   const [classesList, setClassesList] = useState<ClassItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,26 +32,52 @@ export default function AdminClassesPage() {
     }
   };
 
+  const handleEdit = (item: ClassItem) => {
+    setEditingId(item.id);
+    setName(item.name);
+    setDescription(item.description || "");
+    setDuration(item.duration || "");
+    setSuitableFor(item.suitable_for || "");
+    setMode(item.mode as any || "Hybrid");
+    setIsEditing(true);
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setName("");
+    setDescription("");
+    setDuration("");
+    setSuitableFor("");
+    setMode("Hybrid");
+    setIsEditing(false);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const payload = {
+      name,
+      description,
+      duration,
+      suitable_for: suitableFor,
+      mode,
+      status: "Active",
+    };
+
     try {
-      await fetchAPI("/classes", {
-        method: "POST",
-        headers: { Authorization: "Bearer mock-admin-token" },
-        body: JSON.stringify({
-          name,
-          description,
-          duration,
-          suitable_for: suitableFor,
-          mode,
-          status: "Active",
-        }),
-      });
-      setName("");
-      setDescription("");
-      setDuration("");
-      setSuitableFor("");
-      setIsEditing(false);
+      if (editingId) {
+        await fetchAPI(`/classes/${editingId}`, {
+          method: "PUT",
+          headers: { Authorization: "Bearer mock-admin-token" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetchAPI("/classes", {
+          method: "POST",
+          headers: { Authorization: "Bearer mock-admin-token" },
+          body: JSON.stringify(payload),
+        });
+      }
+      resetForm();
       loadClasses();
     } catch (err: any) {
       alert("Error saving class: " + err.message);
@@ -95,7 +122,9 @@ export default function AdminClassesPage() {
 
       {isEditing && (
         <form onSubmit={handleSave} className="p-6 bg-white rounded-2xl border border-slate-200 shadow-md space-y-4">
-          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">Add New Class</h2>
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+            {editingId ? "Edit Class" : "Add New Class"}
+          </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -158,7 +187,7 @@ export default function AdminClassesPage() {
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => setIsEditing(false)}
+              onClick={resetForm}
               className="px-4 py-2 border border-slate-300 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50"
             >
               Cancel
@@ -192,9 +221,14 @@ export default function AdminClassesPage() {
                   Duration: {item.duration || "N/A"} | Suitable: {item.suitable_for || "All"}
                 </div>
               </div>
-              <button onClick={() => handleDelete(item.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg shrink-0">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => handleEdit(item)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                  <Edit3 className="w-4 h-4" />
+                </button>
+                <button onClick={() => handleDelete(item.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -202,3 +236,4 @@ export default function AdminClassesPage() {
     </div>
   );
 }
+

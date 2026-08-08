@@ -238,5 +238,28 @@ export async function getWorkshopRegistrations() {
   return [];
 }
 
+export async function getWorkshopRegistrationsById(workshopId: number) {
+  try {
+    const data = await fetchAPI<import("../types").WorkshopRegistration[]>(`/workshops/${workshopId}/registrations`, {
+      headers: { Authorization: "Bearer mock-admin-token" },
+    });
+    if (Array.isArray(data)) return data;
+  } catch (error) {
+    console.warn(`Backend API unavailable for getWorkshopRegistrationsById(${workshopId}), filtering all registrations...`);
+    const all = await getWorkshopRegistrations();
+    return all.filter((r) => r.workshop_id === workshopId);
+  }
+  return [];
+}
+
+export async function sendWorkshopBroadcast(workshopId: number, data: { recipient_phones: string[]; message_text: string; image_url?: string }) {
+  return fetchAPI<{ message: string; success: boolean }>(`/workshops/${workshopId}/broadcast`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    body: JSON.stringify(data),
+  });
+}
+
+
 
 

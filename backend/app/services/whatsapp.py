@@ -165,3 +165,39 @@ async def send_whatsapp_list(
         "button_title": button_title,
         "sections": sections
     }
+
+
+async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[str] = None):
+    """
+    Sends an image WhatsApp message with optional caption via WhatsApp Cloud API.
+    """
+    clean_phone = to_phone.replace("+", "").replace(" ", "").replace("-", "")
+    safe_print(f"[WHATSAPP OUTBOUND IMAGE] To: +{clean_phone} | Image: {image_url} | Caption: {caption}")
+
+    if settings.WHATSAPP_TOKEN and settings.WHATSAPP_TOKEN != "mock_whatsapp_token":
+        url = f"https://graph.facebook.com/v18.0/{settings.WHATSAPP_PHONE_ID}/messages"
+        headers = {
+            "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        image_obj: Dict = {"link": image_url}
+        if caption:
+            image_obj["caption"] = caption
+
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": clean_phone,
+            "type": "image",
+            "image": image_obj
+        }
+
+        async with httpx.AsyncClient() as client:
+            try:
+                res = await client.post(url, json=payload, headers=headers)
+                return res.json()
+            except Exception as e:
+                safe_print(f"[WHATSAPP API ERROR]: {e}")
+                return None
+
+    return {"status": "mock_sent", "to": clean_phone, "image_url": image_url, "caption": caption}
+
