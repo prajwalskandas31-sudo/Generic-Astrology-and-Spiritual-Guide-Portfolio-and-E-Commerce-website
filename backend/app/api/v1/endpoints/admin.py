@@ -4,7 +4,8 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from app.db.session import get_db
 from app.models.models import Enquiry, Workshop, WorkshopRegistration
-from app.schemas.schemas import DashboardStats
+from typing import List
+from app.schemas.schemas import DashboardStats, WorkshopRegistrationResponse
 from app.core.security import verify_supabase_token
 
 router = APIRouter()
@@ -41,3 +42,15 @@ async def get_dashboard_stats(
         upcoming_workshops=upcoming_workshops,
         recent_registrations=recent_registrations
     )
+
+@router.get("/registrations", response_model=List[WorkshopRegistrationResponse])
+async def get_all_registrations(
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    """
+    Returns all workshop registration records for admin view.
+    """
+    res = await db.execute(select(WorkshopRegistration).order_by(WorkshopRegistration.id.desc()))
+    return res.scalars().all()
+

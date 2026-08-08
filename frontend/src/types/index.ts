@@ -144,6 +144,7 @@ export interface WorkshopRegistration {
   payment_status: "Pending" | "Paid" | "Failed";
   razorpay_order_id?: string;
   razorpay_payment_id?: string;
+  additional_notes?: string;
   created_at?: string;
 }
 

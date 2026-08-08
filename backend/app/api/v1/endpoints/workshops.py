@@ -22,7 +22,8 @@ async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = 
     try:
         query = select(Workshop).options(selectinload(Workshop.batches))
         if status_filter:
-            query = query.where(Workshop.status == status_filter)
+            if status_filter.lower() != "all":
+                query = query.where(Workshop.status == status_filter)
         else:
             query = query.where(Workshop.status.in_(["Published", "Completed"]))
         query = query.order_by(Workshop.featured.desc(), Workshop.id.desc())

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { RequestThread, MessageLog } from "@/types";
-import { fetchAPI } from "@/lib/api-client";
+import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
+import { fetchAPI, getWorkshopRegistrations } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -22,12 +22,14 @@ import {
   History,
   X,
   Send,
-  AlertCircle
+  AlertCircle,
+  Users
 } from "lucide-react";
 
 export default function AdminRequestsPage() {
-  const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
+  const [activeTab, setActiveTab] = useState<"active" | "registrations" | "archived">("active");
   const [requests, setRequests] = useState<RequestThread[]>([]);
+  const [registrations, setRegistrations] = useState<WorkshopRegistration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -37,7 +39,11 @@ export default function AdminRequestsPage() {
   const [isPerformingAction, setIsPerformingAction] = useState(false);
 
   useEffect(() => {
-    loadRequests();
+    if (activeTab === "registrations") {
+      loadRegistrations();
+    } else {
+      loadRequests();
+    }
   }, [activeTab]);
 
   const loadRequests = async () => {
@@ -49,6 +55,18 @@ export default function AdminRequestsPage() {
       setRequests(data);
     } catch (err: any) {
       console.error("Failed to load request threads:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadRegistrations = async () => {
+    setIsLoading(true);
+    try {
+      const data = await getWorkshopRegistrations();
+      setRegistrations(data);
+    } catch (err: any) {
+      console.error("Failed to load workshop registrations:", err);
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +104,17 @@ export default function AdminRequestsPage() {
     return matchesSearch && matchesType;
   });
 
+  const filteredRegistrations = registrations.filter((reg) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      reg.name.toLowerCase().includes(term) ||
+      reg.mobile.includes(term) ||
+      (reg.email || "").toLowerCase().includes(term) ||
+      (reg.city || "").toLowerCase().includes(term) ||
+      (reg.razorpay_order_id || "").toLowerCase().includes(term)
+    );
+  });
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "NEW":
@@ -115,10 +144,10 @@ export default function AdminRequestsPage() {
       <div>
         <h1 className="text-3xl font-serif font-bold text-slate-900 flex items-center gap-2">
           <MessageSquare className="w-8 h-8 text-amber-700" />
-          <span>Request Threads &amp; WhatsApp Conversations</span>
+          <span>Enquiries, Request Threads &amp; Workshop Registrations</span>
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Every customer request appears as a separate thread. Click simple action buttons to confirm, reschedule, or complete requests.
+          Manage all incoming customer requests, consultation threads, and confirmed workshop participant registrations.
         </p>
       </div>
 
@@ -135,6 +164,16 @@ export default function AdminRequestsPage() {
             }`}
           >
             ACTIVE REQUESTS
+          </button>
+          <button
+            onClick={() => setActiveTab("registrations")}
+            className={`px-5 py-2 font-semibold text-xs rounded-lg transition-all ${
+              activeTab === "registrations"
+                ? "bg-white text-amber-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            WORKSHOP REGISTRATIONS
           </button>
           <button
             onClick={() => setActiveTab("archived")}
@@ -154,24 +193,26 @@ export default function AdminRequestsPage() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
-              placeholder="Search Request ID, Name, Phone..."
+              placeholder={activeTab === "registrations" ? "Search Name, Phone, City, Order ID..." : "Search Request ID, Name, Phone..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 w-64"
             />
           </div>
 
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500"
-          >
-            <option value="all">All Request Types</option>
-            <option value="consultation">Consultations</option>
-            <option value="service">Services</option>
-            <option value="workshop">Workshops</option>
-            <option value="class enquiry">Classes</option>
-          </select>
+          {activeTab !== "registrations" && (
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500"
+            >
+              <option value="all">All Request Types</option>
+              <option value="consultation">Consultations</option>
+              <option value="service">Services</option>
+              <option value="workshop">Workshops</option>
+              <option value="class enquiry">Classes</option>
+            </select>
+          )}
         </div>
       </div>
 
@@ -179,8 +220,77 @@ export default function AdminRequestsPage() {
       {isLoading ? (
         <div className="py-20 text-center text-slate-500 flex items-center justify-center gap-2">
           <Loader2 className="w-6 h-6 animate-spin text-amber-700" />
-          <span>Loading request threads...</span>
+          <span>Loading data...</span>
         </div>
+      ) : activeTab === "registrations" ? (
+        filteredRegistrations.length === 0 ? (
+          <div className="py-16 text-center bg-white rounded-2xl border border-slate-200 p-8 space-y-3">
+            <Users className="w-12 h-12 text-slate-300 mx-auto" />
+            <h3 className="text-lg font-bold text-slate-800">No Workshop Registrations Found</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              No participant registrations recorded yet or matching your search filter.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
+                  <th className="p-4">Participant Name</th>
+                  <th className="p-4">Mobile &amp; Email</th>
+                  <th className="p-4">Location</th>
+                  <th className="p-4">Amount</th>
+                  <th className="p-4">Payment Status</th>
+                  <th className="p-4">Order ID</th>
+                  <th className="p-4">Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredRegistrations.map((reg) => (
+                  <tr key={reg.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="p-4">
+                      <span className="font-bold text-slate-900 block">{reg.name}</span>
+                      {reg.additional_notes && (
+                        <span className="text-[10px] text-slate-400 italic block truncate max-w-xs">
+                          &quot;{reg.additional_notes}&quot;
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <span className="font-mono text-slate-800 block">+{reg.mobile}</span>
+                      <span className="text-slate-500 block truncate max-w-xs">{reg.email || "N/A"}</span>
+                    </td>
+                    <td className="p-4 text-slate-600">
+                      {reg.city}{reg.state ? `, ${reg.state}` : ""}
+                    </td>
+                    <td className="p-4 font-bold text-amber-800">
+                      ₹{reg.amount}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                          reg.payment_status === "Paid"
+                            ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                            : reg.payment_status === "Failed"
+                            ? "bg-red-100 text-red-800 border border-red-200"
+                            : "bg-amber-100 text-amber-900 border border-amber-300"
+                        }`}
+                      >
+                        {reg.payment_status}
+                      </span>
+                    </td>
+                    <td className="p-4 font-mono text-[11px] text-slate-500">
+                      {reg.razorpay_order_id || "N/A"}
+                    </td>
+                    <td className="p-4 text-slate-500 font-mono text-[11px]">
+                      {reg.created_at ? new Date(reg.created_at).toLocaleDateString() : "N/A"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : filteredRequests.length === 0 ? (
         <div className="py-16 text-center bg-white rounded-2xl border border-slate-200 p-8 space-y-3">
           <MessageSquare className="w-12 h-12 text-slate-300 mx-auto" />

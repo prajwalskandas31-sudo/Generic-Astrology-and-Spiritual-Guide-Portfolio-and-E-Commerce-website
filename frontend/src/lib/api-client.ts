@@ -50,16 +50,23 @@ export async function getSettings() {
   }
 }
 
-export async function getOfferings(type?: string) {
+export async function getOfferings(type?: string, status_filter?: string) {
   try {
-    const query = type ? `?type=${encodeURIComponent(type)}` : "";
+    const params = new URLSearchParams();
+    if (type) params.append("type", type);
+    if (status_filter) params.append("status_filter", status_filter);
+    const query = params.toString() ? `?${params.toString()}` : "";
     return await fetchAPI<import("../types").Offering[]>(`/offerings${query}`);
   } catch (error) {
     console.warn("Backend API unavailable for getOfferings, using fallback data.");
-    if (type) {
-      return FALLBACK_OFFERINGS.filter((o) => o.type === type);
+    let result = FALLBACK_OFFERINGS;
+    if (type && type.toLowerCase() !== "all") {
+      result = result.filter((o) => o.type === type);
     }
-    return FALLBACK_OFFERINGS;
+    if (status_filter && status_filter.toLowerCase() !== "all") {
+      result = result.filter((o) => o.status === status_filter);
+    }
+    return result;
   }
 }
 
@@ -80,7 +87,7 @@ export async function getWorkshops(status_filter?: string) {
     return await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
   } catch (error) {
     console.warn("Backend API unavailable for getWorkshops, using fallback data.");
-    if (status_filter) {
+    if (status_filter && status_filter.toLowerCase() !== "all") {
       return FALLBACK_WORKSHOPS.filter((w) => w.status === status_filter);
     }
     return FALLBACK_WORKSHOPS;
@@ -201,4 +208,16 @@ export async function getMediaLibrary() {
     return [];
   }
 }
+
+export async function getWorkshopRegistrations() {
+  try {
+    return await fetchAPI<import("../types").WorkshopRegistration[]>(`/admin/registrations`, {
+      headers: { Authorization: "Bearer mock-admin-token" },
+    });
+  } catch (error) {
+    console.warn("Backend API unavailable for getWorkshopRegistrations.");
+    return [];
+  }
+}
+
 

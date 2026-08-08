@@ -12,11 +12,17 @@ router = APIRouter()
 from fastapi.responses import JSONResponse
 
 @router.get("", response_model=List[OfferingResponse])
-async def get_offerings(type: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+async def get_offerings(type: Optional[str] = None, status_filter: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
-        query = select(Offering).where(Offering.status == "Published")
-        if type:
+        query = select(Offering)
+        if status_filter and status_filter.lower() != "all":
+            query = query.where(Offering.status == status_filter)
+        elif not status_filter:
+            query = query.where(Offering.status == "Published")
+
+        if type and type.lower() != "all":
             query = query.where(Offering.type == type)
+
         query = query.order_by(Offering.display_order.asc(), Offering.id.desc())
         result = await db.execute(query)
         return result.scalars().all()
