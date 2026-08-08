@@ -45,6 +45,7 @@ export default function EnquiryModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [submittedRequestId, setSubmittedRequestId] = useState<string>("");
 
   const {
     register,
@@ -66,7 +67,6 @@ export default function EnquiryModal({
 
   if (!isOpen) return null;
 
-  const [submittedRequestId, setSubmittedRequestId] = useState<string>("");
 
   const onSubmit = async (data: EnquiryFormData) => {
     setIsSubmitting(true);
