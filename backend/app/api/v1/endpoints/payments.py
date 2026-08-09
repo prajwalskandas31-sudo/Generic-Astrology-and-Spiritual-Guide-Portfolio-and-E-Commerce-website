@@ -8,6 +8,8 @@ import hmac
 import hashlib
 from app.core.config import settings
 
+from app.services.whatsapp import send_whatsapp_message
+
 router = APIRouter()
 
 from app.models.models import Request as RequestModel, MessageLog
@@ -76,5 +78,21 @@ async def verify_payment(
         db.add(pay_log)
 
     await db.commit()
+
+    # Dispatch WhatsApp Confirmation Message to Participant
+    confirm_text = (
+        f"🙏 Namaste {registration.name},\n\n"
+        f"Your workshop seat has been successfully confirmed!\n\n"
+        f"🌸 Workshop: {req_obj.workshop_name if req_obj else 'Vedic Workshop'}\n"
+        f"📋 Registration ID: #{registration.id}\n"
+        f"💳 Amount Paid: ₹{registration.amount}\n"
+        f"🔑 Payment Reference: {data.razorpay_payment_id}\n\n"
+        f"We look forward to welcoming you to the session."
+    )
+    try:
+        await send_whatsapp_message(to_phone=registration.mobile, text=confirm_text)
+    except Exception as e:
+        print(f"[WhatsApp Confirmation Notice Warning]: {e}")
+
     return MessageResponse(message="Payment verification successful. Workshop registration confirmed!")
 

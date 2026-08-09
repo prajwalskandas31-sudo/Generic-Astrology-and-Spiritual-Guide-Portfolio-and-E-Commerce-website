@@ -117,7 +117,7 @@ export default function WorkshopRegistrationModal({
       }
 
       // 3. Perform Razorpay Checkout
-      const razorpayKey = regResult.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
+      const razorpayKey = regResult.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo_key";
 
       const options: any = {
         key: razorpayKey,
@@ -127,7 +127,7 @@ export default function WorkshopRegistrationModal({
         description: workshop.title,
         handler: async function (response: any) {
           try {
-            // Verify Payment on Backend (decrements available seats)
+            // Verify Payment on Backend (decrements available seats & sends WhatsApp confirmation)
             await verifyPayment({
               registration_id: regResult.registration_id,
               razorpay_order_id: response.razorpay_order_id || regResult.razorpay_order_id,

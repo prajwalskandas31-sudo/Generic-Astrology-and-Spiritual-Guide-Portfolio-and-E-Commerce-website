@@ -134,6 +134,7 @@ async def create_request(
     amount: float = 0.0,
     payment_status: str = "Pending",
     razorpay_order_id: Optional[str] = None,
+    send_whatsapp: bool = True,
     db: AsyncSession = None
 ) -> Request:
     """
@@ -141,7 +142,7 @@ async def create_request(
     Step 2: Generate unique Request ID
     Step 3: Save Request record
     Step 4: Log initial message
-    Step 5: Send WhatsApp confirmation with interactive buttons
+    Step 5: Send WhatsApp confirmation with interactive buttons (optional)
     """
     customer = await get_or_create_customer(
         phone=phone,
@@ -205,19 +206,20 @@ async def create_request(
     db.add(msg_log)
     await db.commit()
 
-    # Dispatch WhatsApp Interactive Buttons
-    buttons = [
-        {"id": f"req:{req_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
-        {"id": f"req:{req_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
-        {"id": f"req:{req_id}:CANCEL_REQUEST", "title": "CANCEL"}
-    ]
+    # Dispatch WhatsApp Interactive Buttons if requested
+    if send_whatsapp:
+        buttons = [
+            {"id": f"req:{req_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
+            {"id": f"req:{req_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
+            {"id": f"req:{req_id}:CANCEL_REQUEST", "title": "CANCEL"}
+        ]
 
-    await send_whatsapp_buttons(
-        to_phone=customer.phone,
-        body_text=body_text,
-        buttons=buttons,
-        header_text="Veda Brahma Shri Pradeep Nadig"
-    )
+        await send_whatsapp_buttons(
+            to_phone=customer.phone,
+            body_text=body_text,
+            buttons=buttons,
+            header_text="Veda Brahma Shri Pradeep Nadig"
+        )
 
     # Reload with relations
     res = await db.execute(

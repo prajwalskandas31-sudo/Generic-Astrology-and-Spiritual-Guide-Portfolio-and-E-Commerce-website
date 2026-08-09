@@ -123,7 +123,7 @@ async def register_for_workshop(
     await db.commit()
     await db.refresh(registration)
 
-    # Automatically create Workshop Request thread
+    # Automatically create Workshop Request thread (suppress immediate WhatsApp dispatch until payment is verified)
     req_obj = await create_request(
         request_type="Workshop",
         name=data.name,
@@ -140,6 +140,7 @@ async def register_for_workshop(
         amount=workshop.price,
         payment_status="Pending",
         razorpay_order_id=order_id,
+        send_whatsapp=False,
         db=db
     )
     
