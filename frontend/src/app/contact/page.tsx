@@ -26,11 +26,11 @@ export default async function ContactPage() {
     settings = await getSettings();
   } catch (_) {}
 
-  const mobile = settings.contact_mobile || "+91 98800 12345";
-  const whatsapp = settings.whatsapp_number || "919880012345";
+  const mobile = settings.contact_mobile || "+91 98440 42068";
+  const whatsapp = settings.whatsapp_number || "919844042068";
   const email = settings.contact_email || "pradeep@vedabrahma.com";
-  const address = settings.office_address || "No. 42, Veda Heritage Lane, Malleshwaram, Bengaluru, Karnataka 560003";
-  const mapsLink = settings.google_maps_link || "https://maps.google.com";
+  const address = settings.office_address || "Asharaya layout, Vaderahalli, K.G.Vaderahalli, Bengaluru, Karnataka 560097";
+  const mapsLink = settings.google_maps_link || "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097";
 
   const cleanWhatsApp = whatsapp.replace(/[^0-9]/g, "");
 

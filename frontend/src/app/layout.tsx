@@ -91,8 +91,37 @@ const jsonLd = {
       url: "https://pradeepnadig.in",
       image: "https://pradeepnadig.in/pradeep-nadig.jpg",
       jobTitle: "Vedic Scholar & Spiritual Guide",
+      telephone: "+91 98440 42068",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Asharaya layout, Vaderahalli",
+        addressLocality: "K.G.Vaderahalli, Bengaluru",
+        addressRegion: "Karnataka",
+        postalCode: "560097",
+        addressCountry: "IN",
+      },
       description:
         "Vedic Scholar, Spiritual Guide, and practitioner providing authentic Vedic rituals, consultations, chant workshops, and classes.",
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://pradeepnadig.in/#localbusiness",
+      name: "Veda Brahma Shri Pradeep Nadig - Vedic Rituals & Astrology",
+      image: "https://pradeepnadig.in/pradeep-nadig.jpg",
+      url: "https://pradeepnadig.in",
+      telephone: "+91 98440 42068",
+      priceRange: "₹₹",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Asharaya layout, Vaderahalli",
+        addressLocality: "K.G.Vaderahalli, Bengaluru",
+        addressRegion: "Karnataka",
+        postalCode: "560097",
+        addressCountry: "IN",
+      },
+      sameAs: [
+        "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097",
+      ],
     },
     {
       "@type": "WebSite",

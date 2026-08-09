@@ -10,8 +10,8 @@ export interface FooterProps {
 
 export default function Footer({
   siteName = "Veda Brahma Shri Pradeep Nadig",
-  address = "No. 42, Veda Heritage Lane, Malleshwaram, Bengaluru, Karnataka 560003",
-  mobile = "+91 98800 12345",
+  address = "Asharaya layout, Vaderahalli, K.G.Vaderahalli, Bengaluru, Karnataka 560097",
+  mobile = "+91 98440 42068",
   email = "pradeep@vedabrahma.com",
 }: FooterProps) {
   const currentYear = new Date().getFullYear();

@@ -7,8 +7,8 @@ export interface ContactCTAProps {
 }
 
 export default function ContactCTA({
-  whatsappNumber = "919880012345",
-  mobileNumber = "+91 98800 12345",
+  whatsappNumber = "919844042068",
+  mobileNumber = "+91 98440 42068",
   email = "pradeep@vedabrahma.com",
 }: ContactCTAProps) {
   const cleanWhatsApp = whatsappNumber.replace(/[^0-9]/g, "");
