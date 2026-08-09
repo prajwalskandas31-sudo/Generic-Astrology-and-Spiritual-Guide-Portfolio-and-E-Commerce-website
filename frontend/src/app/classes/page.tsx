@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getClasses, getSettings } from "@/lib/api-client";
 import ClassesClient from "@/components/ClassesClient";
 import { ClassItem } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Vedic Chanting & Astrology Classes | Pradeep Nadig",
+  description:
+    "Learn authentic Vedic chanting, Suktam recitation, and Vedic Astrology through structured online and offline classes taught by Veda Brahma Shri Pradeep Nadig.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/classes",
+  },
+  openGraph: {
+    title: "Vedic Chanting & Astrology Classes | Pradeep Nadig",
+    description:
+      "Structured classes on Veda Chanting, Strotras, and Astrology by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/classes",
+  },
+};
 
 export const revalidate = 60;
 

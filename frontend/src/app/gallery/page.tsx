@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getGallery, getSettings } from "@/lib/api-client";
 import GalleryClient from "@/components/GalleryClient";
 import { GalleryItem } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Media & Event Gallery | Pradeep Nadig",
+  description:
+    "Explore photos and videos of Vedic homas, workshops, discourse sessions, and spiritual events guided by Veda Brahma Shri Pradeep Nadig.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/gallery",
+  },
+};
 
 export const revalidate = 60;
 

@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getWorkshops, getSettings } from "@/lib/api-client";
 import Link from "next/link";
 import { Calendar, MapPin, Clock, ArrowRight, Users, CheckCircle2 } from "lucide-react";
 import { Workshop } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Vedic Chant & Spiritual Workshops | Pradeep Nadig",
+  description:
+    "Join immersive live workshops on Vedic Mantra Chanting, Sound Healing, and Spiritual Philosophy conducted by Veda Brahma Shri Pradeep Nadig.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/workshops",
+  },
+  openGraph: {
+    title: "Vedic Chant & Spiritual Workshops | Pradeep Nadig",
+    description:
+      "Immersive workshops on Vedic Mantra Chanting and Spiritual Philosophy by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/workshops",
+  },
+};
 
 export const revalidate = 60;
 

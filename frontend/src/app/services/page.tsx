@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getOfferings, getSettings } from "@/lib/api-client";
 import ServicesClient from "@/components/ServicesClient";
 import { Offering } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Vedic Services & Poojas | Pradeep Nadig",
+  description:
+    "Explore authentic Vedic homas, sacred fire rituals, holy poojas, and astrology consultations performed by Veda Brahma Shri Pradeep Nadig.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/services",
+  },
+  openGraph: {
+    title: "Vedic Services & Poojas | Veda Brahma Shri Pradeep Nadig",
+    description:
+      "Authentic Vedic homas, sacred rituals, and astrology consultations guided by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services",
+  },
+};
 
 export const revalidate = 60;
 

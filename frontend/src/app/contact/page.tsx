@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getSettings } from "@/lib/api-client";
 import { MessageCircle, Phone, Mail, MapPin, Clock } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Contact & Appointments | Pradeep Nadig",
+  description:
+    "Get in touch with Veda Brahma Shri Pradeep Nadig for Vedic pooja bookings, astrology consultations, class inquiries, or event invitations.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/contact",
+  },
+  openGraph: {
+    title: "Contact & Appointments | Veda Brahma Shri Pradeep Nadig",
+    description:
+      "Book consultations, homas, and classes with Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/contact",
+  },
+};
 
 export const revalidate = 60;
 

@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getFAQ, getSettings } from "@/lib/api-client";
 import FAQClient from "@/components/FAQClient";
 import { FAQItem } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Frequently Asked Questions | Pradeep Nadig",
+  description:
+    "Find answers to common questions regarding Vedic rituals, homa preparation, astrology consultation process, and online chanting classes.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/faq",
+  },
+};
 
 export const revalidate = 60;
 

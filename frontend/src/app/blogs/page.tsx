@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
 import PublicLayout from "@/components/PublicLayout";
 import { getBlogs, getSettings } from "@/lib/api-client";
 import Link from "next/link";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { Blog } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Spiritual Insights & Vedic Articles | Pradeep Nadig",
+  description:
+    "Read articles and spiritual wisdom on Sanatana Dharma, Vedic rituals, astrological guidance, and mantra chanting by Veda Brahma Shri Pradeep Nadig.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/blogs",
+  },
+  openGraph: {
+    title: "Spiritual Insights & Vedic Articles | Pradeep Nadig",
+    description:
+      "Wisdom articles on Sanatana Dharma, Vedic rituals, and astrology by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/blogs",
+  },
+};
 
 export const revalidate = 60;
 
