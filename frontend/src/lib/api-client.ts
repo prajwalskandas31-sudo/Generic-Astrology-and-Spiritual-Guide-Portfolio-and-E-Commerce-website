@@ -56,7 +56,23 @@ export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): 
 // --- Public Endpoints ---
 export async function getSettings() {
   try {
-    return await fetchAPI<Record<string, any>>("/settings");
+    const data = await fetchAPI<Record<string, any>>("/settings");
+    const merged = { ...FALLBACK_SETTINGS, ...data };
+    
+    // Automatically sanitize old seed database placeholders
+    if (!merged.office_address || merged.office_address.includes("Malleshwaram") || merged.office_address.includes("Heritage")) {
+      merged.office_address = "Asharaya layout, Vaderahalli, K.G.Vaderahalli, Bengaluru, Karnataka 560097";
+    }
+    if (!merged.contact_mobile || merged.contact_mobile.includes("98800")) {
+      merged.contact_mobile = "+91 98440 42068";
+    }
+    if (!merged.whatsapp_number || merged.whatsapp_number.includes("98800")) {
+      merged.whatsapp_number = "919844042068";
+    }
+    if (!merged.google_maps_link || merged.google_maps_link === "https://maps.google.com") {
+      merged.google_maps_link = "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097";
+    }
+    return merged;
   } catch (error) {
     console.warn("Backend API unavailable for getSettings, using fallback data.");
     return FALLBACK_SETTINGS;
