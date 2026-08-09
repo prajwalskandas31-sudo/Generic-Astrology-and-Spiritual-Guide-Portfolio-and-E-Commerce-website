@@ -34,6 +34,8 @@ async def list_requests(
         query = query.where(Request.status.not_in(["COMPLETED", "ARCHIVED"]))
     elif tab == "archived":
         query = query.where(Request.status.in_(["COMPLETED", "ARCHIVED"]))
+    elif tab == "accepted":
+        query = query.where(Request.status == "CONFIRMED")
 
     if status_filter:
         query = query.where(Request.status == status_filter.upper())

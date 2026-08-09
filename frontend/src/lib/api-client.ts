@@ -260,6 +260,27 @@ export async function sendWorkshopBroadcast(workshopId: number, data: { recipien
   });
 }
 
+export async function getAcceptedRequests() {
+  try {
+    const data = await fetchAPI<import("../types").RequestThread[]>(`/requests?tab=accepted`, {
+      headers: { Authorization: "Bearer mock-admin-token" },
+    });
+    if (Array.isArray(data)) return data;
+  } catch (error) {
+    console.warn("Backend API unavailable for getAcceptedRequests, attempting fallback filter...");
+    try {
+      const all = await fetchAPI<import("../types").RequestThread[]>(`/requests?tab=all`, {
+        headers: { Authorization: "Bearer mock-admin-token" },
+      });
+      if (Array.isArray(all)) {
+        return all.filter((req) => req.status === "CONFIRMED");
+      }
+    } catch (_) {}
+  }
+  return [];
+}
+
+
 
 
 
