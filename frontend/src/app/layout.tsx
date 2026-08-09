@@ -59,6 +59,14 @@ export const metadata: Metadata = {
   verification: {
     google: "skBzgmTVLbNeEMjLcSImgJlc9-6vGtWTtU9CH_GDGC4",
   },
+  icons: {
+    icon: [
+      { url: "/shaankari-logo.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/shaankari-logo.png",
+    apple: "/shaankari-logo.png",
+  },
   robots: {
     index: true,
     follow: true,

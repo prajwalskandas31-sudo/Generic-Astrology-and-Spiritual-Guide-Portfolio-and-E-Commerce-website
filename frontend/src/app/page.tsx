@@ -122,11 +122,11 @@ export default async function HomePage() {
 
           {/* RIGHT COLUMN: MR. PRADEEP NADIG PHOTO SLOT */}
           <div className="lg:col-span-3 flex flex-col items-center justify-center text-center order-3">
-            <div className="w-52 h-52 sm:w-60 sm:h-60 rounded-3xl bg-white/40 backdrop-blur-md p-4 border border-amber-200/60 shadow-sm flex flex-col items-center justify-center group hover:scale-105 transition-transform overflow-hidden">
+            <div className="w-52 h-52 sm:w-60 sm:h-60 rounded-3xl bg-white/40 backdrop-blur-md p-2 border border-amber-200/60 shadow-sm flex flex-col items-center justify-center group hover:scale-105 transition-transform overflow-hidden">
               <img
-                src="/pradeep-nadig-cutout.png"
+                src="/pradeep-nadig.jpg"
                 alt="Shri Pradeep Nadig"
-                className="w-full h-full object-contain filter drop-shadow-md"
+                className="w-full h-full object-cover rounded-2xl filter drop-shadow-md"
               />
             </div>
             <span className="text-xs font-serif font-bold text-amber-900 mt-3 uppercase tracking-wider">
@@ -165,11 +165,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Image Box */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-amber-100 via-orange-50 to-amber-200 flex items-center justify-center h-[450px]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-slate-100 flex items-center justify-center h-[480px]">
                 <img
-                  src="/pradeep-nadig-cutout.png"
+                  src="/pradeep-nadig.jpg"
                   alt="Veda Brahma Shri Pradeep Nadig"
-                  className="w-full h-full object-contain p-4 filter drop-shadow-xl"
+                  className="w-full h-full object-cover filter drop-shadow-xl"
                 />
               </div>
               {/* Floating Badge */}
