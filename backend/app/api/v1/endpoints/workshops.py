@@ -82,7 +82,7 @@ async def register_for_workshop(
     order_id = f"order_{uuid.uuid4().hex[:12]}"
     is_real_order = False
 
-    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET and settings.RAZORPAY_KEY_ID.startswith("rzp_"):
+    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET:
         try:
             import razorpay
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))

@@ -8,12 +8,12 @@ import {
   FALLBACK_GALLERY,
 } from "./fallback-data";
 
-const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "https://generic-astrology-and-spiritual-guide.onrender.com/api/v1";
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
 const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
 if (typeof window !== "undefined" && !process.env.NEXT_PUBLIC_API_URL) {
   console.warn(
-    "[API Client Warning]: NEXT_PUBLIC_API_URL is not configured in Vercel environment variables. Defaulting to " + rawBaseUrl
+    "[API Client]: NEXT_PUBLIC_API_URL is not configured. Defaulting to relative path " + rawBaseUrl
   );
 }
 
@@ -25,7 +25,20 @@ export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): 
     ...(options.headers || {}),
   };
 
-  const response = await fetch(url, { ...options, headers });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers,
+      signal: options.signal || controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
   if (!response.ok) {
     let errorMsg = `API Error: ${response.status} ${response.statusText}`;
     try {

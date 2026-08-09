@@ -117,7 +117,7 @@ export default function WorkshopRegistrationModal({
       }
 
       // 3. Perform Razorpay Checkout
-      const razorpayKey = regResult.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_key";
+      const razorpayKey = regResult.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
 
       const options: any = {
         key: razorpayKey,

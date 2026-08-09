@@ -6,21 +6,21 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database - PostgreSQL (IPv4 Pooler)
-    DATABASE_URL: str = "postgresql://postgres.dtvjzkhsnfarlodjymbr:PradeepNadig1!@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres"
+    DATABASE_URL: str
     
     # Supabase Auth
-    SUPABASE_URL: str = "https://your-supabase-project.supabase.co"
-    SUPABASE_SERVICE_ROLE_KEY: str = "your-service-role-key"
-    SUPABASE_JWT_SECRET: str = "your-supabase-jwt-secret"
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
+    SUPABASE_JWT_SECRET: Optional[str] = None
     
     # Razorpay
-    RAZORPAY_KEY_ID: str = "rzp_test_key"
-    RAZORPAY_SECRET: str = "rzp_test_secret"
+    RAZORPAY_KEY_ID: Optional[str] = None
+    RAZORPAY_SECRET: Optional[str] = None
     
     # WhatsApp Cloud API
-    WHATSAPP_TOKEN: str = "EAAX8xwSWXz4BSMMZBR1OzwZBnEZCH3epw4nZBaQiTSufo9S0U0Gm1njToROrWZAxFCz8ZB49HuQmxRVcjo6I2OqCXCuULcDwcquTKWHndPmwzgPrWhZCY94rQIgJvH3nZB0XPgMvUyjXkwy8Elx543VwVc5kmrfZBFVXP9ZCzvuyrtdZB4b7yPevIGvAumy49Cy6AZDZD"
-    WHATSAPP_PHONE_ID: str = "1211611855373954"
-    WHATSAPP_VERIFY_TOKEN: str = "pradeep_whatsapp_webhook_verify_token"
+    WHATSAPP_TOKEN: Optional[str] = None
+    WHATSAPP_PHONE_ID: Optional[str] = None
+    WHATSAPP_VERIFY_TOKEN: Optional[str] = None
     
     # Google Calendar
     GOOGLE_CLIENT_ID: Optional[str] = None

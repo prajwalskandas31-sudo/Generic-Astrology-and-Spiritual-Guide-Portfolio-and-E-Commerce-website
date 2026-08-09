@@ -7,9 +7,8 @@ backend/venv/
 
 # Environment
 .env
-*.env
-backend/.env
-frontend/.env*
+.env.*
+!.env.example
 
 # Node
 node_modules/

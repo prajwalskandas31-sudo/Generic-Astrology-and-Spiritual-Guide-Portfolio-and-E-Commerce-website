@@ -1,0 +1,30 @@
+# Reference Caddyfile for Hostinger VPS Deployment
+# Copy relevant blocks into /etc/caddy/Caddyfile on the VPS server.
+
+pradeepnadig.in, www.pradeepnadig.in {
+    # Route API endpoints directly to FastAPI backend container
+    handle_path /api/* {
+        rewrite * /api{path}
+        reverse_proxy 127.0.0.1:8000
+    }
+
+    # Route all other web traffic to Next.js frontend container
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+
+    # Security Headers & Compression
+    encode gzip zstd
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+    }
+}
+
+# Secondary domain placeholder setup (Ready for future expansion)
+shaankaricreations.in, www.shaankaricreations.in {
+    encode gzip zstd
+    respond "Domain reserved for Shaankari Creations" 200
+}
