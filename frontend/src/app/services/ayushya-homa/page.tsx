@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ayushya Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "Performed to pray for a long, healthy, and prosperous life, especially on birthdays and milestones.",
+  title: "Book Ayushya Homa in Bangalore for Health & Longevity | Pradeep Nadig",
+  description:
+    "Invoke blessings for health, vitality, and long life with authentic Ayushya Homa in Bengaluru. Ideal for birthdays, children, and health recovery. Vedic vidhi by Shri Pradeep Nadig.",
+  keywords: [
+    "Ayushya Homa",
+    "Ayushya Homa Bangalore",
+    "Birthday Pooja Purohit",
+    "Health Homa Bengaluru",
+    "Pradeep Nadig Homa",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/ayushya-homa",
+  },
+  openGraph: {
+    title: "Book Ayushya Homa in Bangalore for Health & Longevity | Pradeep Nadig",
+    description:
+      "Invoke blessings for long life, health, and vitality with authentic Ayushya Homa by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/ayushya-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Ayushya Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "Ayushya Homa is performed to pray for a long, healthy, and prosperous life, especially on birthdays, for young children, and during major health recovery.",
+      url: "https://pradeepnadig.in/services/ayushya-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "When should Ayushya Homa be performed?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "It is traditionally performed on birthdays (especially 1st, 60th, and annual birthdays) or during health recovery.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How long does Ayushya Homa take?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Around 2 to 3 hours, including sankalpa, Ayushya sukta chanting, and sacred fire oblations.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function AyushyaHomaPage() {
@@ -40,6 +102,10 @@ export default async function AyushyaHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />

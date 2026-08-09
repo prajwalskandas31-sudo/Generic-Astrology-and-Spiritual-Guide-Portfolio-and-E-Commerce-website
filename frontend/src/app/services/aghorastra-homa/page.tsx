@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Aghorastra Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "A sacred Shiva ritual performed for powerful spiritual protection and removal of negativity.",
+  title: "Book Authentic Aghorastra Homa in Bangalore | Pradeep Nadig",
+  description:
+    "Perform sacred Aghorastra Homa for powerful spiritual protection, removing negative energies, and inner peace. Traditional Vedic vidhi & samagri by Veda Brahma Shri Pradeep Nadig.",
+  keywords: [
+    "Aghorastra Homa",
+    "Aghorastra Homa Bangalore",
+    "Shiva Homa Purohit",
+    "Protection Homa Bengaluru",
+    "Vedic Rituals Pradeep Nadig",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/aghorastra-homa",
+  },
+  openGraph: {
+    title: "Book Authentic Aghorastra Homa in Bangalore | Pradeep Nadig",
+    description:
+      "Sacred Shiva ritual performed for powerful spiritual protection and negative energy removal by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/aghorastra-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Aghorastra Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "A sacred Shiva ritual performed for powerful spiritual protection, removal of severe negative energies, unseen obstacles, and strengthening divine grace.",
+      url: "https://pradeepnadig.in/services/aghorastra-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Who should perform Aghorastra Homa?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Recommended for those seeking powerful spiritual protection, relief from persistent negative energies, and peace of mind.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the duration of Aghorastra Homa?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Approximately 3 to 4 hours, conducted with authentic Shiva mantra chanting and sacred fire offerings.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function AghorastraHomaPage() {
@@ -40,6 +102,10 @@ export default async function AghorastraHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />

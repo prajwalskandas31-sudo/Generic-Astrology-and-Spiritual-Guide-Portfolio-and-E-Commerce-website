@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Navagraha Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "Seek blessings of the nine planetary deities, reduce planetary doshas, and bring harmony and prosperity.",
+  title: "Book Navagraha Homa in Bangalore for Planetary Dosha Shanthi | Pradeep Nadig",
+  description:
+    "Seek blessings of nine planets & reduce planetary doshas (Rahu, Ketu, Shani Dasha) with authentic Navagraha Homa in Bengaluru. Vedic Samagri & Vidhi by Veda Brahma Shri Pradeep Nadig.",
+  keywords: [
+    "Navagraha Homa",
+    "Navagraha Homa Bangalore",
+    "Planetary Shanthi Homa",
+    "Shani Rahu Ketu Dasha Remedies",
+    "Vedic Astrologer Pradeep Nadig",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/navagraha-homa",
+  },
+  openGraph: {
+    title: "Book Navagraha Homa in Bangalore for Planetary Shanthi | Pradeep Nadig",
+    description:
+      "Reduce planetary doshas and harmonize life energy with authentic Navagraha Homa by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/navagraha-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Navagraha Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "Performed to seek the blessings of nine celestial planets (Navagrahas), neutralize malefic planetary transits/dashas, and invoke health and prosperity.",
+      url: "https://pradeepnadig.in/services/navagraha-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "When is Navagraha Homa recommended?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Before starting new ventures, during adverse planetary Dasha/Bhukti periods (e.g. Sade Sati, Rahu/Ketu transit), or for family harmony.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How long does Navagraha Homa take?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Typically 2.5 to 3.5 hours, including Navagraha japa, nine-grain samithu oblations, and poornahuti.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function NavagrahaHomaPage() {
@@ -40,6 +102,10 @@ export default async function NavagrahaHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />

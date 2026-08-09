@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ganapathi Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "Perform sacred Mahaganapathi Homa for removing obstacles, seeking divine blessings, prosperity, and peace of mind.",
+  title: "Book Mahaganapathi Homa in Bangalore | Pradeep Nadig",
+  description:
+    "Perform sacred Mahaganapathi Homa for removing obstacles, invoking prosperity, and auspicious beginnings in Bengaluru. Complete Vedic vidhi & 108 dravya ahuti by Veda Brahma Shri Pradeep Nadig.",
+  keywords: [
+    "Ganapathi Homa",
+    "Ganapathi Homa Bangalore",
+    "Book Ganapathi Homa Online",
+    "Ganesh Homa Purohit Bengaluru",
+    "Pradeep Nadig Pooja Services",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/ganapathi-homa",
+  },
+  openGraph: {
+    title: "Book Mahaganapathi Homa in Bangalore | Pradeep Nadig",
+    description:
+      "Perform Mahaganapathi Homa for obstacle removal and prosperous beginnings with authentic Vedic rituals by Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/ganapathi-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Mahaganapathi Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "Sacred fire ritual dedicated to Lord Ganesha for overcoming obstacles and invoking auspicious beginnings with 108 dravya ahuti and Atharvashirsha mantras.",
+      url: "https://pradeepnadig.in/services/ganapathi-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What materials are required for Ganapathi Homa?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "All sacred dravya, modaka, pure ghee, dry coconut, and samithu materials are arranged by Veda Brahma Shri Pradeep Nadig.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can Ganapathi Homa be conducted at home or office?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, Mahaganapathi Homa can be performed at your residence, commercial office, or chosen venue.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function GanapathiHomaPage() {
@@ -20,7 +82,6 @@ export default async function GanapathiHomaPage() {
     offering = await getOfferingBySlug("ganapathi-homa");
   } catch (_) {}
 
-  // Fallback data if DB is offline or starting up
   const fallbackOffering = {
     id: 1,
     type: "Service" as const,
@@ -41,6 +102,10 @@ export default async function GanapathiHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />

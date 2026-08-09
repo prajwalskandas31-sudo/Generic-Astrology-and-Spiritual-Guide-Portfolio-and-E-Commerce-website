@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chandika Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "A powerful Vedic fire ritual dedicated to Goddess Chandika for victory over severe obstacles.",
+  title: "Book Chandika Homa in Bangalore for Protection & Victory | Pradeep Nadig",
+  description:
+    "Powerful Vedic fire ritual dedicated to Goddess Chandika for overcoming severe hardships, legal issues, and obstacles in Bengaluru. Vedic vidhi by Veda Brahma Shri Pradeep Nadig.",
+  keywords: [
+    "Chandika Homa",
+    "Chandika Homa Bangalore",
+    "Chandi Homa Purohit",
+    "Durga Chandika Homa Bengaluru",
+    "Pradeep Nadig Pooja",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/chandika-homa",
+  },
+  openGraph: {
+    title: "Book Chandika Homa in Bangalore for Victory & Protection | Pradeep Nadig",
+    description:
+      "Powerful Vedic fire ritual dedicated to Goddess Chandika for victory over obstacles by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/chandika-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Chandika Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "Sacred fire ritual dedicated to Goddess Chandika for victory over severe difficulties, removal of negative energies, and ultimate spiritual protection.",
+      url: "https://pradeepnadig.in/services/chandika-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Who should perform Chandika Homa?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Recommended for individuals or families facing persistent hardships, complex legal battles, or seeking divine mother's grace.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the duration of Chandika Homa?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Usually 3 to 5 hours, including Durga Saptashati parayana and sacred fire ahuti.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function ChandikaHomaPage() {
@@ -40,6 +102,10 @@ export default async function ChandikaHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />

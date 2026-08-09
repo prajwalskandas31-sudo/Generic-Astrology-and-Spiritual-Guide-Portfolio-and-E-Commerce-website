@@ -4,8 +4,70 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Durga Homa | Veda Brahma Shri Pradeep Nadig",
-  description: "Invoke Goddess Durga for protection, courage, success, and removal of negative energies.",
+  title: "Book Durga Homa in Bangalore for Protection & Courage | Pradeep Nadig",
+  description:
+    "Invoke Goddess Durga for divine protection, courage, success, and removing negative energies in Bengaluru. Authentic Navaratri & Chandi Durga Vidhi by Veda Brahma Shri Pradeep Nadig.",
+  keywords: [
+    "Durga Homa",
+    "Durga Homa Bangalore",
+    "Book Durga Homa Online",
+    "Navaratri Durga Pooja Bengaluru",
+    "Pradeep Nadig Divine Rituals",
+  ],
+  alternates: {
+    canonical: "https://pradeepnadig.in/services/durga-homa",
+  },
+  openGraph: {
+    title: "Book Durga Homa in Bangalore for Protection & Courage | Pradeep Nadig",
+    description:
+      "Invoke Goddess Durga's divine blessings for protection, courage, and spiritual strength by Veda Brahma Shri Pradeep Nadig.",
+    url: "https://pradeepnadig.in/services/durga-homa",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Durga Homa",
+      serviceType: "Vedic Homa Ritual",
+      description:
+        "Perform Durga Homa to invoke the divine blessings of Goddess Durga for protection, courage, success, and the removal of negative energies and obstacles.",
+      url: "https://pradeepnadig.in/services/durga-homa",
+      provider: {
+        "@type": "Person",
+        name: "Pradeep Nadig",
+        jobTitle: "Vedic Scholar & Spiritual Guide",
+        url: "https://pradeepnadig.in",
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Bengaluru, Karnataka, India",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "When is Durga Homa recommended?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "During Navaratri, Tuesdays, Fridays, Rahu Kala times, or before major life challenges when seeking divine mother's protection.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How long does Durga Homa take?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Approximately 2.5 to 3 hours, including Durga Suktam chanting, kumkuma archana, and fire oblations.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 export default async function DurgaHomaPage() {
@@ -40,6 +102,10 @@ export default async function DurgaHomaPage() {
 
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
           <OfferingDetailClient offering={offering || fallbackOffering} />
