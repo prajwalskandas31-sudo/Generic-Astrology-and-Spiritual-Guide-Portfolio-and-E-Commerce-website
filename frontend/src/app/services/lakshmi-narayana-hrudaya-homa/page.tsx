@@ -83,6 +83,12 @@ export default async function LakshmiNarayanaHrudayaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Invokes combined divine grace of Lord Vishnu & Goddess Lakshmi for sustainable wealth, family affection, spiritual growth, and high prosperity.",
+    where_performed: "Home living rooms, business offices, or event venues.",
+    when_performed: "Fridays, Purnima, Diwali, Akshaya Tritiya, or annual family thanksgiving.",
+    who_should_attend: "Husband & wife, family members, business partners, and employees.",
+    vidhi_details: "Narayana Hrudaya & Lakshmi Hrudaya Stotram Samputita Homa, Lotus Flower & Ghee Ahuti, Ashta Lakshmi Archana, Ksheera Payasa Naivedya, and Poornahuti.",
+    
     id: 11,
     type: "Service" as const,
     title: "Lakshmi Narayana Hrudaya Homa",

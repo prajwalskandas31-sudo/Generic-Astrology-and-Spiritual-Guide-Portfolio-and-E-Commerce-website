@@ -83,6 +83,12 @@ export default async function DurgaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Invokes Goddess Durga's protection against negative energies, envy, fear, litigation troubles, and bestows supreme courage.",
+    where_performed: "Home altars, office spaces, or open sacred courtyards.",
+    when_performed: "During Navaratri, Rahu Kala, Tuesdays, Fridays, or when facing persistent external disturbances.",
+    who_should_attend: "Family members, women seeking divine strength, and business leaders.",
+    vidhi_details: "Navadurga Avahana, Sri Sukta & Durga Sukta recitation, Red Lotus & Kumkum oblations, Ghee & Payasam Homa, Poornahuti, and Kumkuma Prasadam.",
+    
     id: 5,
     type: "Service" as const,
     title: "Durga Homa",

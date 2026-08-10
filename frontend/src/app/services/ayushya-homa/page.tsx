@@ -83,6 +83,12 @@ export default async function AyushyaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Invokes divine blessings of Markandeya & Ayur Devatas for long life, healthy development, immunity, and vitality.",
+    where_performed: "Conducted at home, event halls, or family prayer spaces.",
+    when_performed: "First birthday of a child (Ayushya Homa), annual birthdays, or recovery after illness.",
+    who_should_attend: "Infants, birthday celebrated individuals, parents, grandparents, and well-wishers.",
+    vidhi_details: "Ayur Devata Sthapana, Charu (sweet rice) Ahuti, Brahma-Vishnu-Shiva Ayur Sukta chanting, Ghee oblations, Kalasabhishekam for the child, and Prasadam.",
+    
     id: 4,
     type: "Service" as const,
     title: "Ayushya Homa",

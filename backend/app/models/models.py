@@ -17,6 +17,11 @@ class Offering(Base):
     status = Column(String(50), default="Published")  # Draft | Published | Archived
     seo_title = Column(String(255), nullable=True)
     seo_description = Column(Text, nullable=True)
+    who_benefits = Column(Text, nullable=True)
+    where_performed = Column(Text, nullable=True)
+    when_performed = Column(Text, nullable=True)
+    who_should_attend = Column(Text, nullable=True)
+    vidhi_details = Column(Text, nullable=True)
     faq = Column(JSON, default=list)  # List of {question, answer}
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

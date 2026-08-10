@@ -19,6 +19,11 @@ class OfferingBase(BaseModel):
     status: str = "Published"
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
+    who_benefits: Optional[str] = None
+    where_performed: Optional[str] = None
+    when_performed: Optional[str] = None
+    who_should_attend: Optional[str] = None
+    vidhi_details: Optional[str] = None
     faq: List[dict] = []
 
 class OfferingCreate(OfferingBase):

@@ -55,27 +55,69 @@ export default function OfferingDetailClient({ offering }: OfferingDetailClientP
             </p>
           </div>
 
-          {/* Benefits Section */}
-          <div className="bg-amber-50/60 p-6 rounded-2xl border border-amber-100 space-y-4">
-            <h3 className="text-lg font-serif font-bold text-amber-950 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-600" />
-              <span>Key Benefits &amp; Significance</span>
-            </h3>
-            <ul className="space-y-2.5 text-sm text-slate-700">
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>Performed in strict accordance with authentic Vedic Shastras.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>Personalized Sankalpa conducted specifically in your name &amp; Gothra.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>Promotes spiritual peace, obstacle removal, and positive energetic alignment.</span>
-              </li>
-            </ul>
+          {/* Detailed Guidance Grid (Who Benefits, Where Done, When Performed, Attendees) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 1. Who Does It Benefit */}
+            <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200/70 space-y-2">
+              <div className="flex items-center gap-2 text-amber-900 font-serif font-bold text-sm">
+                <Sparkles className="w-4 h-4 text-amber-700" />
+                <span>Who Does It Benefit?</span>
+              </div>
+              <p className="text-slate-700 text-xs leading-relaxed">
+                {offering.who_benefits ||
+                  "Provides divine spiritual protection, peace of mind, obstacle removal, and holistic well-being for all participants."}
+              </p>
+            </div>
+
+            {/* 2. Who Should Get It Done / Attend */}
+            <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200/70 space-y-2">
+              <div className="flex items-center gap-2 text-amber-900 font-serif font-bold text-sm">
+                <CheckCircle2 className="w-4 h-4 text-amber-700" />
+                <span>Who Should Get It Done?</span>
+              </div>
+              <p className="text-slate-700 text-xs leading-relaxed">
+                {offering.who_should_attend ||
+                  "Recommended for individuals, family members, couples, or business owners seeking divine grace and prosperity."}
+              </p>
+            </div>
+
+            {/* 3. When Is It Performed */}
+            <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200/70 space-y-2">
+              <div className="flex items-center gap-2 text-amber-900 font-serif font-bold text-sm">
+                <ChevronDown className="w-4 h-4 text-amber-700 -rotate-90" />
+                <span>When Is It Performed?</span>
+              </div>
+              <p className="text-slate-700 text-xs leading-relaxed">
+                {offering.when_performed ||
+                  "Conducted on auspicious Tithis, birth nakshatras, housewarmings, or when seeking relief from planetary doshas."}
+              </p>
+            </div>
+
+            {/* 4. Where Is It Done */}
+            <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200/70 space-y-2">
+              <div className="flex items-center gap-2 text-amber-900 font-serif font-bold text-sm">
+                <MessageSquare className="w-4 h-4 text-amber-700" />
+                <span>Where Is It Conducted?</span>
+              </div>
+              <p className="text-slate-700 text-xs leading-relaxed">
+                {offering.where_performed ||
+                  "Can be conducted at your personal home, business location, or designated sacred mandap in Bengaluru."}
+              </p>
+            </div>
           </div>
+
+          {/* Vidhi & Procedure Highlights */}
+          {offering.vidhi_details && (
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h3 className="text-base font-serif font-bold text-slate-900 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-700" />
+                <span>Vedic Vidhi &amp; Ritual Procedure</span>
+              </h3>
+              <p className="text-slate-600 text-xs leading-relaxed whitespace-pre-line">
+                {offering.vidhi_details}
+              </p>
+            </div>
+          )}
 
           {/* Optional FAQ Section */}
           {offering.faq && offering.faq.length > 0 && (

@@ -83,6 +83,12 @@ export default async function MrityunjayaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Grants health restoration, longevity, protection against accidental hazards, mental peace, and relief from chronic illnesses.",
+    where_performed: "Performed at residences, hospital prayer rooms (for recovery), or sacred temple sanctums.",
+    when_performed: "Birthdays (especially 60th Ugraratha Shanthi, 70th, 80th), during severe illnesses, or prior to major medical procedures.",
+    who_should_attend: "The person seeking health recovery/longevity, family members, children, and elders.",
+    vidhi_details: "Maha Mrityunjaya Mantra 1008/108 Japa, Amrita Kalasa Sthapana, Durva grass, Milk, Ghee, and Sesame seeds 108 Ahuti, Mrityunjaya Kalasabhishekam, and Ayur Raksha Threading.",
+    
     id: 3,
     type: "Service" as const,
     title: "Mrityunjaya Homa",

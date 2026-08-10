@@ -83,6 +83,12 @@ export default async function NavagrahaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Harmonizes planetary influences (Grahadosha), mitigates Rahu-Ketu/Sade Sati effects, improves health, career stability, and family peace.",
+    where_performed: "Conducted at home, outdoor courtyards, or sacred mandaps in Bengaluru.",
+    when_performed: "During unfavorable planetary Dashas/Bhuktis, transit changes, birthdays, or before major life decisions.",
+    who_should_attend: "Individuals undergoing difficult astrological periods, family members, and those seeking overall planetary harmony.",
+    vidhi_details: "Setup of 9 Square Navagraha Mandala, 9 Grain (Navadhanya) offerings, planetary specific Veda Samithu (Arka, Palasa, Khadira, Apamarga, etc.) Ahutis, Samidha Tarpanam, and Raksha Sutra Bandhana.",
+    
     id: 2,
     type: "Service" as const,
     title: "Navagraha Homa",

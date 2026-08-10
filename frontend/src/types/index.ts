@@ -10,6 +10,11 @@ export interface Offering {
   status: string;
   seo_title?: string;
   seo_description?: string;
+  who_benefits?: string;
+  where_performed?: string;
+  when_performed?: string;
+  who_should_attend?: string;
+  vidhi_details?: string;
   faq?: { question: string; answer: string }[];
   created_at?: string;
   updated_at?: string;

@@ -83,6 +83,12 @@ export default async function AghorastraHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Sacred Shiva ritual for ultimate spiritual protection, destroying evil eye (Drishti), severe negativity, and spiritual blockages.",
+    where_performed: "Conducted at home prayer spaces, sacred outdoor mandaps, or temple altars.",
+    when_performed: "Mantra Siddhi Tithis, Pradosham, Masa Shivaratri, or when experiencing extreme negative disturbances.",
+    who_should_attend: "Sankalpa Karta and family members seeking spiritual shielding.",
+    vidhi_details: "Aghora Shiva Avahana, Aghorastra Mantra 1008 Japa & Homa, Mustard & Black Sesame oblations, Bhasma Prokshana, and Protective Shiva Raksha.",
+    
     id: 8,
     type: "Service" as const,
     title: "Aghorastra Homa",

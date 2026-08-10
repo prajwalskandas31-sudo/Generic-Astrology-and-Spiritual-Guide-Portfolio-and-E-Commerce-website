@@ -4,7 +4,15 @@ import OfferingDetailClient from "@/components/OfferingDetailClient";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
+import { FALLBACK_OFFERINGS } from "@/lib/fallback-data";
+
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  return FALLBACK_OFFERINGS.map((offering) => ({
+    slug: offering.slug,
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

@@ -83,6 +83,12 @@ export default async function ChandikaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Powerful protection against severe black magic, chronic legal disputes, enemies, unseen negative forces, and deep karmic blockages.",
+    where_performed: "Sacred homa mandaps, open temple grounds, or spacious home courtyards.",
+    when_performed: "Chandi Navami, Navaratri, Amavasya, or when recommended after detailed horoscope examination.",
+    who_should_attend: "The primary devotee (Sankalpa Karta), family members, and close relatives.",
+    vidhi_details: "Detailed 700 Mantra Durga Saptashati Homa (Chandi Homa), 13 Chapter Ahutis, Dampati Pooja, Suvasini Pooja, Brahmachari Pooja, Kanya Pooja, and Mahapoornahuti with Silk Saree & Coconut.",
+    
     id: 6,
     type: "Service" as const,
     title: "Chandika Homa",

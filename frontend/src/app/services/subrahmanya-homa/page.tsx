@@ -83,6 +83,12 @@ export default async function SubrahmanyaHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Grants victory over obstacles, courage, success in competitive exams/career, relief from Kuja/Mars Dosha & Naga Dosha.",
+    where_performed: "Conducted at home, private auditoriums, or temple halls.",
+    when_performed: "Sashti Tithi (Skanda Sashti), Tuesdays, Kiruthigai, or before important competitive milestones.",
+    who_should_attend: "Students, young professionals, siblings, and individuals with Kuja Dosha.",
+    vidhi_details: "Lord Subrahmanya Avahana with Vel, Subrahmanya Trishati & Gayatri Chanting, Panchamrutha & Red Flower Ahuti, Vel Pooja, and Raksha Prasadam.",
+    
     id: 10,
     type: "Service" as const,
     title: "Subrahmanya Homa",

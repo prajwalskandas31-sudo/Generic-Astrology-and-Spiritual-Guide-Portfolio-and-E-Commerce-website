@@ -83,6 +83,12 @@ export default async function NagaShanthiPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Mitigates Sarpa Dosha, Naga Dosha, delays in marriage, fertility issues, skin ailments, and ancestral karmic obstacles.",
+    where_performed: "Conducted at home, dedicated Naga Kshetra venues, or open mandaps.",
+    when_performed: "Panchami Tithi (especially Nagapanchami), Shravana Month, or on dates advised by astrologer.",
+    who_should_attend: "Couples seeking children, individuals facing marriage delays, and family heads.",
+    vidhi_details: "Ashta Naga Mandalarchana, Milk & Sandalwood Abhisheka to Naga Prathima, Sarpa Sukta Japa, Sesame & Ghee Ahuti, Ksheerabhishekam, and Naga Prathima Daanam.",
+    
     id: 9,
     type: "Service" as const,
     title: "Naga Shanthi",

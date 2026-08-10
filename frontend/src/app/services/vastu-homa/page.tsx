@@ -83,6 +83,12 @@ export default async function VastuHomaPage() {
   } catch (_) {}
 
   const fallbackOffering = {
+    who_benefits: "Purifies domestic & commercial property, neutralizes structural Vastu Doshas, attracts wealth, and creates peaceful living environments.",
+    where_performed: "At the specific home, newly built apartment, plot, or commercial office.",
+    when_performed: "Before Griha Pravesha (housewarming), after major structural renovations, or when experiencing unexplained disturbances in a house.",
+    who_should_attend: "Property owners, family members, partners, and residents.",
+    vidhi_details: "Vastu Purusha Mandala Sthapana, Digpalaka Bali, Navadhanya & Wooden Samidha offerings, Vastu Purusha Pooja, Kalasa Prokshana throughout all rooms, and Sthapati Nirmalya.",
+    
     id: 7,
     type: "Service" as const,
     title: "Vastu Homa",
