@@ -466,7 +466,7 @@ async def seed_database():
             workshop1 = Workshop(
                 title="Vedic Chant Mastery Workshop",
                 slug="vedic-chant-mastery-august-2026",
-                cover_image="https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800",
+                cover_image="/images/services/sundarakanda-parayana-pooja.jpg",
                 description="Learn accurate phonetics, intonation (Swaras), and profound meanings of classical Vedic Suktas.",
                 start_date="2026-08-15",
                 end_date="2026-08-17",
@@ -536,7 +536,7 @@ async def seed_database():
             blog1 = Blog(
                 title="Understanding the Significance of Sandhyavandana",
                 slug="significance-of-sandhyavandana",
-                cover_image="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800",
+                cover_image="/images/services/satyanarayana-pooja.jpg",
                 author="Veda Brahma Shri Pradeep Nadig",
                 publish_date="2026-07-20",
                 category="Vedic Traditions",
@@ -547,7 +547,33 @@ async def seed_database():
             )
             db.add(blog1)
 
-        # 6. Seed FAQ
+        # 6. Seed Gallery Items
+        existing_gallery = await db.execute(select(GalleryItem))
+        if not existing_gallery.scalars().all():
+            print("Seeding initial gallery items...")
+            gallery_items = [
+                GalleryItem(title="Mahaganapathi Homa Fire Ritual", description="Invocation of Lord Ganesha for obstacle removal.", media_url="/images/services/ganapathi-homa.jpg", media_type="Image", category="Rituals", display_order=1),
+                GalleryItem(title="Ayushya Homa Birthday Blessings", description="Sacred fire ritual for health & longevity.", media_url="/images/services/ayushya-homa.jpg", media_type="Image", category="Rituals", display_order=2),
+                GalleryItem(title="Maha Mrityunjaya Homa", description="Protection and health restoration ritual.", media_url="/images/services/mrityunjaya-homa.jpg", media_type="Image", category="Rituals", display_order=3),
+                GalleryItem(title="Navagraha Homa Planetary Mandala", description="Harmonizing nine planetary influences.", media_url="/images/services/navagraha-homa.jpg", media_type="Image", category="Rituals", display_order=4),
+                GalleryItem(title="Sri Sudarshana Homa", description="Divine protection against negative energies.", media_url="/images/services/sudarshana-homa.jpg", media_type="Image", category="Rituals", display_order=5),
+                GalleryItem(title="Chandika Homa Sacred Yajna", description="Powerful ritual for victory over severe hardships.", media_url="/images/services/chandika-homa.jpg", media_type="Image", category="Rituals", display_order=6),
+                GalleryItem(title="Durga Homa Protection", description="Invoking Goddess Durga for spiritual strength.", media_url="/images/services/durga-homa.jpg", media_type="Image", category="Rituals", display_order=7),
+                GalleryItem(title="Aghorastra Homa", description="Shiva energy purification ritual.", media_url="/images/services/aghorastra-homa.jpg", media_type="Image", category="Rituals", display_order=8),
+                GalleryItem(title="Subrahmanya Homa", description="Valor and Naga Dosha mitigation ritual.", media_url="/images/services/subrahmanya-homa.jpg", media_type="Image", category="Rituals", display_order=9),
+                GalleryItem(title="Lakshmi Narayana Hrudaya Homa", description="Invoking prosperity and family abundance.", media_url="/images/services/lakshmi-narayana-hrudaya-homa.jpg", media_type="Image", category="Rituals", display_order=10),
+                GalleryItem(title="Naga Shanthi Pooja", description="Serene Sarpa Dosha mitigation and blessings.", media_url="/images/services/naga-shanthi.jpg", media_type="Image", category="Rituals", display_order=11),
+                GalleryItem(title="Vastu Homa Property Purification", description="Cleansing homes and commercial spaces of Vastu doshas.", media_url="/images/services/vastu-homa.jpg", media_type="Image", category="Rituals", display_order=12),
+                GalleryItem(title="Sri Satyanarayana Vratha & Pooja", description="Sacred Vishnu worship for family peace.", media_url="/images/services/satyanarayana-pooja.jpg", media_type="Image", category="Poojas", display_order=13),
+                GalleryItem(title="Sri Rudrabhishekam Pooja", description="Shiva Linga Panchamrutha bathing ritual.", media_url="/images/services/rudrabhishekam-pooja.jpg", media_type="Image", category="Poojas", display_order=14),
+                GalleryItem(title="Sri Saraswati Vidya Pooja", description="Wisdom and educational excellence blessing.", media_url="/images/services/saraswati-pooja.jpg", media_type="Image", category="Poojas", display_order=15),
+                GalleryItem(title="Swayamvara Parvathi Pooja", description="Marital harmony and wedding obstacles resolution.", media_url="/images/services/swayamvara-parvathi-pooja.jpg", media_type="Image", category="Poojas", display_order=16),
+                GalleryItem(title="Sundarakanda Parayana & Chant Mastery", description="Vedic chant learning and Hanuman strength invocation.", media_url="/images/services/sundarakanda-parayana-pooja.jpg", media_type="Image", category="Workshops", display_order=17),
+                GalleryItem(title="Vedic Astrology Consultation", description="Personal birth chart and horoscope analysis session.", media_url="/images/services/vedic-astrology-consultation.jpg", media_type="Image", category="Consultations", display_order=18),
+            ]
+            db.add_all(gallery_items)
+
+        # 7. Seed FAQ
         existing_faq = await db.execute(select(FAQItem))
         if not existing_faq.scalars().all():
             print("Seeding initial FAQ...")

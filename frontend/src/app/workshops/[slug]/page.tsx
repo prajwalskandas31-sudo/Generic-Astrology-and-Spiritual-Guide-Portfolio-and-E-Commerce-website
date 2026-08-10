@@ -4,7 +4,15 @@ import WorkshopDetailClient from "@/components/WorkshopDetailClient";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
+import { FALLBACK_WORKSHOPS } from "@/lib/fallback-data";
+
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  return FALLBACK_WORKSHOPS.map((workshop) => ({
+    slug: workshop.slug,
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

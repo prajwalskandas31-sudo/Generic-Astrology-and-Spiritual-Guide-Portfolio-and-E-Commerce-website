@@ -4,6 +4,8 @@ import { useState } from "react";
 import { GalleryItem } from "@/types";
 import { X, Play, ZoomIn } from "lucide-react";
 
+import { FALLBACK_GALLERY } from "@/lib/fallback-data";
+
 export interface GalleryClientProps {
   items: GalleryItem[];
 }
@@ -11,45 +13,8 @@ export interface GalleryClientProps {
 export default function GalleryClient({ items }: GalleryClientProps) {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
-  // Fallback demo items if backend gallery empty
-  const displayItems =
-    items.length > 0
-      ? items
-      : [
-          {
-            id: 1,
-            title: "Ganapathi Homa Sacred Fire",
-            description: "Authentic homa performed with sacred oblations.",
-            media_url: "/images/services/ganapathi-homa.jpg",
-            media_type: "Image" as const,
-            category: "Rituals",
-            display_order: 1,
-            created_at: "",
-            updated_at: "",
-          },
-          {
-            id: 2,
-            title: "Vedic Chant Mastery Session",
-            description: "Participants practicing Swara intonation.",
-            media_url: "/images/services/sundarakanda-parayana-pooja.jpg",
-            media_type: "Image" as const,
-            category: "Workshops",
-            display_order: 2,
-            created_at: "",
-            updated_at: "",
-          },
-          {
-            id: 3,
-            title: "Astrology Consultation Room",
-            description: "Personal birth chart study.",
-            media_url: "/images/services/vedic-astrology-consultation.jpg",
-            media_type: "Image" as const,
-            category: "Consultations",
-            display_order: 3,
-            created_at: "",
-            updated_at: "",
-          },
-        ];
+  // Fallback demo items if backend gallery empty or unsplash placeholders
+  const displayItems = items && items.length > 0 ? items : FALLBACK_GALLERY;
 
   return (
     <div className="space-y-8">

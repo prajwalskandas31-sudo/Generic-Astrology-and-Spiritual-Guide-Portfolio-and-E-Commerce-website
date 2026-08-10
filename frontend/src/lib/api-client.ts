@@ -154,32 +154,51 @@ export async function getOfferingBySlug(slug: string) {
 }
 
 export async function getWorkshops(status_filter?: string) {
+  let workshops: import("../types").Workshop[] = [];
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
-    const res = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
-    if (Array.isArray(res) && res.length === 0 && isAll) {
-      // Fall back if API returns empty array for all workshops
-      return FALLBACK_WORKSHOPS;
-    }
-    return res;
+    workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getWorkshops, using fallback data.");
-    if (status_filter && status_filter.toLowerCase() !== "all") {
-      return FALLBACK_WORKSHOPS.filter((w) => w.status === status_filter);
-    }
-    return FALLBACK_WORKSHOPS;
+    workshops = FALLBACK_WORKSHOPS;
   }
+
+  const mapBySlug = new Map<string, import("../types").Workshop>();
+  for (const fb of FALLBACK_WORKSHOPS) {
+    mapBySlug.set(fb.slug, { ...fb });
+  }
+
+  for (const item of workshops) {
+    const fb = mapBySlug.get(item.slug);
+    const hasUnsplash = !item.cover_image || item.cover_image.includes("unsplash.com");
+    mapBySlug.set(item.slug, {
+      ...fb,
+      ...item,
+      cover_image: hasUnsplash && fb?.cover_image ? fb.cover_image : item.cover_image || fb?.cover_image,
+    });
+  }
+
+  let result = Array.from(mapBySlug.values());
+  if (status_filter && status_filter.toLowerCase() !== "all") {
+    result = result.filter((w) => w.status === status_filter);
+  }
+  return result;
 }
 
 export async function getWorkshopBySlug(slug: string) {
+  const fb = FALLBACK_WORKSHOPS.find((w) => w.slug === slug);
   try {
-    return await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const item = await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const hasUnsplash = !item.cover_image || item.cover_image.includes("unsplash.com");
+    return {
+      ...fb,
+      ...item,
+      cover_image: hasUnsplash && fb?.cover_image ? fb.cover_image : item.cover_image || fb?.cover_image,
+    };
   } catch (error) {
-    console.warn(`Backend API unavailable for getWorkshopBySlug(${slug}), using fallback data.`);
-    const item = FALLBACK_WORKSHOPS.find((w) => w.slug === slug);
-    if (!item) throw error;
-    return item;
+    if (fb) return fb;
+    throw error;
   }
 }
 
@@ -260,12 +279,26 @@ export async function getBlogBySlug(slug: string) {
 }
 
 export async function getGallery() {
+  let items: import("../types").GalleryItem[] = [];
   try {
-    return await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 5000 });
+    items = await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getGallery, using fallback data.");
     return FALLBACK_GALLERY;
   }
+
+  if (!items || items.length === 0) {
+    return FALLBACK_GALLERY;
+  }
+
+  return items.map((item, idx) => {
+    const fb = FALLBACK_GALLERY[idx % FALLBACK_GALLERY.length];
+    const hasUnsplash = !item.media_url || item.media_url.includes("unsplash.com");
+    return {
+      ...item,
+      media_url: hasUnsplash && fb ? fb.media_url : item.media_url,
+    };
+  });
 }
 
 export async function getFAQ(category?: string) {
