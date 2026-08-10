@@ -89,7 +89,7 @@ export default async function VastuHomaPage() {
     slug: "vastu-homa",
     short_description: "Purify homes, offices, and commercial spaces, remove Vastu doshas, and invite positive energy.",
     full_description: "Vastu Homa is performed to purify homes, offices, and commercial spaces, remove Vastu doshas, and invite peace, prosperity, and positive energy into the property.",
-    images: ["https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1200"],
+    images: ["/images/services/vastu-homa.jpg"],
     display_order: 7,
     status: "Published",
     seo_title: "Vastu Homa | Veda Brahma Shri Pradeep Nadig",

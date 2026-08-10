@@ -89,7 +89,7 @@ export default async function LakshmiNarayanaHrudayaHomaPage() {
     slug: "lakshmi-narayana-hrudaya-homa",
     short_description: "Invoke combined blessings of Goddess Lakshmi and Lord Narayana for wealth, harmony, and abundance.",
     full_description: "Lakshmi Narayana Hrudaya Homa is performed to invoke the combined blessings of Goddess Lakshmi and Lord Narayana for wealth, prosperity, family harmony, spiritual growth, and overall abundance.",
-    images: ["https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=1200"],
+    images: ["/images/services/lakshmi-narayana-hrudaya-homa.jpg"],
     display_order: 11,
     status: "Published",
     seo_title: "Lakshmi Narayana Hrudaya Homa | Veda Brahma Shri Pradeep Nadig",

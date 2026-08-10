@@ -89,7 +89,7 @@ export default async function AyushyaHomaPage() {
     slug: "ayushya-homa",
     short_description: "Performed to pray for a long, healthy, and prosperous life, especially on birthdays.",
     full_description: "Ayushya Homa is performed to pray for a long, healthy, and prosperous life. It is especially performed on birthdays, for young children, and during important life milestones.",
-    images: ["https://images.unsplash.com/photo-1609101824149-4dbcf69b0c0f?q=80&w=1200"],
+    images: ["/images/services/ayushya-homa.jpg"],
     display_order: 4,
     status: "Published",
     seo_title: "Ayushya Homa | Veda Brahma Shri Pradeep Nadig",

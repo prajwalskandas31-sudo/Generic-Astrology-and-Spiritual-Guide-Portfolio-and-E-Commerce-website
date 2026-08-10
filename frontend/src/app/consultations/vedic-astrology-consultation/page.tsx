@@ -89,7 +89,7 @@ export default async function VedicAstrologyConsultationPage() {
     slug: "vedic-astrology-consultation",
     short_description: "Comprehensive birth chart analysis, planetary transit assessment, and personalized remedial guidance.",
     full_description: "Detailed 1-on-1 consultation analyzing your Janma Kundali (horoscope), Vimshottari Dasha periods, and planetary transits. Shri Pradeep Nadig offers authentic Vedic remedial recommendations for health, career, relationships, and spiritual growth.",
-    images: ["https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=1200"],
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
     display_order: 2,
     status: "Published",
     seo_title: "Vedic Astrology Consultation",

@@ -89,7 +89,7 @@ export default async function ChandikaHomaPage() {
     slug: "chandika-homa",
     short_description: "A powerful Vedic fire ritual dedicated to Goddess Chandika for victory over severe obstacles.",
     full_description: "Chandika Homa is a powerful Vedic fire ritual dedicated to Goddess Chandika for victory over difficulties, removal of powerful negative influences, and protection from unseen obstacles.",
-    images: ["https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=1200"],
+    images: ["/images/services/chandika-homa.jpg"],
     display_order: 6,
     status: "Published",
     seo_title: "Chandika Homa | Veda Brahma Shri Pradeep Nadig",

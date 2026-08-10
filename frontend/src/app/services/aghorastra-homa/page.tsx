@@ -89,7 +89,7 @@ export default async function AghorastraHomaPage() {
     slug: "aghorastra-homa",
     short_description: "A sacred Shiva ritual performed for powerful spiritual protection and removal of negativity.",
     full_description: "Aghorastra Homa is a sacred Shiva ritual performed for powerful spiritual protection, removal of severe negative energies, unseen obstacles, and to strengthen divine grace.",
-    images: ["https://images.unsplash.com/photo-1609101824149-4dbcf69b0c0f?q=80&w=1200"],
+    images: ["/images/services/aghorastra-homa.jpg"],
     display_order: 8,
     status: "Published",
     seo_title: "Aghorastra Homa | Veda Brahma Shri Pradeep Nadig",

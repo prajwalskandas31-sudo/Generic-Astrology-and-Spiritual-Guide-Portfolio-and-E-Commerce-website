@@ -89,7 +89,7 @@ export default async function SubrahmanyaHomaPage() {
     slug: "subrahmanya-homa",
     short_description: "Dedicated to Lord Subrahmanya for courage, wisdom, victory over obstacles, and relief from doshas.",
     full_description: "Subrahmanya Homa is dedicated to Lord Subrahmanya (Murugan/Kartikeya) for courage, wisdom, victory over obstacles, relief from Naga Dosha, and overall success in life.",
-    images: ["https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=1200"],
+    images: ["/images/services/subrahmanya-homa.jpg"],
     display_order: 10,
     status: "Published",
     seo_title: "Subrahmanya Homa | Veda Brahma Shri Pradeep Nadig",

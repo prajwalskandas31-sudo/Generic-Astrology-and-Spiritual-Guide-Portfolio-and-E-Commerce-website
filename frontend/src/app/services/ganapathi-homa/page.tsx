@@ -89,7 +89,7 @@ export default async function GanapathiHomaPage() {
     slug: "ganapathi-homa",
     short_description: "Sacred fire ritual dedicated to Lord Ganesha for overcoming obstacles and invoking auspicious beginnings.",
     full_description: "Mahaganapathi Homa is performed to seek the blessings of Lord Ganesha, the lord of auspicious beginnings and remover of all impediments. This sacred Vedic fire ritual includes 108 dravya ahuti chanting authentic Atharvashirsha mantras.",
-    images: ["https://images.unsplash.com/photo-1609101824149-4dbcf69b0c0f?auto=format&fit=crop&q=80&w=1200"],
+    images: ["/images/services/ganapathi-homa.jpg"],
     display_order: 1,
     status: "Published",
     seo_title: "Ganapathi Homa Rituals",

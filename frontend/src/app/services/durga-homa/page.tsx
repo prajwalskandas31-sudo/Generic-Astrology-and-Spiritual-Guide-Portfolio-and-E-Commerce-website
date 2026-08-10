@@ -89,7 +89,7 @@ export default async function DurgaHomaPage() {
     slug: "durga-homa",
     short_description: "Invoke Goddess Durga for protection, courage, success, and removal of negative energies.",
     full_description: "Durga Homa is performed to invoke the divine blessings of Goddess Durga for protection, courage, success, and the removal of negative energies and obstacles.",
-    images: ["https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=1200"],
+    images: ["/images/services/durga-homa.jpg"],
     display_order: 5,
     status: "Published",
     seo_title: "Durga Homa | Veda Brahma Shri Pradeep Nadig",

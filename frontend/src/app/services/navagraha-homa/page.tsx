@@ -89,7 +89,7 @@ export default async function NavagrahaHomaPage() {
     slug: "navagraha-homa",
     short_description: "Performed to seek the blessings of the nine planetary deities and reduce planetary doshas.",
     full_description: "Navagraha Homa is performed to seek the blessings of the nine planetary deities (Navagrahas), reduce the effects of adverse planetary positions, and bring harmony, prosperity, and overall well-being into life.",
-    images: ["https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1200"],
+    images: ["/images/services/navagraha-homa.jpg"],
     display_order: 2,
     status: "Published",
     seo_title: "Navagraha Homa | Veda Brahma Shri Pradeep Nadig",

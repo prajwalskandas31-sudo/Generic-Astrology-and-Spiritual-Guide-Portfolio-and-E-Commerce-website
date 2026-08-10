@@ -89,7 +89,7 @@ export default async function MrityunjayaHomaPage() {
     slug: "mrityunjaya-homa",
     short_description: "Dedicated to Lord Shiva for protection from illness, accidents, and promoting longevity.",
     full_description: "Mrityunjaya Homa is dedicated to Lord Shiva and is performed for protection from illness, accidents, untimely dangers, and to promote long life, good health, and inner strength.",
-    images: ["https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=1200"],
+    images: ["/images/services/mrityunjaya-homa.jpg"],
     display_order: 3,
     status: "Published",
     seo_title: "Mrityunjaya Homa | Veda Brahma Shri Pradeep Nadig",

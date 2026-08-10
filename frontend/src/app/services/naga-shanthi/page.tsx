@@ -89,7 +89,7 @@ export default async function NagaShanthiPage() {
     slug: "naga-shanthi",
     short_description: "Seek blessings of Naga Devatas, reduce Sarpa Dosha, and support family harmony.",
     full_description: "Naga Shanthi is performed to seek the blessings of the Naga Devatas, reduce Sarpa Dosha, and remove obstacles related to marriage, childbirth, family well-being, and ancestral karma.",
-    images: ["https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=1200"],
+    images: ["/images/services/naga-shanthi.jpg"],
     display_order: 9,
     status: "Published",
     seo_title: "Naga Shanthi | Veda Brahma Shri Pradeep Nadig",

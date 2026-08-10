@@ -60,7 +60,7 @@ export default async function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center opacity-10 scale-105 transition-transform duration-1000"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=1600')`,
+            backgroundImage: `url('/images/services/ganapathi-homa.jpg')`,
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-amber-100/90 via-amber-50/70 to-transparent pointer-events-none" />
