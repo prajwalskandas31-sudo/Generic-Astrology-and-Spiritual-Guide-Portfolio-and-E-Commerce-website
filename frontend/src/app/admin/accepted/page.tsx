@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getAcceptedRequests, getWorkshopRegistrations, executeRequestAction } from "@/lib/api-client";
+import {
+  fetchAPI,
+  getAcceptedRequests,
+  getWorkshopRegistrations,
+  executeRequestAction,
+  getCalendarStatus,
+  syncRequestToCalendar,
+  syncRegistrationToCalendar
+} from "@/lib/api-client";
 import {
   CalendarCheck,
   Calendar,
@@ -20,7 +28,9 @@ import {
   Send,
   Filter,
   Sparkles,
-  Check
+  Check,
+  ExternalLink,
+  Video
 } from "lucide-react";
 
 interface CombinedAcceptedItem {
@@ -41,6 +51,7 @@ interface CombinedAcceptedItem {
   created_at: string;
   raw_request?: RequestThread;
   raw_registration?: WorkshopRegistration;
+  meet_link?: string;
 }
 
 export default function AdminAcceptedPage() {
@@ -50,6 +61,8 @@ export default function AdminAcceptedPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [calendarSyncedIds, setCalendarSyncedIds] = useState<Record<string, boolean>>({});
+  const [syncingItemId, setSyncingItemId] = useState<string | null>(null);
+  const [calendarApiStatus, setCalendarApiStatus] = useState<any>(null);
 
   // Modals
   const [selectedLogsRequest, setSelectedLogsRequest] = useState<RequestThread | null>(null);
@@ -59,6 +72,7 @@ export default function AdminAcceptedPage() {
 
   useEffect(() => {
     loadAcceptedData();
+    checkCalendarConfig();
     // Load local calendar sync state if saved
     if (typeof window !== "undefined") {
       try {
@@ -67,6 +81,14 @@ export default function AdminAcceptedPage() {
       } catch (_) {}
     }
   }, []);
+
+  const checkCalendarConfig = async () => {
+    try {
+      const st = await getCalendarStatus();
+      setCalendarApiStatus(st);
+    } catch (_) {}
+  };
+
 
   const loadAcceptedData = async () => {
     setIsLoading(true);
@@ -175,14 +197,36 @@ export default function AdminAcceptedPage() {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startTimeStr}/${endTimeStr}`;
   };
 
-  const markGoogleCalendarSynced = (itemId: string, url: string) => {
-    const updated = { ...calendarSyncedIds, [itemId]: true };
+  const handleCalendarSync = async (item: CombinedAcceptedItem) => {
+    setSyncingItemId(item.id);
+    let targetUrl = getGoogleCalendarUrl(item);
+
+    try {
+      if (item.source_type === "REQUEST" && item.raw_request) {
+        const res = await syncRequestToCalendar(item.raw_request.request_id);
+        if (res && res.html_link) {
+          targetUrl = res.html_link;
+        }
+      } else if (item.source_type === "REGISTRATION" && item.raw_registration) {
+        const res = await syncRegistrationToCalendar(item.raw_registration.id);
+        if (res && res.html_link) {
+          targetUrl = res.html_link;
+        }
+      }
+    } catch (err) {
+      console.warn("Backend API calendar sync fallback to web URL:", err);
+    } finally {
+      setSyncingItemId(null);
+    }
+
+    const updated = { ...calendarSyncedIds, [item.id]: true };
     setCalendarSyncedIds(updated);
     if (typeof window !== "undefined") {
       localStorage.setItem("admin_gcal_synced_ids", JSON.stringify(updated));
     }
-    window.open(url, "_blank");
+    window.open(targetUrl, "_blank");
   };
+
 
   // Filter items
   const filteredItems = items.filter((item) => {
@@ -411,14 +455,20 @@ export default function AdminAcceptedPage() {
                         </span>
                       ) : (
                         <button
-                          onClick={() => markGoogleCalendarSynced(item.id, gcalUrl)}
-                          className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl font-bold text-[11px] flex items-center gap-1.5 transition-all"
+                          onClick={() => handleCalendarSync(item)}
+                          disabled={syncingItemId === item.id}
+                          className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl font-bold text-[11px] flex items-center gap-1.5 transition-all disabled:opacity-50"
                         >
-                          <CalendarCheck className="w-3.5 h-3.5 text-amber-700" />
-                          <span>Add to Google Calendar</span>
+                          {syncingItemId === item.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-700" />
+                          ) : (
+                            <CalendarCheck className="w-3.5 h-3.5 text-amber-700" />
+                          )}
+                          <span>{syncingItemId === item.id ? "Syncing..." : "Add to Google Calendar"}</span>
                         </button>
                       )}
                     </td>
+
 
                     <td className="p-4 text-right space-x-1">
                       {item.raw_request && (
@@ -571,13 +621,19 @@ export default function AdminAcceptedPage() {
                     </span>
                   ) : (
                     <button
-                      onClick={() => markGoogleCalendarSynced(item.id, gcalUrl)}
-                      className="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-xs transition-all"
+                      onClick={() => handleCalendarSync(item)}
+                      disabled={syncingItemId === item.id}
+                      className="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-xs transition-all disabled:opacity-50"
                     >
-                      <CalendarCheck className="w-4 h-4" />
-                      <span>Add to Google Calendar</span>
+                      {syncingItemId === item.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      ) : (
+                        <CalendarCheck className="w-4 h-4" />
+                      )}
+                      <span>{syncingItemId === item.id ? "Syncing..." : "Add to Google Calendar"}</span>
                     </button>
                   )}
+
 
                   {/* Actions */}
                   <div className="flex items-center gap-1">

@@ -347,6 +347,59 @@ export async function deleteWorkshopRegistration(registrationId: number) {
   });
 }
 
+export async function getCalendarStatus() {
+  try {
+    return await fetchAPI<{
+      configured: boolean;
+      connected: boolean;
+      mode: string;
+      message: string;
+      details?: Record<string, boolean>;
+    }>("/calendar/status", {
+      headers: { Authorization: "Bearer mock-admin-token" },
+      timeoutMs: 5000,
+    });
+  } catch (error) {
+    return {
+      configured: false,
+      connected: false,
+      mode: "Fallback (One-Click Web Links)",
+      message: "Unable to reach backend calendar status endpoint. Running in local Web Link fallback mode.",
+    };
+  }
+}
+
+export async function syncRequestToCalendar(requestId: string) {
+  return fetchAPI<{
+    status: string;
+    mode: string;
+    event_id: string;
+    html_link: string;
+    meet_link?: string;
+    message?: string;
+  }>(`/calendar/sync-request/${requestId}`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
+export async function syncRegistrationToCalendar(registrationId: number) {
+  return fetchAPI<{
+    status: string;
+    mode: string;
+    event_id: string;
+    html_link: string;
+    meet_link?: string;
+    message?: string;
+  }>(`/calendar/sync-registration/${registrationId}`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
+
 
 
 

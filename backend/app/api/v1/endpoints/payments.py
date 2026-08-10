@@ -105,5 +105,29 @@ async def verify_payment(
     except Exception as e:
         print(f"[WhatsApp Confirmation Notice Error]: {e}")
 
+    # Trigger Google Calendar Event Creation for Workshop Participant
+    try:
+        from app.services.calendar_service import create_google_calendar_event
+        reg_loc = f"{registration.city}, {registration.state}"
+        reg_date = "Workshop Batch Date"
+        if registration.batch_id:
+            batch_obj = await db.get(WorkshopBatch, registration.batch_id)
+            if batch_obj and batch_obj.start_time:
+                reg_date = batch_obj.start_time
+
+        gcal_res = await create_google_calendar_event(
+            summary=f"[Paid Participant] {workshop_title} - {registration.name}",
+            description=f"Workshop Registration Details:\nParticipant: {registration.name}\nPhone: +{registration.mobile}\nEmail: {registration.email or 'N/A'}\nRegistration ID: #{registration.id}\nAmount Paid: ₹{registration.amount}\nPayment ID: {data.razorpay_payment_id}",
+            location=reg_loc,
+            start_time=reg_date,
+            end_time=reg_date,
+            attendee_emails=[registration.email] if registration.email else [],
+            create_meet_link=False
+        )
+        print(f"[Google Calendar Workshop Auto-Sync Result]: {gcal_res}")
+    except Exception as gerr:
+        print(f"[Google Calendar Workshop Auto-Sync Notice]: {gerr}")
+
     return MessageResponse(message="Payment verification successful. Workshop registration confirmed!")
+
 

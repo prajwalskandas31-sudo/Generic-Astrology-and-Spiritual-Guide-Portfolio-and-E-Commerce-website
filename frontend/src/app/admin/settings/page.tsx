@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSettings, fetchAPI } from "@/lib/api-client";
-import { Settings as SettingsIcon, Save, Loader2 } from "lucide-react";
+import { getSettings, fetchAPI, getCalendarStatus } from "@/lib/api-client";
+import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, any>>({});
+  const [calendarStatus, setCalendarStatus] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
@@ -19,11 +20,14 @@ export default function AdminSettingsPage() {
     try {
       const data = await getSettings();
       setSettings(data);
+      const cStatus = await getCalendarStatus();
+      setCalendarStatus(cStatus);
     } catch (_) {
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const handleFieldChange = (key: string, value: any) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -160,6 +164,55 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+        {/* GOOGLE CALENDAR INTEGRATION STATUS */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-amber-700" />
+              <span>Google Calendar API Integration</span>
+            </h2>
+            {calendarStatus?.connected ? (
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                <span>Connected &amp; Active</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3 text-amber-600" />
+                <span>Graceful Fallback Mode</span>
+              </span>
+            )}
+          </div>
+
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-600">
+            <p className="font-semibold text-slate-900">
+              Current Mode: <span className="font-mono text-amber-800">{calendarStatus?.mode || "Fallback (One-Click Web Links)"}</span>
+            </p>
+            <p>{calendarStatus?.message || "Google Calendar events can be added using one-click Web Links directly from the Accepted Schedule page."}</p>
+
+            <div className="pt-2 border-t border-slate-200/80 font-mono text-[11px] grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div>
+                <span className="text-slate-400 block text-[10px] font-sans font-medium uppercase">GOOGLE_CLIENT_ID</span>
+                <span className={calendarStatus?.details?.has_client_id ? "text-emerald-700 font-bold" : "text-slate-400"}>
+                  {calendarStatus?.details?.has_client_id ? "Configured ✓" : "Not Set (Optional)"}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px] font-sans font-medium uppercase">GOOGLE_CLIENT_SECRET</span>
+                <span className={calendarStatus?.details?.has_client_secret ? "text-emerald-700 font-bold" : "text-slate-400"}>
+                  {calendarStatus?.details?.has_client_secret ? "Configured ✓" : "Not Set (Optional)"}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px] font-sans font-medium uppercase">GOOGLE_REFRESH_TOKEN</span>
+                <span className={calendarStatus?.details?.has_refresh_token ? "text-emerald-700 font-bold" : "text-slate-400"}>
+                  {calendarStatus?.details?.has_refresh_token ? "Configured ✓" : "Not Set (Optional)"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* LEGAL PAGES CONTENT */}
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
@@ -193,6 +246,7 @@ export default function AdminSettingsPage() {
             />
           </div>
         </div>
+
 
         <div className="flex justify-end">
           <button

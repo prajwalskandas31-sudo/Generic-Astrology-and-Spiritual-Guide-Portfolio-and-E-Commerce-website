@@ -6,6 +6,8 @@ from sqlalchemy.orm import selectinload
 
 from app.models.models import Customer, Request, MessageLog, Offering, Workshop, Enquiry
 from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list
+from app.services.calendar_service import create_google_calendar_event
+
 
 def validate_status_transition(current_status: str, new_status: str) -> bool:
     """
@@ -302,6 +304,30 @@ async def execute_request_action(
             await send_whatsapp_message(to_phone=cust.phone, text=confirm_msg)
         except Exception as e:
             print(f"[WhatsApp Notice Warning]: {e}")
+
+        # Trigger Google Calendar Event Creation
+        try:
+            c_date = req.selected_date or req.preferred_date or datetime.date.today().strftime("%Y-%m-%d")
+            c_time = req.selected_time or req.preferred_time or "10:00 AM"
+            loc_str = req.city or "Bengaluru, Karnataka, India"
+            item_lbl = req.service_name or req.workshop_name or req.request_type
+
+            start_dt_str = f"{c_date} {c_time}"
+            end_dt_str = f"{c_date} {c_time}"
+
+            gcal_res = await create_google_calendar_event(
+                summary=f"[Confirmed] {req.request_type}: {item_lbl} - {cust.name}",
+                description=f"Booking Details:\nClient: {cust.name}\nPhone: +{cust.phone}\nEmail: {cust.email or 'N/A'}\nRequest ID: {req.request_id}\nNotes: {req.notes or 'None'}",
+                location=loc_str,
+                start_time=c_date,
+                end_time=c_date,
+                attendee_emails=[cust.email] if cust.email else [],
+                create_meet_link=True if "consult" in req.request_type.lower() else False
+            )
+            print(f"[Google Calendar Auto-Sync Result]: {gcal_res}")
+        except Exception as gerr:
+            print(f"[Google Calendar Auto-Sync Notice]: {gerr}")
+
 
     elif act in ["CHANGE_TIME", "CHANGE_REQUEST_TIME", "RESCHEDULE_REQUESTED"]:
         if not validate_status_transition(req.status, "RESCHEDULE_REQUESTED"):
