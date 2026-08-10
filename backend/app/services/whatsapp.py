@@ -13,12 +13,20 @@ def safe_print(msg: str):
     except Exception:
         pass
 
+def format_whatsapp_phone(phone: str) -> str:
+    if not phone:
+        return ""
+    clean = phone.replace("+", "").replace(" ", "").replace("-", "").replace("(", "").replace(")", "").strip()
+    if len(clean) == 10 and clean[0] in ["6", "7", "8", "9"]:
+        clean = "91" + clean
+    return clean
+
 async def send_whatsapp_message(to_phone: str, text: str):
     """
     Sends a text WhatsApp message via WhatsApp Cloud API.
     Uses mock sandbox output if token is not configured.
     """
-    clean_phone = to_phone.replace("+", "").replace(" ", "").replace("-", "")
+    clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND TEXT] To: +{clean_phone} | Message:\n{text}\n")
 
     if settings.WHATSAPP_TOKEN:
@@ -33,7 +41,7 @@ async def send_whatsapp_message(to_phone: str, text: str):
             "type": "text",
             "text": {"body": text}
         }
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
                 safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
@@ -56,7 +64,7 @@ async def send_whatsapp_buttons(
     `buttons` format: [{"id": "action_id", "title": "Button Title"}]
     WhatsApp limits to maximum 3 quick reply buttons per message.
     """
-    clean_phone = to_phone.replace("+", "").replace(" ", "").replace("-", "")
+    clean_phone = format_whatsapp_phone(to_phone)
     button_titles = ", ".join([f"[{b['title']}]" for b in buttons])
     safe_print(f"[WHATSAPP OUTBOUND BUTTONS] To: +{clean_phone} | Body: {body_text} | Buttons: {button_titles}")
 
@@ -96,7 +104,7 @@ async def send_whatsapp_buttons(
             "interactive": interactive_obj
         }
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
                 safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
@@ -125,7 +133,7 @@ async def send_whatsapp_list(
     Sends an interactive list message via WhatsApp Cloud API (for >3 options like time slots or active requests).
     `sections` format: [{"title": "Section Title", "rows": [{"id": "row_id", "title": "Row Title", "description": "Optional"}]}]
     """
-    clean_phone = to_phone.replace("+", "").replace(" ", "").replace("-", "")
+    clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND LIST] To: +{clean_phone} | Body: {body_text} | Button: {button_title}")
 
     if settings.WHATSAPP_TOKEN:
@@ -156,7 +164,7 @@ async def send_whatsapp_list(
             "interactive": interactive_obj
         }
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
                 safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")
@@ -178,7 +186,7 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
     """
     Sends an image WhatsApp message with optional caption via WhatsApp Cloud API.
     """
-    clean_phone = to_phone.replace("+", "").replace(" ", "").replace("-", "")
+    clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND IMAGE] To: +{clean_phone} | Image: {image_url} | Caption: {caption}")
 
     if settings.WHATSAPP_TOKEN:
@@ -198,7 +206,7 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
             "image": image_obj
         }
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             try:
                 res = await client.post(url, json=payload, headers=headers)
                 safe_print(f"[WHATSAPP API RESPONSE] Status: {res.status_code} | Body: {res.text}")

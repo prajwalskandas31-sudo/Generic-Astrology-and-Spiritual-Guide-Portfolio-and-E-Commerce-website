@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getAcceptedRequests, getWorkshopRegistrations } from "@/lib/api-client";
+import { fetchAPI, getAcceptedRequests, getWorkshopRegistrations, executeRequestAction } from "@/lib/api-client";
 import {
   CalendarCheck,
   Calendar,
@@ -138,11 +138,7 @@ export default function AdminAcceptedPage() {
   const handleAction = async (requestIdStr: string, actionName: string, extraPayload: any = {}) => {
     setIsPerformingAction(true);
     try {
-      await fetchAPI(`/requests/${requestIdStr}/action`, {
-        method: "POST",
-        headers: { Authorization: "Bearer mock-admin-token" },
-        body: JSON.stringify({ action: actionName, ...extraPayload }),
-      });
+      await executeRequestAction(requestIdStr, actionName, extraPayload);
       setTimePickerRequest(null);
       await loadAcceptedData();
     } catch (err: any) {

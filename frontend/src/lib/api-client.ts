@@ -322,6 +322,15 @@ export async function getAcceptedRequests() {
   return [];
 }
 
+export async function executeRequestAction(requestId: string, actionName: string, extraPayload: any = {}) {
+  return fetchAPI<import("../types").RequestThread>(`/requests/${requestId}/action`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    body: JSON.stringify({ action: actionName, ...extraPayload }),
+    timeoutMs: 25000,
+  });
+}
+
 
 
 

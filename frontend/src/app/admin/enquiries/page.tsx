@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getWorkshopRegistrations } from "@/lib/api-client";
+import { fetchAPI, getWorkshopRegistrations, executeRequestAction } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -115,11 +115,7 @@ export default function AdminRequestsPage() {
   const handleAction = async (requestId: string, actionName: string, extraPayload: any = {}) => {
     setIsPerformingAction(true);
     try {
-      await fetchAPI(`/requests/${requestId}/action`, {
-        method: "POST",
-        headers: { Authorization: "Bearer mock-admin-token" },
-        body: JSON.stringify({ action: actionName, ...extraPayload }),
-      });
+      await executeRequestAction(requestId, actionName, extraPayload);
       setTimePickerRequest(null);
       await loadRequests();
     } catch (err: any) {

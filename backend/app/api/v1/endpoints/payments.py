@@ -80,20 +80,30 @@ async def verify_payment(
 
     await db.commit()
 
+    # Fetch Workshop details for accurate title
+    workshop_title = "Vedic Workshop"
+    if registration.workshop_id:
+        w_obj = await db.get(Workshop, registration.workshop_id)
+        if w_obj and w_obj.title:
+            workshop_title = w_obj.title
+    elif req_obj and req_obj.workshop_name:
+        workshop_title = req_obj.workshop_name
+
     # Dispatch WhatsApp Confirmation Message to Participant
     confirm_text = (
         f"🙏 Namaste {registration.name},\n\n"
         f"Your workshop seat has been successfully confirmed!\n\n"
-        f"🌸 Workshop: {req_obj.workshop_name if req_obj else 'Vedic Workshop'}\n"
+        f"🌸 Workshop: {workshop_title}\n"
         f"📋 Registration ID: #{registration.id}\n"
         f"💳 Amount Paid: ₹{registration.amount}\n"
         f"🔑 Payment Reference: {data.razorpay_payment_id}\n\n"
         f"We look forward to welcoming you to the session."
     )
     try:
-        await send_whatsapp_message(to_phone=registration.mobile, text=confirm_text)
+        ws_res = await send_whatsapp_message(to_phone=registration.mobile, text=confirm_text)
+        print(f"[WhatsApp Payment Confirmation Sent] Phone: {registration.mobile} | Res: {ws_res}")
     except Exception as e:
-        print(f"[WhatsApp Confirmation Notice Warning]: {e}")
+        print(f"[WhatsApp Confirmation Notice Error]: {e}")
 
     return MessageResponse(message="Payment verification successful. Workshop registration confirmed!")
 

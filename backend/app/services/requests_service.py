@@ -294,7 +294,10 @@ async def execute_request_action(
         await db.commit()
 
         # Send WhatsApp confirmation to client
-        await send_whatsapp_message(to_phone=cust.phone, text=confirm_msg)
+        try:
+            await send_whatsapp_message(to_phone=cust.phone, text=confirm_msg)
+        except Exception as e:
+            print(f"[WhatsApp Notice Warning]: {e}")
 
     elif act in ["CHANGE_TIME", "CHANGE_REQUEST_TIME", "RESCHEDULE_REQUESTED"]:
         if not validate_status_transition(req.status, "RESCHEDULE_REQUESTED"):
@@ -326,7 +329,10 @@ async def execute_request_action(
             {"id": f"req:{req.request_id}:TIME_1100", "title": "11:00 AM"},
             {"id": f"req:{req.request_id}:TIME_1200", "title": "12:00 PM"}
         ]
-        await send_whatsapp_buttons(to_phone=cust.phone, body_text=reschedule_msg, buttons=time_buttons)
+        try:
+            await send_whatsapp_buttons(to_phone=cust.phone, body_text=reschedule_msg, buttons=time_buttons)
+        except Exception as e:
+            print(f"[WhatsApp Notice Warning]: {e}")
 
     elif act.startswith("TIME_") or act == "SELECT_TIME":
         raw_time = action_payload.get("selected_time")
@@ -362,7 +368,10 @@ async def execute_request_action(
         db.add(log)
         await db.commit()
 
-        await send_whatsapp_message(to_phone=cust.phone, text=time_msg)
+        try:
+            await send_whatsapp_message(to_phone=cust.phone, text=time_msg)
+        except Exception as e:
+            print(f"[WhatsApp Notice Warning]: {e}")
 
     elif act in ["REJECT", "REJECTED", "ADMIN_REJECTED"]:
         req.status = "REJECTED"
@@ -386,7 +395,10 @@ async def execute_request_action(
         db.add(log)
         await db.commit()
 
-        await send_whatsapp_message(to_phone=cust.phone, text=reject_msg)
+        try:
+            await send_whatsapp_message(to_phone=cust.phone, text=reject_msg)
+        except Exception as e:
+            print(f"[WhatsApp Notice Warning]: {e}")
 
     elif act in ["CANCEL", "CANCEL_REQUEST", "CANCELLED"]:
         req.status = "CANCELLED"
@@ -406,7 +418,10 @@ async def execute_request_action(
         db.add(log)
         await db.commit()
 
-        await send_whatsapp_message(to_phone=cust.phone, text=cancel_msg)
+        try:
+            await send_whatsapp_message(to_phone=cust.phone, text=cancel_msg)
+        except Exception as e:
+            print(f"[WhatsApp Notice Warning]: {e}")
 
     elif act in ["MARK_COMPLETED", "COMPLETED"]:
         req.status = "COMPLETED"
