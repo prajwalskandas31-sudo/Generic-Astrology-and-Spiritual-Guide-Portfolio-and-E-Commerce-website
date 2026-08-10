@@ -125,8 +125,17 @@ async def verify_payment(
             create_meet_link=False
         )
         print(f"[Google Calendar Workshop Auto-Sync Result]: {gcal_res}")
+
+        gcal_link = gcal_res.get("html_link")
+        if gcal_link:
+            cal_msg = f"📅 Workshop Calendar Invitation:\n🌸 {workshop_title}\n🔗 View Calendar Event: {gcal_link}"
+            try:
+                await send_whatsapp_message(to_phone=registration.mobile, text=cal_msg)
+            except Exception as werr:
+                print(f"[WhatsApp Workshop Calendar Link Dispatch Error]: {werr}")
     except Exception as gerr:
         print(f"[Google Calendar Workshop Auto-Sync Notice]: {gerr}")
+
 
     return MessageResponse(message="Payment verification successful. Workshop registration confirmed!")
 

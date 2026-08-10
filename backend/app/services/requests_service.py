@@ -325,8 +325,23 @@ async def execute_request_action(
                 create_meet_link=True if "consult" in req.request_type.lower() else False
             )
             print(f"[Google Calendar Auto-Sync Result]: {gcal_res}")
+
+            meet_link = gcal_res.get("meet_link")
+            gcal_link = gcal_res.get("html_link")
+            if meet_link or gcal_link:
+                cal_msg = f"📅 Calendar Invitation for Request {req.request_id}:\n"
+                if meet_link:
+                    cal_msg += f"🎥 Online Join Link: {meet_link}\n"
+                if gcal_link:
+                    cal_msg += f"🔗 View Calendar Event: {gcal_link}\n"
+
+                try:
+                    await send_whatsapp_message(to_phone=cust.phone, text=cal_msg)
+                except Exception as werr:
+                    print(f"[WhatsApp Calendar Link Dispatch Error]: {werr}")
         except Exception as gerr:
             print(f"[Google Calendar Auto-Sync Notice]: {gerr}")
+
 
 
     elif act in ["CHANGE_TIME", "CHANGE_REQUEST_TIME", "RESCHEDULE_REQUESTED"]:
