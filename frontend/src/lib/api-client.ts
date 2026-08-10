@@ -89,33 +89,67 @@ export async function getSettings() {
 }
 
 export async function getOfferings(type?: string, status_filter?: string) {
+  let offerings: import("../types").Offering[] = [];
   try {
     const params = new URLSearchParams();
     if (type) params.append("type", type);
     if (status_filter) params.append("status_filter", status_filter);
     const query = params.toString() ? `?${params.toString()}` : "";
-    return await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
+    offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getOfferings, using fallback data.");
-    let result = FALLBACK_OFFERINGS;
-    if (type && type.toLowerCase() !== "all") {
-      result = result.filter((o) => o.type === type);
-    }
-    if (status_filter && status_filter.toLowerCase() !== "all") {
-      result = result.filter((o) => o.status === status_filter);
-    }
-    return result;
+    offerings = FALLBACK_OFFERINGS;
   }
+
+  // Smart Merge: ensure all 20 homas, poojas, and consultations exist with high quality local images
+  const mapBySlug = new Map<string, import("../types").Offering>();
+  for (const fb of FALLBACK_OFFERINGS) {
+    mapBySlug.set(fb.slug, { ...fb });
+  }
+
+  for (const item of offerings) {
+    const fb = mapBySlug.get(item.slug);
+    const hasUnsplashImage = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
+    mapBySlug.set(item.slug, {
+      ...fb,
+      ...item,
+      images: hasUnsplashImage && fb?.images ? fb.images : (item.images?.length ? item.images : fb?.images || []),
+      who_benefits: item.who_benefits || fb?.who_benefits,
+      where_performed: item.where_performed || fb?.where_performed,
+      when_performed: item.when_performed || fb?.when_performed,
+      who_should_attend: item.who_should_attend || fb?.who_should_attend,
+      vidhi_details: item.vidhi_details || fb?.vidhi_details,
+    });
+  }
+
+  let result = Array.from(mapBySlug.values());
+  if (type && type.toLowerCase() !== "all") {
+    result = result.filter((o) => o.type === type);
+  }
+  if (status_filter && status_filter.toLowerCase() !== "all") {
+    result = result.filter((o) => o.status === status_filter);
+  }
+  return result.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 }
 
 export async function getOfferingBySlug(slug: string) {
+  const fb = FALLBACK_OFFERINGS.find((o) => o.slug === slug);
   try {
-    return await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const item = await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const hasUnsplashImage = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
+    return {
+      ...fb,
+      ...item,
+      images: hasUnsplashImage && fb?.images ? fb.images : (item.images?.length ? item.images : fb?.images || []),
+      who_benefits: item.who_benefits || fb?.who_benefits,
+      where_performed: item.where_performed || fb?.where_performed,
+      when_performed: item.when_performed || fb?.when_performed,
+      who_should_attend: item.who_should_attend || fb?.who_should_attend,
+      vidhi_details: item.vidhi_details || fb?.vidhi_details,
+    };
   } catch (error) {
-    console.warn(`Backend API unavailable for getOfferingBySlug(${slug}), using fallback data.`);
-    const item = FALLBACK_OFFERINGS.find((o) => o.slug === slug);
-    if (!item) throw error;
-    return item;
+    if (fb) return fb;
+    throw error;
   }
 }
 
