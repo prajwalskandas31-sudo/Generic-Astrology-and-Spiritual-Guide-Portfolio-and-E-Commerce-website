@@ -214,12 +214,16 @@ async def create_request(
             {"id": f"req:{req_id}:CANCEL_REQUEST", "title": "CANCEL"}
         ]
 
-        await send_whatsapp_buttons(
-            to_phone=customer.phone,
-            body_text=body_text,
-            buttons=buttons,
-            header_text="Veda Brahma Shri Pradeep Nadig"
-        )
+        try:
+            res = await send_whatsapp_buttons(
+                to_phone=customer.phone,
+                body_text=body_text,
+                buttons=buttons,
+                header_text="Veda Brahma Shri Pradeep Nadig"
+            )
+            print(f"[WhatsApp Request Dispatch Sent] Phone: {customer.phone} | Result: {res}")
+        except Exception as e:
+            print(f"[WhatsApp Request Dispatch Error]: {e}")
 
     # Reload with relations
     res = await db.execute(
