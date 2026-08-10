@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getWorkshopRegistrations, executeRequestAction } from "@/lib/api-client";
+import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -23,11 +23,12 @@ import {
   X,
   Send,
   AlertCircle,
-  Users
+  Users,
+  Trash2
 } from "lucide-react";
 
 export default function AdminRequestsPage() {
-  const [activeTab, setActiveTab] = useState<"active" | "registrations" | "archived">("active");
+  const [activeTab, setActiveTab] = useState<"active" | "rejected" | "registrations" | "archived">("active");
   const [requests, setRequests] = useState<RequestThread[]>([]);
   const [registrations, setRegistrations] = useState<WorkshopRegistration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +43,7 @@ export default function AdminRequestsPage() {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       const tabParam = urlParams.get("tab");
-      if (tabParam === "registrations" || tabParam === "archived" || tabParam === "active") {
+      if (tabParam === "registrations" || tabParam === "archived" || tabParam === "active" || tabParam === "rejected") {
         setActiveTab(tabParam as any);
       }
     }
@@ -125,6 +126,32 @@ export default function AdminRequestsPage() {
     }
   };
 
+  const handleDeleteRequest = async (requestId: string) => {
+    if (!confirm(`Are you sure you want to permanently delete Request ${requestId}? This action cannot be undone.`)) return;
+    setIsPerformingAction(true);
+    try {
+      await deleteRequest(requestId);
+      await loadRequests();
+    } catch (err: any) {
+      alert(`Failed to delete request: ${err.message}`);
+    } finally {
+      setIsPerformingAction(false);
+    }
+  };
+
+  const handleDeleteRegistration = async (id: number, name: string) => {
+    if (!confirm(`Are you sure you want to delete workshop registration for ${name}? This action cannot be undone.`)) return;
+    setIsPerformingAction(true);
+    try {
+      await deleteWorkshopRegistration(id);
+      await loadRegistrations();
+    } catch (err: any) {
+      alert(`Failed to delete registration: ${err.message}`);
+    } finally {
+      setIsPerformingAction(false);
+    }
+  };
+
   const filteredRequests = requests.filter((req) => {
     const matchesSearch =
       req.request_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -200,6 +227,16 @@ export default function AdminRequestsPage() {
             }`}
           >
             ACTIVE REQUESTS
+          </button>
+          <button
+            onClick={() => setActiveTab("rejected")}
+            className={`px-5 py-2 font-semibold text-xs rounded-lg transition-all ${
+              activeTab === "rejected"
+                ? "bg-white text-red-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            REJECTED &amp; CANCELLED
           </button>
           <button
             onClick={() => setActiveTab("registrations")}
@@ -279,6 +316,7 @@ export default function AdminRequestsPage() {
                   <th className="p-4">Payment Status</th>
                   <th className="p-4">Order ID</th>
                   <th className="p-4">Date</th>
+                  <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -321,6 +359,17 @@ export default function AdminRequestsPage() {
                     <td className="p-4 text-slate-500 font-mono text-[11px]">
                       {reg.created_at ? new Date(reg.created_at).toLocaleDateString() : "N/A"}
                     </td>
+                    <td className="p-4 text-right">
+                      <button
+                        onClick={() => handleDeleteRegistration(reg.id, reg.name)}
+                        disabled={isPerformingAction}
+                        className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition-colors inline-flex items-center gap-1 font-semibold text-xs"
+                        title="Delete Registration"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -334,6 +383,8 @@ export default function AdminRequestsPage() {
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             {activeTab === "active"
               ? "There are no active pending requests. New customer form submissions will automatically generate threads here."
+              : activeTab === "rejected"
+              ? "No rejected or cancelled request records found."
               : "No completed or archived request records found."}
           </p>
         </div>
@@ -522,6 +573,15 @@ export default function AdminRequestsPage() {
                     <span>ARCHIVE</span>
                   </button>
                 )}
+
+                <button
+                  onClick={() => handleDeleteRequest(req.request_id)}
+                  disabled={isPerformingAction}
+                  className="px-4 py-2 bg-rose-700 hover:bg-rose-800 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>DELETE</span>
+                </button>
               </div>
             </div>
           ))}

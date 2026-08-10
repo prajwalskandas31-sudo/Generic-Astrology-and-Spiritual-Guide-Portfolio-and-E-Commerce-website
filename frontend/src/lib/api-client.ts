@@ -331,6 +331,22 @@ export async function executeRequestAction(requestId: string, actionName: string
   });
 }
 
+export async function deleteRequest(requestId: string) {
+  return fetchAPI<{ message: string }>(`/requests/${requestId}`, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
+export async function deleteWorkshopRegistration(registrationId: number) {
+  return fetchAPI<{ message: string }>(`/workshops/registrations/${registrationId}`, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
 
 
 

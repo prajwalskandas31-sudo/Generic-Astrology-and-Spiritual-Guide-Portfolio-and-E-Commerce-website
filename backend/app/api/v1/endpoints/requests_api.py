@@ -31,7 +31,9 @@ async def list_requests(
     )
 
     if tab == "active":
-        query = query.where(Request.status.not_in(["COMPLETED", "ARCHIVED"]))
+        query = query.where(Request.status.not_in(["COMPLETED", "ARCHIVED", "REJECTED", "CANCELLED"]))
+    elif tab == "rejected":
+        query = query.where(Request.status.in_(["REJECTED", "CANCELLED"]))
     elif tab == "archived":
         query = query.where(Request.status.in_(["COMPLETED", "ARCHIVED"]))
     elif tab == "accepted":
@@ -140,3 +142,30 @@ async def perform_request_action(
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Action error: {str(e)}")
+
+
+@router.delete("/{request_id_str}", response_model=MessageResponse)
+async def delete_request_thread(
+    request_id_str: str,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    """
+    Admin endpoint to permanently delete a request thread and its associated message logs.
+    """
+    query = select(Request).where(Request.request_id == request_id_str)
+    result = await db.execute(query)
+    req = result.scalar_one_or_none()
+    
+    if not req:
+        raise HTTPException(status_code=404, detail=f"Request '{request_id_str}' not found")
+        
+    # Delete associated message logs
+    logs_res = await db.execute(select(MessageLog).where(MessageLog.request_id == req.id))
+    for log in logs_res.scalars().all():
+        await db.delete(log)
+        
+    await db.delete(req)
+    await db.commit()
+    
+    return MessageResponse(message=f"Request '{request_id_str}' successfully deleted")

@@ -253,3 +253,21 @@ async def broadcast_workshop_whatsapp(
         
     return MessageResponse(message=f"WhatsApp broadcast dispatched successfully to {sent_count} participants.")
 
+
+@router.delete("/registrations/{reg_id}", response_model=MessageResponse)
+async def delete_workshop_registration(
+    reg_id: int,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    """
+    Admin endpoint to delete a workshop registration record.
+    """
+    reg = await db.get(WorkshopRegistration, reg_id)
+    if not reg:
+        raise HTTPException(status_code=404, detail=f"Workshop registration #{reg_id} not found")
+        
+    await db.delete(reg)
+    await db.commit()
+    return MessageResponse(message=f"Workshop registration #{reg_id} successfully deleted")
+
