@@ -81,11 +81,13 @@ async def register_for_workshop(
     # Generate Razorpay Order ID (try real Razorpay API if credentials exist)
     order_id = f"order_{uuid.uuid4().hex[:12]}"
     is_real_order = False
+    rzp_key = settings.RAZORPAY_KEY_ID.strip() if settings.RAZORPAY_KEY_ID else None
+    rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
 
-    if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_SECRET:
+    if rzp_key and rzp_secret:
         try:
             import razorpay
-            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))
+            client = razorpay.Client(auth=(rzp_key, rzp_secret))
             order_data = {
                 "amount": int(workshop.price * 100),
                 "currency": "INR",
@@ -150,7 +152,7 @@ async def register_for_workshop(
         razorpay_order_id=order_id,
         amount=workshop.price,
         currency="INR",
-        key_id=settings.RAZORPAY_KEY_ID,
+        key_id=rzp_key,
         is_real_order=is_real_order
     )
 

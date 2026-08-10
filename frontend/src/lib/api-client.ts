@@ -17,7 +17,10 @@ if (typeof window !== "undefined" && !process.env.NEXT_PUBLIC_API_URL) {
   );
 }
 
-export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+export async function fetchAPI<T>(
+  endpoint: string,
+  options: RequestInit & { timeoutMs?: number } = {}
+): Promise<T> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = `${API_BASE_URL}${cleanEndpoint}`;
   const headers = {
@@ -25,16 +28,22 @@ export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): 
     ...(options.headers || {}),
   };
 
+  const { timeoutMs = 15000, ...fetchOptions } = options;
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 4000);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   let response: Response;
   try {
     response = await fetch(url, {
-      ...options,
+      ...fetchOptions,
       headers,
       signal: options.signal || controller.signal,
     });
+  } catch (err: any) {
+    if (err.name === "AbortError") {
+      throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s. Please check network connection and try again.`);
+    }
+    throw err;
   } finally {
     clearTimeout(timeoutId);
   }
@@ -56,7 +65,7 @@ export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): 
 // --- Public Endpoints ---
 export async function getSettings() {
   try {
-    const data = await fetchAPI<Record<string, any>>("/settings");
+    const data = await fetchAPI<Record<string, any>>("/settings", { timeoutMs: 5000 });
     const merged = { ...FALLBACK_SETTINGS, ...data };
     
     // Automatically sanitize old seed database placeholders
@@ -85,7 +94,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
     if (type) params.append("type", type);
     if (status_filter) params.append("status_filter", status_filter);
     const query = params.toString() ? `?${params.toString()}` : "";
-    return await fetchAPI<import("../types").Offering[]>(`/offerings${query}`);
+    return await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getOfferings, using fallback data.");
     let result = FALLBACK_OFFERINGS;
@@ -101,7 +110,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
 
 export async function getOfferingBySlug(slug: string) {
   try {
-    return await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`);
+    return await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn(`Backend API unavailable for getOfferingBySlug(${slug}), using fallback data.`);
     const item = FALLBACK_OFFERINGS.find((o) => o.slug === slug);
@@ -114,7 +123,7 @@ export async function getWorkshops(status_filter?: string) {
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
-    const res = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`);
+    const res = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
     if (Array.isArray(res) && res.length === 0 && isAll) {
       // Fall back if API returns empty array for all workshops
       return FALLBACK_WORKSHOPS;
@@ -131,7 +140,7 @@ export async function getWorkshops(status_filter?: string) {
 
 export async function getWorkshopBySlug(slug: string) {
   try {
-    return await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`);
+    return await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn(`Backend API unavailable for getWorkshopBySlug(${slug}), using fallback data.`);
     const item = FALLBACK_WORKSHOPS.find((w) => w.slug === slug);
@@ -150,6 +159,7 @@ export async function registerWorkshop(workshopId: number, data: any) {
   }>(`/workshops/${workshopId}/register`, {
     method: "POST",
     body: JSON.stringify(data),
+    timeoutMs: 20000,
   });
 }
 
@@ -162,6 +172,7 @@ export async function verifyPayment(data: {
   return fetchAPI<{ message: string; success: boolean }>("/payments/verify", {
     method: "POST",
     body: JSON.stringify(data),
+    timeoutMs: 20000,
   });
 }
 
@@ -177,12 +188,13 @@ export async function submitEnquiry(data: {
   return fetchAPI<import("../types").Enquiry>("/enquiries", {
     method: "POST",
     body: JSON.stringify(data),
+    timeoutMs: 20000,
   });
 }
 
 export async function getClasses() {
   try {
-    return await fetchAPI<import("../types").ClassItem[]>("/classes");
+    return await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getClasses, using fallback data.");
     return FALLBACK_CLASSES;
@@ -192,7 +204,7 @@ export async function getClasses() {
 export async function getBlogs(category?: string) {
   try {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
-    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`);
+    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getBlogs, using fallback data.");
     if (category) {
@@ -204,7 +216,7 @@ export async function getBlogs(category?: string) {
 
 export async function getBlogBySlug(slug: string) {
   try {
-    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`);
+    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn(`Backend API unavailable for getBlogBySlug(${slug}), using fallback data.`);
     const item = FALLBACK_BLOGS.find((b) => b.slug === slug);
@@ -215,7 +227,7 @@ export async function getBlogBySlug(slug: string) {
 
 export async function getGallery() {
   try {
-    return await fetchAPI<import("../types").GalleryItem[]>("/gallery");
+    return await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getGallery, using fallback data.");
     return FALLBACK_GALLERY;
@@ -225,7 +237,7 @@ export async function getGallery() {
 export async function getFAQ(category?: string) {
   try {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
-    return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`);
+    return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`, { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getFAQ, using fallback data.");
     if (category) {
@@ -237,7 +249,7 @@ export async function getFAQ(category?: string) {
 
 export async function getMediaLibrary() {
   try {
-    return await fetchAPI<import("../types").MediaItem[]>("/media");
+    return await fetchAPI<import("../types").MediaItem[]>("/media", { timeoutMs: 5000 });
   } catch (error) {
     console.warn("Backend API unavailable for getMediaLibrary, using fallback data.");
     return [];
@@ -286,6 +298,7 @@ export async function sendWorkshopBroadcast(workshopId: number, data: { recipien
     method: "POST",
     headers: { Authorization: "Bearer mock-admin-token" },
     body: JSON.stringify(data),
+    timeoutMs: 20000,
   });
 }
 

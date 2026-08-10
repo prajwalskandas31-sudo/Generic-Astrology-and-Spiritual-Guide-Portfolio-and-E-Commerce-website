@@ -72,7 +72,7 @@ A high-performance, full-stack web application and Content Management System (CM
 
    # Razorpay Configuration
    RAZORPAY_KEY_ID="rzp_test_xxxxxx"
-   RAZORPAY_KEY_SECRET="your-razorpay-secret"
+   RAZORPAY_SECRET="your-razorpay-secret"
    ```
 
 5. Seed the database with initial tables and data:
@@ -161,7 +161,7 @@ npm run build
    - `WHATSAPP_PHONE_ID`
    - `WHATSAPP_VERIFY_TOKEN`
    - `RAZORPAY_KEY_ID`
-   - `RAZORPAY_KEY_SECRET`
+   - `RAZORPAY_SECRET`
 
 ---
 

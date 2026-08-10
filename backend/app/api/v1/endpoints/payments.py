@@ -27,9 +27,10 @@ async def verify_payment(
         return MessageResponse(message="Payment already verified and registration confirmed")
 
     # Verification check: If real credentials set, verify Razorpay HMAC signature
-    if settings.RAZORPAY_SECRET:
+    rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
+    if rzp_secret:
         generated_signature = hmac.new(
-            settings.RAZORPAY_SECRET.encode(),
+            rzp_secret.encode(),
             f"{data.razorpay_order_id}|{data.razorpay_payment_id}".encode(),
             hashlib.sha256
         ).hexdigest()
