@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration } from "@/lib/api-client";
+import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration, bulkDeleteWorkshopRegistrations } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -480,12 +480,13 @@ export default function AdminRequestsPage() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
-        )
-      ) : filteredRequests.length === 0 ? (
+        </div>
+      )) : filteredRequests.length === 0 ? (
         <div className="py-16 text-center bg-white rounded-2xl border border-slate-200 p-8 space-y-3">
           <MessageSquare className="w-12 h-12 text-slate-300 mx-auto" />
           <h3 className="text-lg font-bold text-slate-800">No requests found</h3>
@@ -727,6 +728,7 @@ export default function AdminRequestsPage() {
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>DELETE</span>
+                </button>
               </div>
             </div>
           );
