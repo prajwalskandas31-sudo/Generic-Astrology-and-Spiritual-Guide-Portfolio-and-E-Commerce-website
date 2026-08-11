@@ -20,6 +20,9 @@ class CourseSchema(BaseModel):
     level: str
     mode: str
     price: float
+    has_payment: bool = True
+    payment_mode: str = "RAZORPAY"
+    custom_payment_link: Optional[str] = None
     cover_image: str
     prerequisites: Optional[str] = None
     schedule: Optional[str] = None
@@ -39,6 +42,9 @@ COURSES_DATA: List[dict] = [
         "level": "Beginner",
         "mode": "Online Live",
         "price": 14999,
+        "has_payment": True,
+        "payment_mode": "RAZORPAY",
+        "custom_payment_link": None,
         "cover_image": "/images/courses/vedic-astrology-foundation.jpg",
         "prerequisites": "Open to all enthusiasts; basic interest in Vedic tradition recommended.",
         "schedule": "Every Saturday & Sunday, 7:00 AM - 8:30 AM IST",
@@ -78,6 +84,9 @@ COURSES_DATA: List[dict] = [
         "level": "All Levels",
         "mode": "Online Live",
         "price": 9999,
+        "has_payment": True,
+        "payment_mode": "RAZORPAY",
+        "custom_payment_link": None,
         "cover_image": "/images/courses/sacred-vedic-chanting-mastery.jpg",
         "prerequisites": "Basic familiarity with Sanskrit script or Devanagari transliteration.",
         "schedule": "Every Tuesday & Thursday, 6:30 PM - 8:00 PM IST",
@@ -107,6 +116,30 @@ def get_course(slug: str):
         if c["slug"] == slug:
             return c
     raise HTTPException(status_code=404, detail="Course not found")
+
+@router.post("", response_model=CourseSchema)
+def create_course(payload: dict):
+    new_id = max([c["id"] for c in COURSES_DATA], default=0) + 1
+    payload["id"] = new_id
+    COURSES_DATA.append(payload)
+    return payload
+
+@router.put("/{course_id}", response_model=CourseSchema)
+def update_course(course_id: int, payload: dict):
+    for idx, c in enumerate(COURSES_DATA):
+        if c["id"] == course_id:
+            payload["id"] = course_id
+            COURSES_DATA[idx] = payload
+            return payload
+    payload["id"] = course_id
+    COURSES_DATA.append(payload)
+    return payload
+
+@router.delete("/{course_id}")
+def delete_course(course_id: int):
+    global COURSES_DATA
+    COURSES_DATA = [c for c in COURSES_DATA if c["id"] != course_id]
+    return {"message": "Course deleted successfully"}
 
 @router.post("/{course_id}/register")
 def register_course(course_id: int, payload: dict):

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Course } from "@/types";
 import CourseRegistrationModal from "@/components/CourseRegistrationModal";
@@ -17,17 +17,26 @@ import {
   BookOpen,
 } from "lucide-react";
 
+import { getCourseBySlug } from "@/lib/api-client";
+
 export interface CourseDetailClientProps {
   course: Course;
 }
 
-export default function CourseDetailClient({ course }: CourseDetailClientProps) {
+export default function CourseDetailClient({ course: initialCourse }: CourseDetailClientProps) {
+  const [course, setCourse] = useState<Course>(initialCourse);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
+
+  useEffect(() => {
+    getCourseBySlug(initialCourse.slug).then(setCourse).catch(() => {});
+  }, [initialCourse.slug]);
 
   const toggleModule = (idx: number) => {
     setOpenModuleIndex(openModuleIndex === idx ? null : idx);
   };
+
+  const isPaid = course.has_payment !== false && course.price > 0;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -98,14 +107,14 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
             <div>
               <span className="text-xs text-slate-400 uppercase tracking-wider block font-semibold">Total Fee</span>
               <span className="text-3xl font-serif font-bold text-amber-900">
-                ₹{course.price.toLocaleString("en-IN")}
+                {isPaid ? `₹${course.price.toLocaleString("en-IN")}` : "Free Enrollment"}
               </span>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-full sm:w-auto px-8 py-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-amber-700/20 transition-all text-base"
             >
-              Enroll in Course Now &rarr;
+              {isPaid ? `Enroll & Pay ₹${course.price.toLocaleString("en-IN")} \u2192` : "Register Free Enrollment \u2192"}
             </button>
           </div>
         </div>

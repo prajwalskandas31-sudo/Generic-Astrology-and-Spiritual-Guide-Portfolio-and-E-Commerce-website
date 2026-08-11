@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Course } from "@/types";
+import { getCourses } from "@/lib/api-client";
 import CourseRegistrationModal from "@/components/CourseRegistrationModal";
 import {
   BookOpenCheck,
@@ -20,10 +21,14 @@ export interface CoursesClientProps {
 }
 
 export default function CoursesClient({ initialCourses }: CoursesClientProps) {
-  const [courses] = useState<Course[]>(initialCourses);
+  const [courses, setCourses] = useState<Course[]>(initialCourses);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string>("All");
   const [activeCourseModal, setActiveCourseModal] = useState<Course | null>(null);
+
+  useEffect(() => {
+    getCourses().then(setCourses).catch(() => {});
+  }, []);
 
   const filteredCourses = courses.filter((c) => {
     const matchesQuery =
@@ -151,7 +156,9 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                   onClick={() => setActiveCourseModal(course)}
                   className="w-full sm:w-1/2 py-3 px-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl text-xs shadow-md transition-colors text-center"
                 >
-                  Enroll Now • ₹{course.price.toLocaleString("en-IN")}
+                  {course.has_payment !== false && course.price > 0
+                    ? `Enroll Now • ₹${course.price.toLocaleString("en-IN")}`
+                    : "Enroll Free (No Fee)"}
                 </button>
               </div>
             </div>

@@ -65,6 +65,10 @@ export interface ClassItem {
   duration?: string;
   suitable_for?: string;
   mode: "Online" | "Offline" | "Hybrid";
+  price?: number;
+  has_payment?: boolean;
+  payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
+  custom_payment_link?: string | null;
   status: string;
 }
 
@@ -235,6 +239,9 @@ export interface Course {
   level: "Beginner" | "Intermediate" | "Advanced" | "All Levels";
   mode: "Online Live" | "Hybrid" | "Recorded";
   price: number;
+  has_payment?: boolean;
+  payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
+  custom_payment_link?: string | null;
   cover_image: string;
   prerequisites?: string;
   schedule?: string;
@@ -275,6 +282,9 @@ export interface LiveEvent {
   venue_address?: string;
   stream_url?: string;
   price: number;
+  has_payment?: boolean;
+  payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
+  custom_payment_link?: string | null;
   cover_image: string;
   featured?: boolean;
   status: "Upcoming" | "Live Now" | "Ended";

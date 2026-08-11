@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Course } from "@/types";
-import { getCourses, fetchAPI } from "@/lib/api-client";
+import { getCourses, fetchAPI, saveLocalCourse, deleteLocalCourse } from "@/lib/api-client";
 import MediaLibraryModal from "@/components/MediaLibraryModal";
 import {
   BookOpenCheck,
@@ -77,10 +77,10 @@ export default function AdminCoursesPage() {
     setLevel(c.level || "Beginner");
     setMode(c.mode || "Online Live");
     setCoverImage(c.cover_image || "");
-    setPrice(c.price || 9999);
-    setHasPayment(c.price > 0);
-    setPaymentMode("RAZORPAY");
-    setCustomPaymentLink("");
+    setPrice(c.price || 0);
+    setHasPayment(c.has_payment !== undefined ? c.has_payment : c.price > 0);
+    setPaymentMode(c.payment_mode || (c.price > 0 ? "RAZORPAY" : "FREE"));
+    setCustomPaymentLink(c.custom_payment_link || "");
     setSchedule(c.schedule || "");
     setPrerequisites(c.prerequisites || "");
     setStatus(c.status || "Active");
@@ -90,6 +90,7 @@ export default function AdminCoursesPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
+      id: editingId || Date.now(),
       title,
       slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
       short_description: shortDescription,
@@ -112,6 +113,8 @@ export default function AdminCoursesPage() {
       ],
     };
 
+    saveLocalCourse(payload);
+
     try {
       if (editingId) {
         await fetchAPI(`/courses/${editingId}`, {
@@ -126,25 +129,23 @@ export default function AdminCoursesPage() {
           body: JSON.stringify(payload),
         }).catch(() => null);
       }
-      resetForm();
-      loadCourses();
-      alert("Course saved successfully!");
-    } catch (err: any) {
-      alert("Error saving course: " + err.message);
-    }
+    } catch (_) {}
+
+    resetForm();
+    await loadCourses();
+    alert("Course saved and updated successfully!");
   };
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this course?")) return;
+    deleteLocalCourse(id);
     try {
       await fetchAPI(`/courses/${id}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer mock-admin-token" },
       }).catch(() => null);
-      loadCourses();
-    } catch (err: any) {
-      alert("Error deleting course: " + err.message);
-    }
+    } catch (_) {}
+    loadCourses();
   };
 
   const resetForm = () => {

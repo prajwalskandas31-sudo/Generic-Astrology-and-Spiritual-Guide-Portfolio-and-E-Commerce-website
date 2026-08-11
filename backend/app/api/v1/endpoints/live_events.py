@@ -21,6 +21,9 @@ class LiveEventSchema(BaseModel):
     venue_address: Optional[str] = None
     stream_url: Optional[str] = None
     price: float
+    has_payment: bool = True
+    payment_mode: str = "RAZORPAY"
+    custom_payment_link: Optional[str] = None
     cover_image: str
     featured: bool = True
     status: str = "Upcoming"
@@ -40,6 +43,9 @@ LIVE_EVENTS_DATA: List[dict] = [
         "venue_address": "Shaankari Creations Ashram, Asharaya layout, K.G.Vaderahalli, Bengaluru",
         "stream_url": "https://youtube.com/live/mahashivaratri-2026-pradeep-nadig",
         "price": 0,
+        "has_payment": False,
+        "payment_mode": "FREE",
+        "custom_payment_link": None,
         "cover_image": "/images/live-events/mahashivaratri-grand-night-2026.jpg",
         "featured": True,
         "status": "Upcoming",
@@ -61,6 +67,9 @@ LIVE_EVENTS_DATA: List[dict] = [
         "venue_address": "Asharaya layout, K.G.Vaderahalli, Bengaluru",
         "stream_url": "https://youtube.com/live/chandi-homa-navratri-2026",
         "price": 1100,
+        "has_payment": True,
+        "payment_mode": "RAZORPAY",
+        "custom_payment_link": None,
         "cover_image": "/images/live-events/navratri-chandi-homa-live.jpg",
         "featured": True,
         "status": "Upcoming",
@@ -81,6 +90,30 @@ def get_live_event(slug: str):
         if e["slug"] == slug:
             return e
     raise HTTPException(status_code=404, detail="Live Event not found")
+
+@router.post("", response_model=LiveEventSchema)
+def create_live_event(payload: dict):
+    new_id = max([e["id"] for e in LIVE_EVENTS_DATA], default=0) + 1
+    payload["id"] = new_id
+    LIVE_EVENTS_DATA.append(payload)
+    return payload
+
+@router.put("/{event_id}", response_model=LiveEventSchema)
+def update_live_event(event_id: int, payload: dict):
+    for idx, e in enumerate(LIVE_EVENTS_DATA):
+        if e["id"] == event_id:
+            payload["id"] = event_id
+            LIVE_EVENTS_DATA[idx] = payload
+            return payload
+    payload["id"] = event_id
+    LIVE_EVENTS_DATA.append(payload)
+    return payload
+
+@router.delete("/{event_id}")
+def delete_live_event(event_id: int):
+    global LIVE_EVENTS_DATA
+    LIVE_EVENTS_DATA = [e for e in LIVE_EVENTS_DATA if e["id"] != event_id]
+    return {"message": "Live Event deleted successfully"}
 
 @router.post("/{event_id}/register")
 def register_live_event(event_id: int, payload: dict):

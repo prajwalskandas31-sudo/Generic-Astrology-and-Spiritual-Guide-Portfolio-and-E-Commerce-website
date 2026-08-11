@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LiveEvent } from "@/types";
 import LiveEventRegistrationModal from "@/components/LiveEventRegistrationModal";
@@ -17,12 +17,21 @@ import {
   HelpCircle,
 } from "lucide-react";
 
+import { getLiveEventBySlug } from "@/lib/api-client";
+
 export interface LiveEventDetailClientProps {
   event: LiveEvent;
 }
 
-export default function LiveEventDetailClient({ event }: LiveEventDetailClientProps) {
+export default function LiveEventDetailClient({ event: initialEvent }: LiveEventDetailClientProps) {
+  const [event, setEvent] = useState<LiveEvent>(initialEvent);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    getLiveEventBySlug(initialEvent.slug).then(setEvent).catch(() => {});
+  }, [initialEvent.slug]);
+
+  const isPaid = event.has_payment !== false && event.price > 0;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -120,7 +129,7 @@ export default function LiveEventDetailClient({ event }: LiveEventDetailClientPr
                 className="w-full sm:w-auto px-6 py-3 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-1.5"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Register Sankalpa Pass</span>
+                <span>{isPaid ? `Register Pass • ₹${event.price.toLocaleString("en-IN")}` : "Register Free Pass"}</span>
               </button>
             </div>
           </div>

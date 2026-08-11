@@ -249,12 +249,25 @@ export async function submitEnquiry(data: {
 }
 
 export async function getClasses() {
+  let base: import("../types").ClassItem[] = FALLBACK_CLASSES;
   try {
-    return await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 5000 });
+    const data = await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 5000 });
+    if (Array.isArray(data) && data.length > 0) base = data;
   } catch (error) {
     console.warn("Backend API unavailable for getClasses, using fallback data.");
-    return FALLBACK_CLASSES;
   }
+  const overrides = getLocalClassesOverride();
+  const mapById = new Map<number, import("../types").ClassItem>();
+  for (const cls of base) {
+    mapById.set(cls.id, { ...cls });
+  }
+  for (const ov of overrides) {
+    if (ov.id) {
+      const existing = mapById.get(ov.id) || {};
+      mapById.set(ov.id, { ...existing, ...ov } as any);
+    }
+  }
+  return Array.from(mapById.values());
 }
 
 export async function getBlogs(category?: string) {
@@ -495,27 +508,136 @@ export async function syncRegistrationToCalendar(registrationId: number) {
   });
 }
 
-// --- Courses Endpoints ---
-export async function getCourses() {
+// --- Local Storage Persistence Helpers for Client-side & Offline Admin Sync ---
+export function getLocalCoursesOverride(): import("../types").Course[] {
+  if (typeof window === "undefined") return [];
   try {
-    const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
-    if (Array.isArray(data) && data.length > 0) return data;
-    return FALLBACK_COURSES;
-  } catch (error) {
-    console.warn("Backend API unavailable for getCourses, using fallback data.");
-    return FALLBACK_COURSES;
+    const raw = localStorage.getItem("admin_courses_override");
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
   }
 }
 
-export async function getCourseBySlug(slug: string) {
-  const fb = FALLBACK_COURSES.find((c) => c.slug === slug);
+export function saveLocalCourse(course: Partial<import("../types").Course> & { id?: number; slug?: string }) {
+  if (typeof window === "undefined") return;
   try {
-    const item = await fetchAPI<import("../types").Course>(`/courses/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
-    return { ...fb, ...item };
-  } catch (error) {
-    if (fb) return fb;
-    throw error;
+    const existing = getLocalCoursesOverride();
+    const idx = existing.findIndex((c) => (course.id && c.id === course.id) || (course.slug && c.slug === course.slug));
+    if (idx >= 0) {
+      existing[idx] = { ...existing[idx], ...course } as any;
+    } else {
+      const newCourse = { id: course.id || Date.now(), ...course } as any;
+      existing.push(newCourse);
+    }
+    localStorage.setItem("admin_courses_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function deleteLocalCourse(id: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getLocalCoursesOverride().filter((c) => c.id !== id);
+    localStorage.setItem("admin_courses_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function getLocalLiveEventsOverride(): import("../types").LiveEvent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("admin_live_events_override");
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
   }
+}
+
+export function saveLocalLiveEvent(event: Partial<import("../types").LiveEvent> & { id?: number; slug?: string }) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getLocalLiveEventsOverride();
+    const idx = existing.findIndex((e) => (event.id && e.id === event.id) || (event.slug && e.slug === event.slug));
+    if (idx >= 0) {
+      existing[idx] = { ...existing[idx], ...event } as any;
+    } else {
+      const newEv = { id: event.id || Date.now(), ...event } as any;
+      existing.push(newEv);
+    }
+    localStorage.setItem("admin_live_events_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function deleteLocalLiveEvent(id: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getLocalLiveEventsOverride().filter((e) => e.id !== id);
+    localStorage.setItem("admin_live_events_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function getLocalClassesOverride(): import("../types").ClassItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("admin_classes_override");
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+export function saveLocalClass(cls: Partial<import("../types").ClassItem> & { id?: number; name?: string }) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getLocalClassesOverride();
+    const idx = existing.findIndex((c) => (cls.id && c.id === cls.id) || (cls.name && c.name === cls.name));
+    if (idx >= 0) {
+      existing[idx] = { ...existing[idx], ...cls } as any;
+    } else {
+      const newCls = { id: cls.id || Date.now(), ...cls } as any;
+      existing.push(newCls);
+    }
+    localStorage.setItem("admin_classes_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function deleteLocalClass(id: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getLocalClassesOverride().filter((c) => c.id !== id);
+    localStorage.setItem("admin_classes_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+// --- Courses Endpoints ---
+export async function getCourses() {
+  let base: import("../types").Course[] = FALLBACK_COURSES;
+  try {
+    const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
+    if (Array.isArray(data) && data.length > 0) base = data;
+  } catch (error) {
+    console.warn("Backend API unavailable for getCourses, using fallback data.");
+  }
+  const overrides = getLocalCoursesOverride();
+  const mapBySlug = new Map<string, import("../types").Course>();
+  for (const c of base) {
+    mapBySlug.set(c.slug, { ...c });
+  }
+  for (const ov of overrides) {
+    if (ov.slug) {
+      const existing = mapBySlug.get(ov.slug) || {};
+      mapBySlug.set(ov.slug, { ...existing, ...ov } as any);
+    }
+  }
+  return Array.from(mapBySlug.values());
+}
+
+export async function getCourseBySlug(slug: string) {
+  const all = await getCourses();
+  const found = all.find((c) => c.slug === slug);
+  if (found) return found;
+  const fb = FALLBACK_COURSES.find((c) => c.slug === slug);
+  if (fb) return fb;
+  throw new Error("Course not found");
 }
 
 export async function registerCourse(courseId: number, data: any) {
@@ -526,32 +648,40 @@ export async function registerCourse(courseId: number, data: any) {
       timeoutMs: 20000,
     });
   } catch (error) {
-    // Return successful local confirmation if backend endpoint not active yet
     return { registration_id: Date.now(), message: "Registration received successfully!" };
   }
 }
 
 // --- Live Events Endpoints ---
 export async function getLiveEvents() {
+  let base: import("../types").LiveEvent[] = FALLBACK_LIVE_EVENTS;
   try {
     const data = await fetchAPI<import("../types").LiveEvent[]>("/live-events", { timeoutMs: 5000 });
-    if (Array.isArray(data) && data.length > 0) return data;
-    return FALLBACK_LIVE_EVENTS;
+    if (Array.isArray(data) && data.length > 0) base = data;
   } catch (error) {
     console.warn("Backend API unavailable for getLiveEvents, using fallback data.");
-    return FALLBACK_LIVE_EVENTS;
   }
+  const overrides = getLocalLiveEventsOverride();
+  const mapBySlug = new Map<string, import("../types").LiveEvent>();
+  for (const e of base) {
+    mapBySlug.set(e.slug, { ...e });
+  }
+  for (const ov of overrides) {
+    if (ov.slug) {
+      const existing = mapBySlug.get(ov.slug) || {};
+      mapBySlug.set(ov.slug, { ...existing, ...ov } as any);
+    }
+  }
+  return Array.from(mapBySlug.values());
 }
 
 export async function getLiveEventBySlug(slug: string) {
+  const all = await getLiveEvents();
+  const found = all.find((e) => e.slug === slug);
+  if (found) return found;
   const fb = FALLBACK_LIVE_EVENTS.find((e) => e.slug === slug);
-  try {
-    const item = await fetchAPI<import("../types").LiveEvent>(`/live-events/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
-    return { ...fb, ...item };
-  } catch (error) {
-    if (fb) return fb;
-    throw error;
-  }
+  if (fb) return fb;
+  throw new Error("Live Event not found");
 }
 
 export async function registerLiveEvent(eventId: number, data: any) {

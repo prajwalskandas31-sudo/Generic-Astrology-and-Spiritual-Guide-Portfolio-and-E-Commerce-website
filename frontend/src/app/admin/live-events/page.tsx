@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { LiveEvent } from "@/types";
-import { getLiveEvents, fetchAPI } from "@/lib/api-client";
+import { getLiveEvents, fetchAPI, saveLocalLiveEvent, deleteLocalLiveEvent } from "@/lib/api-client";
 import MediaLibraryModal from "@/components/MediaLibraryModal";
 import {
   Radio,
@@ -81,9 +81,9 @@ export default function AdminLiveEventsPage() {
     setStreamUrl(ev.stream_url || "");
     setCoverImage(ev.cover_image || "");
     setPrice(ev.price || 0);
-    setHasPayment(ev.price > 0);
-    setPaymentMode("RAZORPAY");
-    setCustomPaymentLink("");
+    setHasPayment(ev.has_payment !== undefined ? ev.has_payment : ev.price > 0);
+    setPaymentMode(ev.payment_mode || (ev.price > 0 ? "RAZORPAY" : "FREE"));
+    setCustomPaymentLink(ev.custom_payment_link || "");
     setPanditsCount(ev.pandits_count || 11);
     setStatus(ev.status || "Upcoming");
     setIsEditing(true);
@@ -92,6 +92,7 @@ export default function AdminLiveEventsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
+      id: editingId || Date.now(),
       title,
       slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
       short_description: shortDescription,
@@ -115,6 +116,8 @@ export default function AdminLiveEventsPage() {
       ],
     };
 
+    saveLocalLiveEvent(payload);
+
     try {
       if (editingId) {
         await fetchAPI(`/live-events/${editingId}`, {
@@ -129,25 +132,23 @@ export default function AdminLiveEventsPage() {
           body: JSON.stringify(payload),
         }).catch(() => null);
       }
-      resetForm();
-      loadEvents();
-      alert("Live Event saved successfully!");
-    } catch (err: any) {
-      alert("Error saving live event: " + err.message);
-    }
+    } catch (_) {}
+
+    resetForm();
+    await loadEvents();
+    alert("Live Event saved and updated successfully!");
   };
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this live event?")) return;
+    deleteLocalLiveEvent(id);
     try {
       await fetchAPI(`/live-events/${id}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer mock-admin-token" },
       }).catch(() => null);
-      loadEvents();
-    } catch (err: any) {
-      alert("Error deleting event: " + err.message);
-    }
+    } catch (_) {}
+    loadEvents();
   };
 
   const resetForm = () => {
