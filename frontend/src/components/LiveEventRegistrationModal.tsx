@@ -96,13 +96,13 @@ export default function LiveEventRegistrationModal({
       if (isPaid && payMode === "RAZORPAY") {
         const loaded = await loadRazorpayScript();
         if (loaded && (window as any).Razorpay) {
-          const options = {
-            key: (regRes as any).key_id || "rzp_test_mockkey",
-            amount: (regRes as any).amount || event.price * 100,
+          const razorpayKey = (regRes as any).key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo_key";
+          const options: any = {
+            key: razorpayKey,
+            amount: Math.round(event.price * 100),
             currency: "INR",
             name: "Veda Brahma Shri Pradeep Nadig",
             description: `Sankalpa Pass - ${event.title}`,
-            order_id: (regRes as any).razorpay_order_id || `order_event_${event.id}_${Date.now()}`,
             prefill: {
               name: data.name,
               email: data.email,
@@ -112,7 +112,7 @@ export default function LiveEventRegistrationModal({
               try {
                 await verifyPayment({
                   registration_id: (regRes as any).registration_id,
-                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_order_id: response.razorpay_order_id || (regRes as any).razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 });
@@ -123,13 +123,28 @@ export default function LiveEventRegistrationModal({
                 window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
+              } finally {
+                setIsSubmitting(false);
               }
+            },
+            modal: {
+              ondismiss: () => {
+                setIsSubmitting(false);
+              },
             },
             theme: { color: "#b45309" },
           };
+
+          if ((regRes as any).is_real_order && (regRes as any).razorpay_order_id) {
+            options.order_id = (regRes as any).razorpay_order_id;
+          }
+
           const rzp = new (window as any).Razorpay(options);
+          rzp.on("payment.failed", (response: any) => {
+            setIsSubmitting(false);
+            setErrorMessage(`Payment failed: ${response.error?.description || "Transaction declined."}`);
+          });
           rzp.open();
-          setIsSubmitting(false);
           return;
         }
       }

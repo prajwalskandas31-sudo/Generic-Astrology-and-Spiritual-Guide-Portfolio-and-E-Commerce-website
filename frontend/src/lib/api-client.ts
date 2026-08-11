@@ -740,16 +740,18 @@ export async function registerCourse(courseId: number, data: any) {
     return {
       registration_id: res.registration_id || Date.now(),
       message: res.message || "Enrollment successful",
-      razorpay_order_id: res.razorpay_order_id || `order_course_${courseId}_${Date.now()}`,
-      key_id: res.key_id || "rzp_test_mockkey",
+      razorpay_order_id: res.razorpay_order_id || null,
+      is_real_order: Boolean(res.razorpay_order_id),
+      key_id: res.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || null,
       amount: (data.amount || 0) * 100,
     };
   } catch (error) {
     return {
       registration_id: Date.now(),
       message: "Registration received successfully!",
-      razorpay_order_id: `order_course_${courseId}_${Date.now()}`,
-      key_id: "rzp_test_mockkey",
+      razorpay_order_id: null,
+      is_real_order: false,
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || null,
       amount: (data.amount || 0) * 100,
     };
   }
@@ -815,16 +817,18 @@ export async function registerLiveEvent(eventId: number, data: any) {
     return {
       registration_id: res.registration_id || Date.now(),
       message: res.message || "Sankalpa registration successful",
-      razorpay_order_id: res.razorpay_order_id || `order_event_${eventId}_${Date.now()}`,
-      key_id: res.key_id || "rzp_test_mockkey",
+      razorpay_order_id: res.razorpay_order_id || null,
+      is_real_order: Boolean(res.razorpay_order_id),
+      key_id: res.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || null,
       amount: (data.amount || 0) * 100,
     };
   } catch (error) {
     return {
       registration_id: Date.now(),
       message: "Sankalpa registration received successfully!",
-      razorpay_order_id: `order_event_${eventId}_${Date.now()}`,
-      key_id: "rzp_test_mockkey",
+      razorpay_order_id: null,
+      is_real_order: false,
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || null,
       amount: (data.amount || 0) * 100,
     };
   }
