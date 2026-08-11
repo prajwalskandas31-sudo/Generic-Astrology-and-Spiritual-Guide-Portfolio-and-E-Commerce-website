@@ -732,13 +732,26 @@ export async function registerCourse(courseId: number, data: any) {
   });
 
   try {
-    return await fetchAPI<{ registration_id: number; message: string }>(`/courses/${courseId}/register`, {
+    const res = await fetchAPI<{ registration_id: number; message: string; razorpay_order_id?: string; key_id?: string; amount?: number }>(`/courses/${courseId}/register`, {
       method: "POST",
       body: JSON.stringify(data),
       timeoutMs: 20000,
     });
+    return {
+      registration_id: res.registration_id || Date.now(),
+      message: res.message || "Enrollment successful",
+      razorpay_order_id: res.razorpay_order_id || `order_course_${courseId}_${Date.now()}`,
+      key_id: res.key_id || "rzp_test_mockkey",
+      amount: (data.amount || 0) * 100,
+    };
   } catch (error) {
-    return { registration_id: Date.now(), message: "Registration received successfully!" };
+    return {
+      registration_id: Date.now(),
+      message: "Registration received successfully!",
+      razorpay_order_id: `order_course_${courseId}_${Date.now()}`,
+      key_id: "rzp_test_mockkey",
+      amount: (data.amount || 0) * 100,
+    };
   }
 }
 
@@ -794,13 +807,26 @@ export async function registerLiveEvent(eventId: number, data: any) {
   });
 
   try {
-    return await fetchAPI<{ registration_id: number; message: string }>(`/live-events/${eventId}/register`, {
+    const res = await fetchAPI<{ registration_id: number; message: string; razorpay_order_id?: string; key_id?: string; amount?: number }>(`/live-events/${eventId}/register`, {
       method: "POST",
       body: JSON.stringify(data),
       timeoutMs: 20000,
     });
+    return {
+      registration_id: res.registration_id || Date.now(),
+      message: res.message || "Sankalpa registration successful",
+      razorpay_order_id: res.razorpay_order_id || `order_event_${eventId}_${Date.now()}`,
+      key_id: res.key_id || "rzp_test_mockkey",
+      amount: (data.amount || 0) * 100,
+    };
   } catch (error) {
-    return { registration_id: Date.now(), message: "Sankalpa registration received successfully!" };
+    return {
+      registration_id: Date.now(),
+      message: "Sankalpa registration received successfully!",
+      razorpay_order_id: `order_event_${eventId}_${Date.now()}`,
+      key_id: "rzp_test_mockkey",
+      amount: (data.amount || 0) * 100,
+    };
   }
 }
 

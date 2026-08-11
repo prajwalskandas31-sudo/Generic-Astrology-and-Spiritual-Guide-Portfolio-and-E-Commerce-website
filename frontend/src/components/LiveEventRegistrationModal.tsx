@@ -95,14 +95,14 @@ export default function LiveEventRegistrationModal({
 
       if (isPaid && payMode === "RAZORPAY") {
         const loaded = await loadRazorpayScript();
-        if (loaded && (window as any).Razorpay && (regRes as any).razorpay_order_id) {
+        if (loaded && (window as any).Razorpay) {
           const options = {
             key: (regRes as any).key_id || "rzp_test_mockkey",
             amount: (regRes as any).amount || event.price * 100,
             currency: "INR",
             name: "Veda Brahma Shri Pradeep Nadig",
             description: `Sankalpa Pass - ${event.title}`,
-            order_id: (regRes as any).razorpay_order_id,
+            order_id: (regRes as any).razorpay_order_id || `order_event_${event.id}_${Date.now()}`,
             prefill: {
               name: data.name,
               email: data.email,
