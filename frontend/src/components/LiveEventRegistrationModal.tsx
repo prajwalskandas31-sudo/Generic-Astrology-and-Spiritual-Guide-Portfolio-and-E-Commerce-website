@@ -71,14 +71,20 @@ export default function LiveEventRegistrationModal({
     setSubmittedData(data);
 
     try {
-      const isPaid = event.price > 0 && data.pass_type !== "Virtual Pass";
+      const hasPayToggle = (event as any).has_payment !== false;
+      const payMode = (event as any).payment_mode || "RAZORPAY";
+      const customLink = (event as any).custom_payment_link;
+      const isPaid = hasPayToggle && payMode !== "FREE" && event.price > 0 && data.pass_type !== "Virtual Pass";
+
       const regRes = await registerLiveEvent(event.id, {
         ...data,
         amount: isPaid ? event.price : 0,
       });
 
-      const payMode = (event as any).payment_mode || "RAZORPAY";
-      const customLink = (event as any).custom_payment_link;
+      const waMsg = encodeURIComponent(
+        `Namaste Shri Pradeep Nadig Ji!\nI have registered Sankalpa for "${event.title}".\n\nName: ${data.name}\nGothra: ${data.gothra || 'N/A'}\nNakshatra: ${data.nakshatra || 'N/A'}\nRashi: ${data.rashi || 'N/A'}\nPass Type: ${data.pass_type}\nWish: ${data.sankalpa_wish || 'Lokah Samastah Sukhino Bhavantu'}\nFee Status: ${isPaid ? `Paid (₹${event.price})` : 'Free Registration'}\n\nPlease share the live stream joining details.`
+      );
+      const waUrl = `https://wa.me/919844000000?text=${waMsg}`;
 
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
@@ -110,9 +116,11 @@ export default function LiveEventRegistrationModal({
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 });
+                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } catch (_) {
+                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               }
@@ -126,6 +134,7 @@ export default function LiveEventRegistrationModal({
         }
       }
 
+      window.open(waUrl, "_blank");
       setIsSuccess(true);
       reset();
     } catch (err: any) {

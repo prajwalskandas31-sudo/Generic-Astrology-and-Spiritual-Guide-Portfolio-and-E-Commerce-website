@@ -727,6 +727,18 @@ export default function AdminRequestsPage() {
 
               {/* Action Buttons Bar */}
               <div className="bg-slate-50/70 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
+                <a
+                  href={`https://wa.me/${(req.customer?.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                    "Hari Om " + (req.customer?.name || "Devotee") + "!\nRegarding your " + req.request_type + " (" + req.service_name + "):\nRequest ID: " + req.request_id + "\nStatus: " + req.status + "\n\nShri Pradeep Nadig's team is pleased to connect with you."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>WhatsApp Intimation</span>
+                </a>
+
                 {req.status !== "CONFIRMED" && req.status !== "COMPLETED" && req.status !== "CANCELLED" && (
                   <button
                     onClick={() => handleAction(req.request_id, "ACCEPT")}

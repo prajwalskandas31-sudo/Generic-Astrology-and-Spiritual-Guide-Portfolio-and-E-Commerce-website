@@ -68,14 +68,20 @@ export default function CourseRegistrationModal({
     setSubmittedName(data.name);
 
     try {
-      const regRes = await registerCourse(course.id, {
-        ...data,
-        amount: course.price,
-      });
-
-      const isPaid = course.price > 0;
+      const hasPayToggle = (course as any).has_payment !== false;
       const payMode = (course as any).payment_mode || "RAZORPAY";
       const customLink = (course as any).custom_payment_link;
+      const isPaid = hasPayToggle && payMode !== "FREE" && course.price > 0;
+
+      const regRes = await registerCourse(course.id, {
+        ...data,
+        amount: isPaid ? course.price : 0,
+      });
+
+      const waMsg = encodeURIComponent(
+        `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${data.name}\nMobile: ${data.mobile}\nEmail: ${data.email}\nBatch: ${data.preferred_batch || 'Default'}\nFee Status: ${isPaid ? `Paid (₹${course.price})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
+      );
+      const waUrl = `https://wa.me/919844000000?text=${waMsg}`;
 
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
@@ -107,9 +113,11 @@ export default function CourseRegistrationModal({
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 });
+                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } catch (_) {
+                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               }
@@ -123,7 +131,8 @@ export default function CourseRegistrationModal({
         }
       }
 
-      // Default fallback success
+      // Default Free or fallback success
+      window.open(waUrl, "_blank");
       setIsSuccess(true);
       reset();
     } catch (err: any) {
