@@ -104,11 +104,23 @@ export default function AdminWorkshopsPage() {
 
     try {
       if (editingId) {
-        await fetchAPI(`/workshops/${editingId}`, {
-          method: "PUT",
-          headers: { Authorization: "Bearer mock-admin-token" },
-          body: JSON.stringify(payload),
-        });
+        try {
+          await fetchAPI(`/workshops/${editingId}`, {
+            method: "PUT",
+            headers: { Authorization: "Bearer mock-admin-token" },
+            body: JSON.stringify(payload),
+          });
+        } catch (err: any) {
+          if (err.message && err.message.includes("not found")) {
+            await fetchAPI("/workshops", {
+              method: "POST",
+              headers: { Authorization: "Bearer mock-admin-token" },
+              body: JSON.stringify(payload),
+            });
+          } else {
+            throw err;
+          }
+        }
       } else {
         await fetchAPI("/workshops", {
           method: "POST",

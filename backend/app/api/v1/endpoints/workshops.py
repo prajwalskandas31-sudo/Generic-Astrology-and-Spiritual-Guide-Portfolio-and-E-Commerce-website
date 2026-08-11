@@ -185,20 +185,24 @@ async def create_workshop(
     db: AsyncSession = Depends(get_db),
     auth: dict = Depends(verify_supabase_token)
 ):
-    existing = await db.execute(select(Workshop).where(Workshop.slug == data.slug))
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Workshop slug already exists")
+    existing_res = await db.execute(select(Workshop).where(Workshop.slug == data.slug))
+    existing = existing_res.scalar_one_or_none()
     
     workshop_data = data.model_dump()
     batches_data = workshop_data.pop("batches", [])
     
-    workshop = Workshop(**workshop_data)
-    db.add(workshop)
-    await db.flush()
-    
-    for b_data in batches_data:
-        batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
-        db.add(batch)
+    if existing:
+        workshop = existing
+        for key, value in workshop_data.items():
+            setattr(workshop, key, value)
+    else:
+        workshop = Workshop(**workshop_data)
+        db.add(workshop)
+        await db.flush()
+        
+        for b_data in batches_data:
+            batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
+            db.add(batch)
         
     await db.commit()
     
@@ -214,17 +218,26 @@ async def update_workshop(
     auth: dict = Depends(verify_supabase_token)
 ):
     workshop = await db.get(Workshop, id)
-    if not workshop:
-        raise HTTPException(status_code=404, detail="Workshop not found")
+    if not workshop and data.slug:
+        slug_res = await db.execute(select(Workshop).where(Workshop.slug == data.slug))
+        workshop = slug_res.scalar_one_or_none()
     
     workshop_data = data.model_dump()
     batches_data = workshop_data.pop("batches", [])
     
-    for key, value in workshop_data.items():
-        setattr(workshop, key, value)
+    if not workshop:
+        workshop = Workshop(**workshop_data)
+        db.add(workshop)
+        await db.flush()
+        for b_data in batches_data:
+            batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
+            db.add(batch)
+    else:
+        for key, value in workshop_data.items():
+            setattr(workshop, key, value)
         
     await db.commit()
-    res = await db.execute(select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.id == id))
+    res = await db.execute(select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.id == workshop.id))
     return res.scalar_one()
 
 @router.delete("/{id}", response_model=MessageResponse)
