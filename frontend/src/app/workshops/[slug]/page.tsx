@@ -6,7 +6,8 @@ import { Metadata } from "next";
 
 import { FALLBACK_WORKSHOPS } from "@/lib/fallback-data";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateStaticParams() {
   return FALLBACK_WORKSHOPS.map((workshop) => ({

@@ -17,7 +17,8 @@ import {
 
 import { Offering, Workshop } from "@/types";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   let settings: Record<string, any> = {};

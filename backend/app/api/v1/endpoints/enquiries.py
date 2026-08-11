@@ -62,7 +62,34 @@ async def update_enquiry_status(
     if not enquiry:
         raise HTTPException(status_code=404, detail="Enquiry not found")
     
-    enquiry.status = data.status
+from app.schemas.schemas import BulkDeleteRequest
+
+@router.delete("/{id}", response_model=MessageResponse)
+async def delete_enquiry(
+    id: int,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    enquiry = await db.get(Enquiry, id)
+    if not enquiry:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    await db.delete(enquiry)
     await db.commit()
-    await db.refresh(enquiry)
-    return enquiry
+    return MessageResponse(message="Enquiry deleted successfully")
+
+@router.post("/bulk-delete", response_model=MessageResponse)
+async def bulk_delete_enquiries(
+    data: BulkDeleteRequest,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    if not data.ids:
+        return MessageResponse(message="No IDs provided.")
+    query = select(Enquiry).where(Enquiry.id.in_(data.ids))
+    res = await db.execute(query)
+    items = res.scalars().all()
+    count = len(items)
+    for item in items:
+        await db.delete(item)
+    await db.commit()
+    return MessageResponse(message=f"Successfully deleted {count} enquiries.")

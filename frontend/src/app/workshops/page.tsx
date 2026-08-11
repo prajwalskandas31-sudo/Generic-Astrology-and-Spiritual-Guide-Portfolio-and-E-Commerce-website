@@ -20,7 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function WorkshopsPage() {
   let settings: Record<string, any> = {};
@@ -99,7 +100,7 @@ export default async function WorkshopsPage() {
 
                     <div className="p-6 space-y-4 grow">
                       <div className="flex items-center justify-between text-xs text-amber-700 font-semibold">
-                        <span>₹{ws.price} Registration Fee</span>
+                        <span>{ws.has_payment !== false ? `₹${ws.price} Registration Fee` : "Free Event"}</span>
                         {ws.duration && <span>{ws.duration}</span>}
                       </div>
 

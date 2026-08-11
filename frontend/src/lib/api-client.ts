@@ -35,6 +35,7 @@ export async function fetchAPI<T>(
   let response: Response;
   try {
     response = await fetch(url, {
+      cache: "no-store",
       ...fetchOptions,
       headers,
       signal: options.signal || controller.signal,
@@ -410,6 +411,32 @@ export async function deleteWorkshopRegistration(registrationId: number) {
   return fetchAPI<{ message: string }>(`/workshops/registrations/${registrationId}`, {
     method: "DELETE",
     headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
+export async function bulkDeleteWorkshopRegistrations(ids: number[]) {
+  return fetchAPI<{ message: string }>(`/workshops/registrations/bulk-delete`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    body: JSON.stringify({ ids }),
+    timeoutMs: 20000,
+  });
+}
+
+export async function deleteEnquiry(id: number) {
+  return fetchAPI<{ message: string }>(`/enquiries/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    timeoutMs: 20000,
+  });
+}
+
+export async function bulkDeleteEnquiries(ids: number[]) {
+  return fetchAPI<{ message: string }>(`/enquiries/bulk-delete`, {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    body: JSON.stringify({ ids }),
     timeoutMs: 20000,
   });
 }

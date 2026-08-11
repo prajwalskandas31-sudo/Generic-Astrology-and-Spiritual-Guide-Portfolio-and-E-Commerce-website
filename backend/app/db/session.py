@@ -68,13 +68,19 @@ async def get_db():
 async def migrate_db_schema():
     """
     Ensures newly added table columns exist in PostgreSQL/Supabase database.
-    Runs idempotently with IF NOT EXISTS.
+    Runs idempotently with IF NOT EXISTS and purges test entries.
     """
     try:
         async with engine.begin() as conn:
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS has_payment BOOLEAN DEFAULT TRUE;"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS payment_mode VARCHAR(50) DEFAULT 'RAZORPAY';"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS custom_payment_link VARCHAR(500);"))
-            print("[DB Auto-Migration]: Verified workshops payment columns in PostgreSQL.")
+            
+            # Purge internal developer test records
+            await conn.execute(text("DELETE FROM workshop_registrations WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
+            await conn.execute(text("DELETE FROM enquiries WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
+            await conn.execute(text("DELETE FROM requests WHERE customer_id IN (SELECT id FROM customers WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%');"))
+            await conn.execute(text("DELETE FROM customers WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
+            print("[DB Auto-Migration]: Verified workshops columns & purged test data.")
     except Exception as e:
         print(f"[DB Auto-Migration Warning]: {e}")

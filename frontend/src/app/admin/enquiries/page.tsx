@@ -39,6 +39,9 @@ export default function AdminRequestsPage() {
   const [selectedTimeInput, setSelectedTimeInput] = useState("10:00 AM");
   const [isPerformingAction, setIsPerformingAction] = useState(false);
 
+  const [selectedRequestIds, setSelectedRequestIds] = useState<string[]>([]);
+  const [selectedRegistrationIds, setSelectedRegistrationIds] = useState<number[]>([]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
@@ -147,6 +150,60 @@ export default function AdminRequestsPage() {
       await loadRegistrations();
     } catch (err: any) {
       alert(`Failed to delete registration: ${err.message}`);
+    } finally {
+      setIsPerformingAction(false);
+    }
+  };
+
+  const toggleSelectRequest = (reqId: string) => {
+    setSelectedRequestIds((prev) =>
+      prev.includes(reqId) ? prev.filter((id) => id !== reqId) : [...prev, reqId]
+    );
+  };
+  const handleSelectAllRequests = () => {
+    setSelectedRequestIds(filteredRequests.map((r) => r.request_id));
+  };
+  const handleDeselectAllRequests = () => {
+    setSelectedRequestIds([]);
+  };
+  const handleBulkDeleteRequests = async () => {
+    if (selectedRequestIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedRequestIds.length} selected request thread(s)?`)) return;
+    setIsPerformingAction(true);
+    try {
+      for (const reqId of selectedRequestIds) {
+        await deleteRequest(reqId);
+      }
+      setSelectedRequestIds([]);
+      await loadRequests();
+    } catch (err: any) {
+      alert("Error deleting requests: " + err.message);
+    } finally {
+      setIsPerformingAction(false);
+    }
+  };
+
+  const toggleSelectRegistration = (regId: number) => {
+    setSelectedRegistrationIds((prev) =>
+      prev.includes(regId) ? prev.filter((id) => id !== regId) : [...prev, regId]
+    );
+  };
+  const handleSelectAllRegistrations = () => {
+    setSelectedRegistrationIds(filteredRegistrations.map((r) => r.id));
+  };
+  const handleDeselectAllRegistrations = () => {
+    setSelectedRegistrationIds([]);
+  };
+  const handleBulkDeleteRegistrations = async () => {
+    if (selectedRegistrationIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedRegistrationIds.length} selected registration(s)?`)) return;
+    setIsPerformingAction(true);
+    try {
+      await bulkDeleteWorkshopRegistrations(selectedRegistrationIds);
+      setSelectedRegistrationIds([]);
+      await loadRegistrations();
+    } catch (err: any) {
+      alert("Error deleting registrations: " + err.message);
     } finally {
       setIsPerformingAction(false);
     }
@@ -305,31 +362,83 @@ export default function AdminRequestsPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
-                  <th className="p-4">Participant Name</th>
-                  <th className="p-4">Mobile &amp; Email</th>
-                  <th className="p-4">Location</th>
-                  <th className="p-4">Amount</th>
-                  <th className="p-4">Payment Status</th>
-                  <th className="p-4">Order ID</th>
-                  <th className="p-4">Date</th>
-                  <th className="p-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredRegistrations.map((reg) => (
-                  <tr key={reg.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="p-4">
-                      <span className="font-bold text-slate-900 block">{reg.name}</span>
-                      {reg.additional_notes && (
-                        <span className="text-[10px] text-slate-400 italic block truncate max-w-xs">
-                          &quot;{reg.additional_notes}&quot;
-                        </span>
-                      )}
-                    </td>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between bg-slate-100 p-3 rounded-xl border border-slate-200">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSelectAllRegistrations}
+                  className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold text-xs rounded-lg transition-colors"
+                >
+                  Select All ({filteredRegistrations.length})
+                </button>
+                <button
+                  onClick={handleDeselectAllRegistrations}
+                  className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-lg transition-colors"
+                >
+                  Deselect All
+                </button>
+              </div>
+              {selectedRegistrationIds.length > 0 && (
+                <button
+                  onClick={handleBulkDeleteRegistrations}
+                  disabled={isPerformingAction}
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete Selected ({selectedRegistrationIds.length})</span>
+                </button>
+              )}
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
+                    <th className="p-4 w-10">
+                      <input
+                        type="checkbox"
+                        checked={
+                          filteredRegistrations.length > 0 &&
+                          selectedRegistrationIds.length === filteredRegistrations.length
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) handleSelectAllRegistrations();
+                          else handleDeselectAllRegistrations();
+                        }}
+                        className="w-4 h-4 text-amber-600 rounded-sm focus:ring-amber-500"
+                      />
+                    </th>
+                    <th className="p-4">Participant Name</th>
+                    <th className="p-4">Mobile &amp; Email</th>
+                    <th className="p-4">Location</th>
+                    <th className="p-4">Amount</th>
+                    <th className="p-4">Payment Status</th>
+                    <th className="p-4">Order ID</th>
+                    <th className="p-4">Date</th>
+                    <th className="p-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredRegistrations.map((reg) => {
+                    const isSelected = selectedRegistrationIds.includes(reg.id);
+                    return (
+                      <tr key={reg.id} className={`hover:bg-slate-50/80 transition-colors ${isSelected ? "bg-amber-50/50" : ""}`}>
+                        <td className="p-4">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => toggleSelectRegistration(reg.id)}
+                            className="w-4 h-4 text-amber-600 rounded-sm focus:ring-amber-500"
+                          />
+                        </td>
+                        <td className="p-4">
+                          <span className="font-bold text-slate-900 block">{reg.name}</span>
+                          {reg.additional_notes && (
+                            <span className="text-[10px] text-slate-400 italic block truncate max-w-xs">
+                              &quot;{reg.additional_notes}&quot;
+                            </span>
+                          )}
+                        </td>
                     <td className="p-4">
                       <span className="font-mono text-slate-800 block">+{reg.mobile}</span>
                       <span className="text-slate-500 block truncate max-w-xs">{reg.email || "N/A"}</span>
@@ -390,28 +499,65 @@ export default function AdminRequestsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredRequests.map((req) => (
-            <div
-              key={req.id}
-              className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden hover:shadow-md transition-shadow"
-            >
-              {/* Card Header */}
-              <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono font-bold text-amber-900 text-sm bg-amber-100/70 px-2.5 py-1 rounded-lg">
-                    {req.request_id}
-                  </span>
-                  <h3 className="font-serif font-bold text-slate-900 text-base">
-                    {req.request_type} &mdash; {req.customer?.name || "Customer"}
-                  </h3>
+          <div className="flex items-center justify-between bg-slate-100 p-3 rounded-xl border border-slate-200">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleSelectAllRequests}
+                className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold text-xs rounded-lg transition-colors"
+              >
+                Select All ({filteredRequests.length})
+              </button>
+              <button
+                onClick={handleDeselectAllRequests}
+                className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-lg transition-colors"
+              >
+                Deselect All
+              </button>
+            </div>
+            {selectedRequestIds.length > 0 && (
+              <button
+                onClick={handleBulkDeleteRequests}
+                disabled={isPerformingAction}
+                className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete Selected ({selectedRequestIds.length})</span>
+              </button>
+            )}
+          </div>
+
+          {filteredRequests.map((req) => {
+            const isSelected = selectedRequestIds.includes(req.request_id);
+            return (
+              <div
+                key={req.id}
+                className={`bg-white rounded-2xl border transition-shadow overflow-hidden hover:shadow-md ${
+                  isSelected ? "border-amber-400 bg-amber-50/20" : "border-slate-200 shadow-xs"
+                }`}
+              >
+                {/* Card Header */}
+                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleSelectRequest(req.request_id)}
+                      className="w-4 h-4 text-amber-600 rounded-sm focus:ring-amber-500 shrink-0"
+                    />
+                    <span className="font-mono font-bold text-amber-900 text-sm bg-amber-100/70 px-2.5 py-1 rounded-lg">
+                      {req.request_id}
+                    </span>
+                    <h3 className="font-serif font-bold text-slate-900 text-base">
+                      {req.request_type} &mdash; {req.customer?.name || "Customer"}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(req.status)}
+                    <span className="text-[11px] text-slate-400 font-mono">
+                      {new Date(req.created_at).toLocaleDateString()} {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {getStatusBadge(req.status)}
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    {new Date(req.created_at).toLocaleDateString()} {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              </div>
 
               {/* Card Content Grid */}
               <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600">
@@ -581,10 +727,10 @@ export default function AdminRequestsPage() {
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>DELETE</span>
-                </button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
 

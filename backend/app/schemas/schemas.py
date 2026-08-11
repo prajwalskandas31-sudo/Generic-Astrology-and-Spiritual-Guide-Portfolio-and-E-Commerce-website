@@ -355,6 +355,9 @@ class SettingResponse(BaseModel):
     updated_at: datetime.datetime
     model_config = ConfigDict(from_attributes=True)
 
+class BulkDeleteRequest(BaseModel):
+    ids: List[int]
+
 # --- Dashboard Stats ---
 class DashboardStats(BaseModel):
     recent_enquiries: List[EnquiryResponse]

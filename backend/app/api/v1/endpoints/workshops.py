@@ -289,6 +289,8 @@ async def broadcast_workshop_whatsapp(
     return MessageResponse(message=f"WhatsApp broadcast dispatched successfully to {sent_count} participants.")
 
 
+from app.schemas.schemas import BulkDeleteRequest
+
 @router.delete("/registrations/{reg_id}", response_model=MessageResponse)
 async def delete_workshop_registration(
     reg_id: int,
@@ -305,4 +307,25 @@ async def delete_workshop_registration(
     await db.delete(reg)
     await db.commit()
     return MessageResponse(message=f"Workshop registration #{reg_id} successfully deleted")
+
+
+@router.post("/registrations/bulk-delete", response_model=MessageResponse)
+async def bulk_delete_workshop_registrations(
+    data: BulkDeleteRequest,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+):
+    if not data.ids:
+        return MessageResponse(message="No registration IDs provided.")
+    
+    query = select(WorkshopRegistration).where(WorkshopRegistration.id.in_(data.ids))
+    res = await db.execute(query)
+    regs = res.scalars().all()
+    count = len(regs)
+    
+    for r in regs:
+        await db.delete(r)
+        
+    await db.commit()
+    return MessageResponse(message=f"Successfully deleted {count} workshop registrations.")
 

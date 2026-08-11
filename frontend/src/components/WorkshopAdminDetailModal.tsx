@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Workshop, WorkshopRegistration } from "@/types";
-import { getWorkshopRegistrationsById, sendWorkshopBroadcast } from "@/lib/api-client";
+import { getWorkshopRegistrationsById, sendWorkshopBroadcast, bulkDeleteWorkshopRegistrations, deleteWorkshopRegistration } from "@/lib/api-client";
 import MediaLibraryModal from "./MediaLibraryModal";
 import {
   X,
@@ -20,7 +20,8 @@ import {
   CreditCard,
   Phone,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from "lucide-react";
 
 export interface WorkshopAdminDetailModalProps {
@@ -88,6 +89,31 @@ export default function WorkshopAdminDetailModal({
       setSelectedPhones(selectedPhones.filter((p) => p !== phone));
     } else {
       setSelectedPhones([...selectedPhones, phone]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    const selectedRegs = registrations.filter((r) => selectedPhones.includes(r.mobile));
+    if (selectedRegs.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedRegs.length} selected participant registration(s)?`)) return;
+
+    try {
+      const idsToDelete = selectedRegs.map((r) => r.id);
+      await bulkDeleteWorkshopRegistrations(idsToDelete);
+      loadRegistrations();
+    } catch (err: any) {
+      alert("Error deleting registrations: " + err.message);
+    }
+  };
+
+  const handleSingleDelete = async (regId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this registration?")) return;
+    try {
+      await deleteWorkshopRegistration(regId);
+      loadRegistrations();
+    } catch (err: any) {
+      alert("Error deleting registration: " + err.message);
     }
   };
 
@@ -241,6 +267,15 @@ export default function WorkshopAdminDetailModal({
                   <Square className="w-3 h-3" />
                   <span>Deselect All</span>
                 </button>
+                {selectedPhones.length > 0 && (
+                  <button
+                    onClick={handleBulkDelete}
+                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold text-[11px] rounded-lg transition-colors flex items-center gap-1 shadow-xs"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Delete Selected ({selectedPhones.length})</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -304,6 +339,13 @@ export default function WorkshopAdminDetailModal({
                           title="Direct WhatsApp Message"
                         >
                           <MessageSquare className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={(e) => handleSingleDelete(reg.id, e)}
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete Registration"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
