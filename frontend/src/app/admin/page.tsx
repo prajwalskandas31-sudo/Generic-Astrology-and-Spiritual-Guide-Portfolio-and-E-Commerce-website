@@ -14,6 +14,8 @@ import {
   FileText,
   Loader2,
   ArrowRight,
+  BookOpenCheck,
+  Radio,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -54,7 +56,7 @@ export default function AdminDashboardPage() {
           Admin Dashboard
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Overview of recent enquiries, upcoming workshops, registrations, and quick CMS management actions.
+          Overview of recent enquiries, upcoming workshops, courses, live events, and quick CMS management actions.
         </p>
       </div>
 
@@ -63,34 +65,48 @@ export default function AdminDashboardPage() {
         <h2 className="text-xs font-bold uppercase tracking-wider text-amber-800">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <Link
             href="/admin/offerings"
-            className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
           >
-            <Plus className="w-4 h-4 text-amber-700" />
-            <span>Add New Offering</span>
+            <Plus className="w-3.5 h-3.5 text-amber-700" />
+            <span>Add Offering</span>
           </Link>
           <Link
             href="/admin/workshops"
-            className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
           >
-            <Plus className="w-4 h-4 text-amber-700" />
+            <Plus className="w-3.5 h-3.5 text-amber-700" />
             <span>Create Workshop</span>
           </Link>
           <Link
-            href="/admin/blogs"
-            className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
+            href="/admin/courses"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-950 font-bold text-xs transition-colors"
           >
-            <Plus className="w-4 h-4 text-amber-700" />
-            <span>Publish Blog Post</span>
+            <BookOpenCheck className="w-3.5 h-3.5 text-amber-800" />
+            <span>Manage Courses</span>
+          </Link>
+          <Link
+            href="/admin/live-events"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-950 font-bold text-xs transition-colors"
+          >
+            <Radio className="w-3.5 h-3.5 text-amber-800" />
+            <span>Live Events</span>
+          </Link>
+          <Link
+            href="/admin/blogs"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-900 font-semibold text-xs transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5 text-amber-700" />
+            <span>Publish Blog</span>
           </Link>
           <Link
             href="/admin/media"
-            className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-xs transition-colors"
+            className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-xs transition-colors"
           >
-            <FolderOpen className="w-4 h-4 text-slate-700" />
-            <span>Open Media Library</span>
+            <FolderOpen className="w-3.5 h-3.5 text-slate-700" />
+            <span>Media Library</span>
           </Link>
         </div>
       </div>

@@ -16,6 +16,8 @@ import {
   FolderOpen,
   LogOut,
   Sparkles,
+  BookOpenCheck,
+  Radio,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -32,6 +34,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Offerings", href: "/admin/offerings", icon: BookOpen },
     { name: "Workshops", href: "/admin/workshops", icon: Calendar },
     { name: "Classes", href: "/admin/classes", icon: GraduationCap },
+    { name: "Courses", href: "/admin/courses", icon: BookOpenCheck },
+    { name: "Live Events", href: "/admin/live-events", icon: Radio },
     { name: "Blogs", href: "/admin/blogs", icon: FileText },
     { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
     { name: "Media Library", href: "/admin/media", icon: FolderOpen },

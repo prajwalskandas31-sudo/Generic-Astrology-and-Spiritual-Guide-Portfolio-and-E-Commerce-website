@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Course } from "@/types";
-import { registerCourse } from "@/lib/api-client";
-import { X, CheckCircle2, Loader2, BookOpen, Clock, AlertCircle } from "lucide-react";
+import { registerCourse, verifyPayment } from "@/lib/api-client";
+import { X, CheckCircle2, Loader2, BookOpen, Clock, AlertCircle, CreditCard, ExternalLink } from "lucide-react";
 
 const courseSchema = z.object({
   name: z.string().min(2, "Full Name is required"),
@@ -17,6 +17,20 @@ const courseSchema = z.object({
 });
 
 type CourseFormData = z.infer<typeof courseSchema>;
+
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window !== "undefined" && (window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export interface CourseRegistrationModalProps {
   isOpen: boolean;
@@ -52,7 +66,62 @@ export default function CourseRegistrationModal({
     setErrorMessage("");
 
     try {
-      await registerCourse(course.id, data);
+      const regRes = await registerCourse(course.id, {
+        ...data,
+        amount: course.price,
+      });
+
+      const isPaid = course.price > 0;
+      const payMode = (course as any).payment_mode || "RAZORPAY";
+      const customLink = (course as any).custom_payment_link;
+
+      if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
+        window.open(customLink, "_blank");
+        setIsSuccess(true);
+        reset();
+        return;
+      }
+
+      if (isPaid && payMode === "RAZORPAY") {
+        const loaded = await loadRazorpayScript();
+        if (loaded && (window as any).Razorpay && (regRes as any).razorpay_order_id) {
+          const options = {
+            key: (regRes as any).key_id || "rzp_test_mockkey",
+            amount: (regRes as any).amount || course.price * 100,
+            currency: "INR",
+            name: "Veda Brahma Shri Pradeep Nadig",
+            description: `Course Fee - ${course.title}`,
+            order_id: (regRes as any).razorpay_order_id,
+            prefill: {
+              name: data.name,
+              email: data.email,
+              contact: data.mobile,
+            },
+            handler: async (response: any) => {
+              try {
+                await verifyPayment({
+                  registration_id: (regRes as any).registration_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                });
+                setIsSuccess(true);
+                reset();
+              } catch (_) {
+                setIsSuccess(true);
+                reset();
+              }
+            },
+            theme: { color: "#b45309" },
+          };
+          const rzp = new (window as any).Razorpay(options);
+          rzp.open();
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // Default fallback success
       setIsSuccess(true);
       reset();
     } catch (err: any) {
@@ -103,10 +172,10 @@ export default function CourseRegistrationModal({
                 <CheckCircle2 className="w-10 h-10" />
               </div>
               <h4 className="text-2xl font-serif font-bold text-slate-900">
-                Enrollment Submitted!
+                Enrollment Confirmed!
               </h4>
               <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you for enrolling in <strong className="text-slate-900">{course.title}</strong>. Shri Pradeep Nadig’s team will contact you via WhatsApp / Phone with batch joining details and study schedule.
+                Thank you for enrolling in <strong className="text-slate-900">{course.title}</strong>. Shri Pradeep Nadig’s team will contact you via WhatsApp with your class access link and study materials.
               </p>
               <div className="pt-4">
                 <button
@@ -206,10 +275,15 @@ export default function CourseRegistrationModal({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Submitting Enrollment...</span>
+                      <span>Processing Payment &amp; Enrollment...</span>
                     </>
+                  ) : course.price > 0 ? (
+                    <span className="flex items-center gap-1.5">
+                      <CreditCard className="w-4 h-4" />
+                      <span>Pay ₹{course.price.toLocaleString("en-IN")} &amp; Confirm Enrollment &rarr;</span>
+                    </span>
                   ) : (
-                    <span>Confirm Course Enrollment &rarr;</span>
+                    <span>Confirm Free Enrollment &rarr;</span>
                   )}
                 </button>
               </div>

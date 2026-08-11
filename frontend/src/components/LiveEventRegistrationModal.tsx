@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { LiveEvent } from "@/types";
-import { registerLiveEvent } from "@/lib/api-client";
-import { X, CheckCircle2, Loader2, Radio, Calendar, MapPin, AlertCircle, Sparkles } from "lucide-react";
+import { registerLiveEvent, verifyPayment } from "@/lib/api-client";
+import { X, CheckCircle2, Loader2, Radio, Calendar, MapPin, AlertCircle, Sparkles, CreditCard } from "lucide-react";
 
 const liveEventSchema = z.object({
   name: z.string().min(2, "Full Name is required"),
@@ -20,6 +20,20 @@ const liveEventSchema = z.object({
 });
 
 type LiveEventFormData = z.infer<typeof liveEventSchema>;
+
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window !== "undefined" && (window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export interface LiveEventRegistrationModalProps {
   isOpen: boolean;
@@ -55,7 +69,61 @@ export default function LiveEventRegistrationModal({
     setErrorMessage("");
 
     try {
-      await registerLiveEvent(event.id, data);
+      const isPaid = event.price > 0 && data.pass_type !== "Virtual Pass";
+      const regRes = await registerLiveEvent(event.id, {
+        ...data,
+        amount: isPaid ? event.price : 0,
+      });
+
+      const payMode = (event as any).payment_mode || "RAZORPAY";
+      const customLink = (event as any).custom_payment_link;
+
+      if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
+        window.open(customLink, "_blank");
+        setIsSuccess(true);
+        reset();
+        return;
+      }
+
+      if (isPaid && payMode === "RAZORPAY") {
+        const loaded = await loadRazorpayScript();
+        if (loaded && (window as any).Razorpay && (regRes as any).razorpay_order_id) {
+          const options = {
+            key: (regRes as any).key_id || "rzp_test_mockkey",
+            amount: (regRes as any).amount || event.price * 100,
+            currency: "INR",
+            name: "Veda Brahma Shri Pradeep Nadig",
+            description: `Sankalpa Pass - ${event.title}`,
+            order_id: (regRes as any).razorpay_order_id,
+            prefill: {
+              name: data.name,
+              email: data.email,
+              contact: data.mobile,
+            },
+            handler: async (response: any) => {
+              try {
+                await verifyPayment({
+                  registration_id: (regRes as any).registration_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                });
+                setIsSuccess(true);
+                reset();
+              } catch (_) {
+                setIsSuccess(true);
+                reset();
+              }
+            },
+            theme: { color: "#b45309" },
+          };
+          const rzp = new (window as any).Razorpay(options);
+          rzp.open();
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       setIsSuccess(true);
       reset();
     } catch (err: any) {
@@ -108,7 +176,7 @@ export default function LiveEventRegistrationModal({
                 Sankalpa Registered!
               </h4>
               <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Your Sankalpa registration for <strong className="text-slate-900">{event.title}</strong> has been received. Shri Pradeep Nadig will chant your name during the sacred ritual. Access links and updates will be sent to your WhatsApp.
+                Your Sankalpa registration for <strong className="text-slate-900">{event.title}</strong> has been received. Shri Pradeep Nadig will chant your name during the sacred ritual. Access links will be sent to your WhatsApp.
               </p>
               <div className="pt-4">
                 <button
@@ -254,8 +322,13 @@ export default function LiveEventRegistrationModal({
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span>Registering Sankalpa...</span>
                     </>
+                  ) : event.price > 0 ? (
+                    <span className="flex items-center gap-1.5">
+                      <CreditCard className="w-4 h-4" />
+                      <span>Register &amp; Pay ₹{event.price.toLocaleString("en-IN")} &rarr;</span>
+                    </span>
                   ) : (
-                    <span>Register Sankalpa &amp; Get Pass &rarr;</span>
+                    <span>Register Free Sankalpa Pass &rarr;</span>
                   )}
                 </button>
               </div>

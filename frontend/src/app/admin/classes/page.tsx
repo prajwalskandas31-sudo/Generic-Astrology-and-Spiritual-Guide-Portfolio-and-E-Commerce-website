@@ -16,6 +16,10 @@ export default function AdminClassesPage() {
   const [duration, setDuration] = useState("");
   const [suitableFor, setSuitableFor] = useState("");
   const [mode, setMode] = useState<"Online" | "Offline" | "Hybrid">("Hybrid");
+  const [price, setPrice] = useState(4999);
+  const [hasPayment, setHasPayment] = useState(true);
+  const [paymentMode, setPaymentMode] = useState<"RAZORPAY" | "CUSTOM_LINK" | "FREE">("RAZORPAY");
+  const [customPaymentLink, setCustomPaymentLink] = useState("");
 
   useEffect(() => {
     loadClasses();
@@ -38,7 +42,10 @@ export default function AdminClassesPage() {
     setDescription(item.description || "");
     setDuration(item.duration || "");
     setSuitableFor(item.suitable_for || "");
-    setMode(item.mode as any || "Hybrid");
+    setMode((item.mode as any) || "Hybrid");
+    setHasPayment(true);
+    setPrice(4999);
+    setPaymentMode("RAZORPAY");
     setIsEditing(true);
   };
 
@@ -49,6 +56,10 @@ export default function AdminClassesPage() {
     setDuration("");
     setSuitableFor("");
     setMode("Hybrid");
+    setPrice(4999);
+    setHasPayment(true);
+    setPaymentMode("RAZORPAY");
+    setCustomPaymentLink("");
     setIsEditing(false);
   };
 
@@ -172,6 +183,75 @@ export default function AdminClassesPage() {
                 className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
               />
             </div>
+          </div>
+
+          {/* PAYMENT GATEWAY SETUP TOGGLE */}
+          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Payment Setup &amp; Gateway Toggle</h3>
+                <p className="text-[11px] text-slate-600">Easily toggle between automatic online payment gateway, custom UPI link, or free enrollment</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasPayment}
+                  onChange={(e) => {
+                    setHasPayment(e.target.checked);
+                    if (!e.target.checked) setPrice(0);
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-700"></div>
+                <span className="ml-2 text-xs font-bold text-slate-800">
+                  {hasPayment ? "Paid Class (Payment Active)" : "Free Class (No Fee)"}
+                </span>
+              </label>
+            </div>
+
+            {hasPayment ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-amber-200/60">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Class Fee (₹) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-amber-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Payment Method *</label>
+                  <select
+                    value={paymentMode}
+                    onChange={(e: any) => setPaymentMode(e.target.value)}
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900"
+                  >
+                    <option value="RAZORPAY">⚡ Automatic Online Payment Gateway (Razorpay)</option>
+                    <option value="CUSTOM_LINK">🔗 Custom Payment Link / UPI Link</option>
+                  </select>
+                </div>
+                {paymentMode === "CUSTOM_LINK" && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Payment Link URL *</label>
+                    <input
+                      type="url"
+                      required
+                      placeholder="https://rzp.io/l/... or upi://..."
+                      value={customPaymentLink}
+                      onChange={(e) => setCustomPaymentLink(e.target.value)}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-mono"
+                    />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200">
+                Students will register directly without any fee checkout step.
+              </div>
+            )}
           </div>
 
           <div>
