@@ -10,6 +10,11 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    try:
+        from app.db.session import migrate_db_schema
+        await migrate_db_schema()
+    except Exception as err:
+        logger.warning(f"Startup DB migration notice: {err}")
     yield
 
 app = FastAPI(

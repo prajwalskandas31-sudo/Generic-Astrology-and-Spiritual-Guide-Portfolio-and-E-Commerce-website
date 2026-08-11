@@ -56,9 +56,25 @@ AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_co
 
 Base = declarative_base()
 
+from sqlalchemy import text
+
 async def get_db():
     async with AsyncSessionLocal() as session:
         try:
             yield session
         finally:
             await session.close()
+
+async def migrate_db_schema():
+    """
+    Ensures newly added table columns exist in PostgreSQL/Supabase database.
+    Runs idempotently with IF NOT EXISTS.
+    """
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS has_payment BOOLEAN DEFAULT TRUE;"))
+            await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS payment_mode VARCHAR(50) DEFAULT 'RAZORPAY';"))
+            await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS custom_payment_link VARCHAR(500);"))
+            print("[DB Auto-Migration]: Verified workshops payment columns in PostgreSQL.")
+    except Exception as e:
+        print(f"[DB Auto-Migration Warning]: {e}")

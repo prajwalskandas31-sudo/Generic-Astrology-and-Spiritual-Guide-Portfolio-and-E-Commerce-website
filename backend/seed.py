@@ -1,5 +1,5 @@
 import asyncio
-from app.db.session import engine, Base, AsyncSessionLocal
+from app.db.session import engine, Base, AsyncSessionLocal, migrate_db_schema
 from app.models.models import (
     Offering, Workshop, WorkshopBatch, ClassItem,
     Blog, GalleryAlbum, GalleryItem, MediaItem, FAQItem, Setting
@@ -10,6 +10,7 @@ async def seed_database():
     print("Creating all tables in database...")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await migrate_db_schema()
     
     async with AsyncSessionLocal() as db:
         # 1. Seed Settings
