@@ -752,3 +752,339 @@ export const FALLBACK_GALLERY: GalleryItem[] = [
     display_order: 18,
   },
 ];
+
+export const FALLBACK_COURSES: import("../types").Course[] = [
+  {
+    id: 1,
+    title: "Jyotish Praveena - Foundation in Vedic Astrology",
+    slug: "vedic-astrology-foundation",
+    short_description: "A comprehensive 12-week course mastering Janma Kundali analysis, Bhavas, Rasis, Grahas, Dasha systems, and Gochara transit interpretations.",
+    full_description: "Immerse yourself in authentic Vedic Astrology under the personal guidance of Veda Brahma Shri Pradeep Nadig. Designed for serious seekers, practitioners, and enthusiasts, this foundational program walks you through classical Brihat Parasara Hora Sastra principles, planetary strengths (Shadbala), house lords (Bhava Pathi), planetary aspects (Drishti), Vimshottari Dasha calculations, and practical birth chart readings.",
+    instructor: "Veda Brahma Shri Pradeep Nadig",
+    duration: "12 Weeks (36 Live Hours)",
+    level: "Beginner",
+    mode: "Online Live",
+    price: 14999,
+    cover_image: "/images/services/vedic-astrology-consultation.jpg",
+    prerequisites: "Open to all enthusiasts; basic interest in Vedic tradition recommended.",
+    schedule: "Every Saturday & Sunday, 7:00 AM - 8:30 AM IST",
+    status: "Active",
+    featured: true,
+    syllabus_modules: [
+      {
+        title: "Module 1: Fundamentals of Parashari Astrology",
+        duration: "Weeks 1-3",
+        topics: [
+          "Introduction to Jyotish Vedanga & Astronomical Foundations",
+          "The 12 Rasis (Zodiac Signs), Elements, and Gunas",
+          "The 9 Grahas (Planets): Karakatvas, Dignities & Combustion",
+          "The 27 Nakshatras: Deities, Stars & Pada Divisions"
+        ]
+      },
+      {
+        title: "Module 2: Bhavas (Houses) & Chart Construction",
+        duration: "Weeks 4-6",
+        topics: [
+          "Understanding the 12 Bhavas & Life Dimensions",
+          "Kendra, Trikona, Dusthana, and Upachaya Houses",
+          "Ascendant (Lagna) determination & House Lordships",
+          "Planetary Drishti (Aspects) and Conjunction Effects"
+        ]
+      },
+      {
+        title: "Module 3: Vimshottari Dasha & Transit Predictive Rules",
+        duration: "Weeks 7-9",
+        topics: [
+          "Vimshottari Dasha System & Antardasha calculation",
+          "Gochara (Transits) of Jupiter, Saturn, Rahu & Ketu",
+          "Combos for Career, Marriage, Education & Health",
+          "Identifying Sade Sati & Remedial measures"
+        ]
+      },
+      {
+        title: "Module 4: Case Studies, Chart Decoding & Remedial Jyotish",
+        duration: "Weeks 10-12",
+        topics: [
+          "Hands-on birth chart decoding of real case studies",
+          "Authentic Mantra, Stotra, Homa & Gemstone remedies",
+          "Ethics of an Astrologer & Consultation guidelines",
+          "Final assessment and Certification distribution"
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "Will recordings be provided if I miss a live session?",
+        answer: "Yes! High-definition video recordings and downloadable study materials are shared within 24 hours of each session."
+      },
+      {
+        question: "Is there any exam or certificate issued?",
+        answer: "Upon completing 80% attendance and submission of final chart decoding assignments, students receive the Jyotish Praveena Certificate signed by Shri Pradeep Nadig."
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Sacred Vedic Chanting & Swara Shuddhi Mastery",
+    slug: "sacred-vedic-chanting-mastery",
+    short_description: "Master authentic Veda Mantras with precise Udaatta, Anudaatta, and Svarita accents alongside deep esoteric Sukta meanings.",
+    full_description: "Vedic recitation requires exact phonetics (Shiksha Shastra) and intonation (Swara). Guided by Shri Pradeep Nadig, who has undergone traditional Veda Adhyayana, this course trains students in chanting sacred Suktas—including Purusha Suktam, Sri Suktam, Rudram, and Chamakam—ensuring pristine pronunciation, breath control, and spiritual resonance.",
+    instructor: "Veda Brahma Shri Pradeep Nadig",
+    duration: "8 Weeks (24 Live Hours)",
+    level: "All Levels",
+    mode: "Online Live",
+    price: 9999,
+    cover_image: "/images/services/sundarakanda-parayana-pooja.jpg",
+    prerequisites: "Basic familiarity with Sanskrit script or Devanagari transliteration.",
+    schedule: "Every Tuesday & Thursday, 6:30 PM - 8:00 PM IST",
+    status: "Active",
+    featured: true,
+    syllabus_modules: [
+      {
+        title: "Module 1: Shiksha & Swara Shuddhi Fundamentals",
+        duration: "Weeks 1-2",
+        topics: [
+          "Vedic Phonetics (Sanskrit Varnamala & Articulation places)",
+          "Mastering the 3 primary Swaras: Udaatta, Anudaatta, Svarita",
+          "Pranayama & vocal technique for sustained Vedic recitation",
+          "Ganapathi Atharvashirsha chant practice"
+        ]
+      },
+      {
+        title: "Module 2: Sri Suktam & Lakshmi Upasana",
+        duration: "Weeks 3-4",
+        topics: [
+          "Line-by-line recitation of 15 Rigvedic Mantras of Sri Suktam",
+          "Word-by-word meaning, Bija Aksharas, and Nyasa rituals",
+          "Performing home Samidhadhana and Archana with Sri Suktam"
+        ]
+      },
+      {
+        title: "Module 3: Purusha Suktam & Cosmic Consciousness",
+        duration: "Weeks 5-6",
+        topics: [
+          "Purusha Suktam 18 Riks with precise Swara notation",
+          "Cosmological significance of Virat Purusha & Vedic Yajna",
+          "Incorporating Purusha Suktam into daily Pooja routines"
+        ]
+      },
+      {
+        title: "Module 4: Sri Rudram Namakam Highlights & Integration",
+        duration: "Weeks 7-8",
+        topics: [
+          "Introductory Namakam Anuvakas with Swara perfection",
+          "Maha Mrityunjaya Mantra & Gayatri Mantra Japa Vidhi",
+          "Final live recitation evaluation and continuous practice guide"
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "Can beginners without prior Sanskrit experience join?",
+        answer: "Yes, transliterated scripts with detailed accent markers (Udaatta/Anudaatta symbols) are provided along with Devanagari texts."
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Prashna Marga & Horary Astrology Secrets",
+    slug: "prashna-marga-horary-astrology",
+    short_description: "Learn instant horary astrological techniques to answer specific life questions, missing objects, marriage timing, and medical queries.",
+    full_description: "Prashna Kundali (Horary Astrology) is the ancient art of erecting a celestial map for the exact moment a question is posed to an astrologer. Based on Kerala's classical text Prashna Marga, Shri Pradeep Nadig reveals time-tested omens (Nimitta), Arudha Lagna calculations, and sharp planetary combinations to deliver crystal-clear answers without needing a birth chart.",
+    instructor: "Veda Brahma Shri Pradeep Nadig",
+    duration: "6 Weeks (18 Live Hours)",
+    level: "Intermediate",
+    mode: "Online Live",
+    price: 11999,
+    cover_image: "/images/services/vedic-astrology-consultation.jpg",
+    prerequisites: "Understanding of basic Rasis, Bhavas, and Graha nature.",
+    schedule: "Every Sunday, 10:00 AM - 1:00 PM IST",
+    status: "Upcoming",
+    featured: false,
+    syllabus_modules: [
+      {
+        title: "Module 1: Principles of Prashna & Arudha Calculation",
+        duration: "Weeks 1-2",
+        topics: [
+          "Significance of Prashna vs. Jataka (Horoscope)",
+          "Calculating Arudha Lagna and Prashna Lagna",
+          "Deciphering Nimitta (Omens), Breath (Svara), and Querent Behavior"
+        ]
+      },
+      {
+        title: "Module 2: Specific Life Queries & Combinations",
+        duration: "Weeks 3-4",
+        topics: [
+          "Health & Medical Prashna: Identifying disease, longevity & recovery",
+          "Relationship & Marriage Prashna: Matching intent & timing",
+          "Career, Business & Lost/Stolen Item retrieval techniques"
+        ]
+      },
+      {
+        title: "Module 3: Advanced Kerala Prashna & Remedial Guidance",
+        duration: "Weeks 5-6",
+        topics: [
+          "Deva Prashna & Ancestral Dosha identification",
+          "Selecting precise Pariharas (Remedial Homas and Poojas)",
+          "Live practical Prashna workshops with real-world questions"
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "Is this suitable if I already know birth chart reading?",
+        answer: "Absolutely! Prashna is a powerful complement to natal chart analysis when birth times are unknown or exact timing of events is needed."
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "Vastu Shastra Principles & Energy Balancing",
+    slug: "vastu-shastra-energy-healing",
+    short_description: "Discover classical Vastu principles for home, office, and sacred spaces to enhance prosperity, health, and spiritual vibration.",
+    full_description: "Vastu Shastra is the traditional Indian science of architecture and spatial harmony. In this practical course, Shri Pradeep Nadig breaks down Mayamatam and Manasara principles, Vastu Purusha Mandala energy grids, directional directions (Ashta Dikpalakas), room placements, and non-demolition remedies to harmonize structural energies.",
+    instructor: "Veda Brahma Shri Pradeep Nadig",
+    duration: "4 Weeks (12 Live Hours)",
+    level: "All Levels",
+    mode: "Hybrid",
+    price: 8499,
+    cover_image: "/images/services/vastu-homa.jpg",
+    prerequisites: "No prior experience required.",
+    schedule: "Every Saturday, 2:00 PM - 5:00 PM IST",
+    status: "Upcoming",
+    featured: false,
+    syllabus_modules: [
+      {
+        title: "Module 1: Vastu Purusha Mandala & Directional Energies",
+        duration: "Weeks 1-2",
+        topics: [
+          "Pancha Mahabhutas (Five Elements) and Directional Alignment",
+          "Vastu Purusha Mandala grid (81 Pada & 64 Pada layouts)",
+          "Entrance positioning, Bramhasthan sanctity, and Main Gate rules"
+        ]
+      },
+      {
+        title: "Module 2: Residential & Commercial Vastu Planning",
+        duration: "Weeks 3-4",
+        topics: [
+          "Ideal placements for Kitchen (Agneya), Master Bedroom (Nairrutya), Pooja Room (Eeshanya)",
+          "Office desks, cash lockers, and factory machinery layouts",
+          "Pyramid remedies, Yantra installations, and non-structural cures"
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "Can I bring my home layout blueprint for review?",
+        answer: "Yes, week 4 includes a practical clinic where students can analyze personal floor plans under guidance."
+      }
+    ]
+  }
+];
+
+export const FALLBACK_LIVE_EVENTS: import("../types").LiveEvent[] = [
+  {
+    id: 1,
+    title: "Mahashivaratri Grand Night 2026 - 4 Prahara Live Rituals",
+    slug: "mahashivaratri-grand-night-2026",
+    short_description: "Join the sacred all-night live stream of 4 Prahara Maha Rudrabhishekam, Bilvarchana, and continuous Vedic chanting dedicated to Lord Shiva.",
+    full_description: "Mahashivaratri is the most auspicious night of spiritual awakening and divine grace. Shri Pradeep Nadig along with esteemed Vedic Ghanapathis will perform continuous 4 Prahara rituals from dusk till dawn. Devotees from around the world can join virtually or in-person, offer Sankalpa in their name, and experience intense divine vibration through live HD streaming.",
+    event_date: "2026-02-15",
+    event_time: "06:00 PM - 06:00 AM IST (All Night)",
+    venue_type: "In-Person & Live Stream",
+    venue_address: "Shaankari Creations Ashram, Asharaya layout, K.G.Vaderahalli, Bengaluru",
+    stream_url: "https://youtube.com/live/mahashivaratri-2026-pradeep-nadig",
+    price: 0,
+    cover_image: "/images/services/rudrabhishekam-pooja.jpg",
+    featured: true,
+    status: "Upcoming",
+    pandits_count: 11,
+    agenda: [
+      { time: "06:00 PM - 07:30 PM", title: "1st Prahara: Ksheerabhishekam & Ganapathi Pooja", description: "Invocational prayers, milk panchamrutha bathing, and Bilvapatra Archana." },
+      { time: "09:30 PM - 11:00 PM", title: "2nd Prahara: Dahi & Madhu Abhishekam", description: "Curd and honey sacred bathing accompanied by Rigvedic Sukta chants." },
+      { time: "01:00 AM - 02:30 AM", title: "3rd Prahara: Ghee & Sugarcane Juice Abhishekam", description: "Deep midnight meditation with continuous Namakam-Chamakam chanting." },
+      { time: "04:00 AM - 05:30 AM", title: "4th Prahara: Bhasma & Sugandha Dravya Homa", description: "Holy ash ritual, Maha Poornahuthi, and early morning Prasada distribution." }
+    ],
+    faq: [
+      { question: "How can I register my Sankalpa for the rituals?", answer: "Click 'Register Sankalpa' and enter your Name, Gothra, and Nakshatra. Shri Pradeep Nadig will chant your name during the live 4 Prahara Abhishekam." },
+      { question: "Is the live stream free to watch?", answer: "Yes, HD virtual pass is 100% free for all global devotees. VIP Sankalpa passes are available for formal ritual inclusion." }
+    ]
+  },
+  {
+    id: 2,
+    title: "Sharada Navratri Chandi Homa & Saptashati Live Stream",
+    slug: "navratri-chandi-homa-live",
+    short_description: "Experience the monumental Maha Chandi Yajna and 700 Sloka Durga Saptashati Parayana performed live during Sharada Navratri.",
+    full_description: "Maha Chandi Homa is the ultimate Vedic yajna for overcoming obstacles, warding off negative energies, and invoking Divine Mother Chandika's supreme blessings. Streamed live in ultra-HD from Bengaluru, this grand event spans 700 verses of Durga Saptashati with traditional Ahuthis of sacred samagri, kumkum, and silk sarees.",
+    event_date: "2026-10-18",
+    event_time: "07:30 AM - 01:30 PM IST",
+    venue_type: "In-Person & Live Stream",
+    venue_address: "Asharaya layout, K.G.Vaderahalli, Bengaluru",
+    stream_url: "https://youtube.com/live/chandi-homa-navratri-2026",
+    price: 1100,
+    cover_image: "/images/services/chandika-homa.jpg",
+    featured: true,
+    status: "Upcoming",
+    pandits_count: 9,
+    agenda: [
+      { time: "07:30 AM - 08:30 AM", title: "Maha Ganapathi Pooja & Navakshari Japa", description: "Opening invocation and consecration of sacred Kalashas." },
+      { time: "08:30 AM - 11:30 AM", title: "Durga Saptashati 13 Adhyayas Parayana", description: "Complete recitation of 700 verses with authentic Swara." },
+      { time: "11:30 AM - 12:45 PM", title: "Maha Chandi Hathi & Dampati Pooja", description: "Offering 700 Ahuthis into the consecrated Agni Kunda." },
+      { time: "12:45 PM - 01:30 PM", title: "Vasordhara & Maha Poornahuthi", description: "Final silk offering, Suvasini Pooja, and Mahamangalarathi." }
+    ],
+    faq: [
+      { question: "Will Prasadam be sent to my address?", answer: "Yes! VIP Sankalpa registrants receive energized Raksha Thread, Kumkum, and Blessed Prasadam by speed post across India." }
+    ]
+  },
+  {
+    id: 3,
+    title: "Surya Grahana Rahu-Ketu Shanti Special Live Pooja",
+    slug: "solar-eclipse-shanti-pooja",
+    short_description: "Special Eclipse Shanti and Navagraha Homa performed during the peak eclipse hours to neutralize planetary afflictions.",
+    full_description: "During a Solar Eclipse (Surya Grahana), the potency of spiritual Japa and Havya offerings is multiplied manifold. Shri Pradeep Nadig leads this specialized eclipse mitigation ritual focusing on Rahu, Ketu, and Sun Nakshatra Shanti for those born under impacted signs.",
+    event_date: "2026-08-02",
+    event_time: "03:00 PM - 07:00 PM IST",
+    venue_type: "Online Stream",
+    venue_address: "Online Live Stream Exclusive",
+    stream_url: "https://youtube.com/live/surya-grahana-shanti-2026",
+    price: 750,
+    cover_image: "/images/services/navagraha-homa.jpg",
+    featured: false,
+    status: "Upcoming",
+    pandits_count: 5,
+    agenda: [
+      { time: "03:00 PM - 04:00 PM", title: "Grahana Kala Japa & Navagraha Tarpanam", description: "Silent meditation and mantra repetition during eclipse entry." },
+      { time: "04:00 PM - 06:00 PM", title: "Rahu-Ketu & Arka Samidh Homa", description: "Targeted fire offerings to alleviate janma nakshatra dosha." },
+      { time: "06:00 PM - 07:00 PM", title: "Grahana Moksha Snana & Mangalarathi", description: "Post-eclipse purification prayers and protective kavach distribution." }
+    ],
+    faq: [
+      { question: "Who should register for this eclipse Shanti?", answer: "Individuals whose birth star (Janma Nakshatra) falls in the eclipse zodiac sign or those undergoing Rahu/Ketu Dasha." }
+    ]
+  },
+  {
+    id: 4,
+    title: "Monthly Pradosham & Rudrabhishekam Live Sankalpa",
+    slug: "monthly-pradosham-rudrabhishekam",
+    short_description: "Participate in the bi-monthly Pradosha Kaala Shiva Abhishekam live stream for prosperity and liberation from karma.",
+    full_description: "Pradosham occurring twice a month during Trayodashi Tithi is the most powerful time to seek Lord Shiva's mercy. Join Shri Pradeep Nadig live every Pradosham evening as 11 sacred dravyas are offered to the Lingam with Chamaka Prashna recitation.",
+    event_date: "2026-08-25",
+    event_time: "05:30 PM - 07:30 PM IST",
+    venue_type: "In-Person & Live Stream",
+    venue_address: "Shaankari Creations Temple Room, Bengaluru",
+    stream_url: "https://youtube.com/live/pradosham-rudrabhishekam-live",
+    price: 350,
+    cover_image: "/images/services/rudrabhishekam-pooja.jpg",
+    featured: false,
+    status: "Upcoming",
+    pandits_count: 3,
+    agenda: [
+      { time: "05:30 PM - 06:00 PM", title: "Nandi Abhishekam & Pradosha Mahatmyam", description: "Honoring Lord Nandi with holy water and sacred bilva leaves." },
+      { time: "06:00 PM - 07:00 PM", title: "Ekadasa Dravya Rudrabhishekam", description: "Honey, Milk, Curd, Ghee, Tender Coconut & Panchamrutha bathing." },
+      { time: "07:00 PM - 07:30 PM", title: "Deeparadhana & Prasada Vitharane", description: "108 Archana and camphor Aarti." }
+    ],
+    faq: [
+      { question: "Can I subscribe to all monthly Pradoshams?", answer: "Yes, annual Sankalpa passes covering all 24 Pradoshams in a year are available upon request." }
+    ]
+  }
+];
+

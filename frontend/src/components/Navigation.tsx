@@ -38,9 +38,11 @@ export default function Navigation({ siteName = "Veda Brahma Shri Pradeep Nadig"
 
   const navLinks = [
     { name: "About", href: "/" },
-    { name: "Services & Consultations", href: "/services", hasSubmenu: true },
+    { name: "Services", href: "/services", hasSubmenu: true },
     { name: "Workshops", href: "/workshops" },
     { name: "Classes", href: "/classes" },
+    { name: "Courses", href: "/courses" },
+    { name: "Live Events", href: "/live-events" },
     { name: "Blogs", href: "/blogs" },
     { name: "Gallery", href: "/gallery" },
     { name: "FAQ", href: "/faq" },

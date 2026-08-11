@@ -62,6 +62,16 @@ export default function Footer({
                 </Link>
               </li>
               <li>
+                <Link href="/courses" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
+                  Vedic Courses &amp; Certifications
+                </Link>
+              </li>
+              <li>
+                <Link href="/live-events" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
+                  Sacred Live Events
+                </Link>
+              </li>
+              <li>
                 <Link href="/blogs" className="hover:text-amber-900 transition-colors">
                   Spiritual Blogs
                 </Link>

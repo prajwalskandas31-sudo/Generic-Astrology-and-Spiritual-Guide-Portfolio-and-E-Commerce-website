@@ -1,0 +1,268 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { LiveEvent } from "@/types";
+import { registerLiveEvent } from "@/lib/api-client";
+import { X, CheckCircle2, Loader2, Radio, Calendar, MapPin, AlertCircle, Sparkles } from "lucide-react";
+
+const liveEventSchema = z.object({
+  name: z.string().min(2, "Full Name is required"),
+  mobile: z.string().min(10, "Valid 10-digit mobile number required"),
+  email: z.string().email("Valid email address required"),
+  gothra: z.string().optional(),
+  nakshatra: z.string().optional(),
+  rashi: z.string().optional(),
+  sankalpa_wish: z.string().optional(),
+  pass_type: z.enum(["Virtual Pass", "VIP Sankalpa Pass", "In-Person Pass"]),
+});
+
+type LiveEventFormData = z.infer<typeof liveEventSchema>;
+
+export interface LiveEventRegistrationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  event: LiveEvent;
+}
+
+export default function LiveEventRegistrationModal({
+  isOpen,
+  onClose,
+  event,
+}: LiveEventRegistrationModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LiveEventFormData>({
+    resolver: zodResolver(liveEventSchema),
+    defaultValues: {
+      pass_type: event.price === 0 ? "Virtual Pass" : "VIP Sankalpa Pass",
+    },
+  });
+
+  if (!isOpen) return null;
+
+  const onSubmit = async (data: LiveEventFormData) => {
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      await registerLiveEvent(event.id, data);
+      setIsSuccess(true);
+      reset();
+    } catch (err: any) {
+      setErrorMessage(err.message || "Failed to register for live event. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setIsSuccess(false);
+    setErrorMessage("");
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="relative bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-amber-200 overflow-hidden animate-fadeIn">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-amber-800 to-amber-950 text-white p-6 relative">
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-2 rounded-full text-amber-200 hover:text-white hover:bg-amber-700/50 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2 text-amber-300 text-xs uppercase tracking-wider font-semibold">
+            <Radio className="w-4 h-4 text-amber-400 animate-pulse" />
+            <span>Live Event Pass &amp; Sankalpa</span>
+          </div>
+          <h3 className="text-xl font-serif font-bold text-amber-50 mt-1 line-clamp-1">
+            {event.title}
+          </h3>
+          <div className="flex items-center gap-4 mt-2 text-xs text-amber-200 font-medium">
+            <span className="flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
+              {event.event_date} ({event.event_time})
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {isSuccess ? (
+            <div className="text-center py-8 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
+                <Sparkles className="w-10 h-10 text-amber-700" />
+              </div>
+              <h4 className="text-2xl font-serif font-bold text-slate-900">
+                Sankalpa Registered!
+              </h4>
+              <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
+                Your Sankalpa registration for <strong className="text-slate-900">{event.title}</strong> has been received. Shri Pradeep Nadig will chant your name during the sacred ritual. Access links and updates will be sent to your WhatsApp.
+              </p>
+              <div className="pt-4">
+                <button
+                  onClick={handleClose}
+                  className="px-6 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl text-sm transition-colors"
+                >
+                  Close &amp; Return
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {errorMessage && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  {...register("name")}
+                  placeholder="Enter your full name"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-slate-900"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-[11px] mt-1">{errors.name.message}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Mobile Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    {...register("mobile")}
+                    placeholder="+91 98440 00000"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-slate-900"
+                  />
+                  {errors.mobile && (
+                    <p className="text-red-500 text-[11px] mt-1">{errors.mobile.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    {...register("email")}
+                    placeholder="yourname@gmail.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-slate-900"
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-[11px] mt-1">{errors.email.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Gothra, Nakshatra, Rashi */}
+              <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-2xl space-y-3">
+                <span className="text-xs font-bold text-amber-900 uppercase tracking-wider block">
+                  Sacred Sankalpa Details
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-700 mb-0.5">
+                      Gothra
+                    </label>
+                    <input
+                      type="text"
+                      {...register("gothra")}
+                      placeholder="e.g. Kashyapa"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-amber-200 text-xs bg-white text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-700 mb-0.5">
+                      Nakshatra
+                    </label>
+                    <input
+                      type="text"
+                      {...register("nakshatra")}
+                      placeholder="e.g. Rohini"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-amber-200 text-xs bg-white text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-700 mb-0.5">
+                      Rashi
+                    </label>
+                    <input
+                      type="text"
+                      {...register("rashi")}
+                      placeholder="e.g. Vrishabha"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-amber-200 text-xs bg-white text-slate-900"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Select Pass Type
+                </label>
+                <select
+                  {...register("pass_type")}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-slate-900 bg-white"
+                >
+                  <option value="Virtual Pass">Virtual Live Stream Pass (Free / Digital Access)</option>
+                  <option value="VIP Sankalpa Pass">VIP Sankalpa Pass (Includes Name Chanting &amp; Prasadam Post)</option>
+                  <option value="In-Person Pass">In-Person Ashram Attendance Pass</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Specific Prayer / Sankalpa Intent
+                </label>
+                <textarea
+                  rows={2}
+                  {...register("sankalpa_wish")}
+                  placeholder="Family wellbeing, health, career growth, peace..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-slate-900"
+                />
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-md transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Registering Sankalpa...</span>
+                    </>
+                  ) : (
+                    <span>Register Sankalpa &amp; Get Pass &rarr;</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

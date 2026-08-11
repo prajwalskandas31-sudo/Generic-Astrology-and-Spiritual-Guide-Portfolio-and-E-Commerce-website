@@ -217,3 +217,85 @@ export interface DashboardStats {
   upcoming_workshops: Workshop[];
   recent_registrations: WorkshopRegistration[];
 }
+
+export interface CourseModule {
+  title: string;
+  duration?: string;
+  topics: string[];
+}
+
+export interface Course {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  full_description: string;
+  instructor: string;
+  duration: string;
+  level: "Beginner" | "Intermediate" | "Advanced" | "All Levels";
+  mode: "Online Live" | "Hybrid" | "Recorded";
+  price: number;
+  cover_image: string;
+  prerequisites?: string;
+  schedule?: string;
+  status: "Active" | "Upcoming" | "Completed";
+  featured?: boolean;
+  syllabus_modules: CourseModule[];
+  faq?: { question: string; answer: string }[];
+  created_at?: string;
+}
+
+export interface CourseRegistration {
+  id: number;
+  course_id: number;
+  name: string;
+  mobile: string;
+  email: string;
+  preferred_batch?: string;
+  additional_notes?: string;
+  payment_status: "Pending" | "Paid";
+  created_at?: string;
+}
+
+export interface LiveEventAgendaItem {
+  time: string;
+  title: string;
+  description: string;
+}
+
+export interface LiveEvent {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  full_description: string;
+  event_date: string;
+  event_time: string;
+  venue_type: "Online Stream" | "In-Person & Live Stream" | "Temple Ground";
+  venue_address?: string;
+  stream_url?: string;
+  price: number;
+  cover_image: string;
+  featured?: boolean;
+  status: "Upcoming" | "Live Now" | "Ended";
+  agenda: LiveEventAgendaItem[];
+  pandits_count?: number;
+  faq?: { question: string; answer: string }[];
+  created_at?: string;
+}
+
+export interface LiveEventRegistration {
+  id: number;
+  event_id: number;
+  name: string;
+  mobile: string;
+  email: string;
+  gothra?: string;
+  nakshatra?: string;
+  rashi?: string;
+  sankalpa_wish?: string;
+  pass_type: "Virtual Pass" | "VIP Sankalpa Pass" | "In-Person Pass";
+  payment_status: "Pending" | "Paid";
+  created_at?: string;
+}
+

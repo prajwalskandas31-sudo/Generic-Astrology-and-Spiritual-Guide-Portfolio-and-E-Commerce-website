@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import (
     offerings, workshops, payments, classes_api,
-    blogs, gallery, media, faq, enquiries, settings, admin, webhooks, requests_api, calendar_api
+    blogs, gallery, media, faq, enquiries, settings, admin, webhooks, requests_api, calendar_api,
+    courses, live_events
 )
 
 api_router = APIRouter()
@@ -14,6 +15,8 @@ async def api_v1_root():
             "/offerings",
             "/workshops",
             "/classes",
+            "/courses",
+            "/live-events",
             "/blogs",
             "/gallery",
             "/media",
@@ -28,6 +31,8 @@ async def api_v1_root():
 
 api_router.include_router(offerings.router, prefix="/offerings", tags=["Offerings"])
 api_router.include_router(workshops.router, prefix="/workshops", tags=["Workshops"])
+api_router.include_router(courses.router, prefix="/courses", tags=["Courses"])
+api_router.include_router(live_events.router, prefix="/live-events", tags=["Live Events"])
 api_router.include_router(payments.router, prefix="/payments", tags=["Payments"])
 api_router.include_router(classes_api.router, prefix="/classes", tags=["Classes"])
 api_router.include_router(blogs.router, prefix="/blogs", tags=["Blogs"])
@@ -40,5 +45,6 @@ api_router.include_router(settings.router, prefix="/settings", tags=["Settings"]
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin Dashboard"])
 api_router.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
 api_router.include_router(calendar_api.router, prefix="/calendar", tags=["Google Calendar Integrations"])
+
 
 

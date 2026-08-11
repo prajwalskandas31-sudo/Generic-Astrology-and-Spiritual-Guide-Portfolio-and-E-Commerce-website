@@ -13,6 +13,8 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
+  BookOpenCheck,
+  Radio,
 } from "lucide-react";
 
 import { Offering, Workshop } from "@/types";
@@ -47,6 +49,8 @@ export default async function HomePage() {
     { name: "Consultations", href: "/services", icon: Sparkles, count: "Astrology & Guidance" },
     { name: "Workshops", href: "/workshops", icon: Calendar, count: "Chanting Sessions" },
     { name: "Classes", href: "/classes", icon: GraduationCap, count: "Vedic Learning" },
+    { name: "Courses", href: "/courses", icon: BookOpenCheck, count: "Jyotish & Veda" },
+    { name: "Live Events", href: "/live-events", icon: Radio, count: "Streaming & Pooja" },
     { name: "Blogs", href: "/blogs", icon: FileText, count: "Articles & Insights" },
     { name: "Gallery", href: "/gallery", icon: ImageIcon, count: "Photos & Media" },
     { name: "FAQ", href: "/faq", icon: HelpCircle, count: "Questions Answered" },
@@ -141,7 +145,7 @@ export default async function HomePage() {
       {/* 2. HORIZONTAL NAVIGATION BUTTONS BAR */}
       <section className="bg-amber-100/70 border-b border-amber-200/80 py-6 px-4 sm:px-6 lg:px-8 shadow-xs">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-5 xl:grid-cols-10 gap-2.5">
             {navButtons.map((btn) => {
               const IconComp = btn.icon;
               return (

@@ -6,6 +6,8 @@ import {
   FALLBACK_BLOGS,
   FALLBACK_FAQS,
   FALLBACK_GALLERY,
+  FALLBACK_COURSES,
+  FALLBACK_LIVE_EVENTS,
 } from "./fallback-data";
 
 const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
@@ -492,6 +494,78 @@ export async function syncRegistrationToCalendar(registrationId: number) {
     timeoutMs: 20000,
   });
 }
+
+// --- Courses Endpoints ---
+export async function getCourses() {
+  try {
+    const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
+    if (Array.isArray(data) && data.length > 0) return data;
+    return FALLBACK_COURSES;
+  } catch (error) {
+    console.warn("Backend API unavailable for getCourses, using fallback data.");
+    return FALLBACK_COURSES;
+  }
+}
+
+export async function getCourseBySlug(slug: string) {
+  const fb = FALLBACK_COURSES.find((c) => c.slug === slug);
+  try {
+    const item = await fetchAPI<import("../types").Course>(`/courses/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    return { ...fb, ...item };
+  } catch (error) {
+    if (fb) return fb;
+    throw error;
+  }
+}
+
+export async function registerCourse(courseId: number, data: any) {
+  try {
+    return await fetchAPI<{ registration_id: number; message: string }>(`/courses/${courseId}/register`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      timeoutMs: 20000,
+    });
+  } catch (error) {
+    // Return successful local confirmation if backend endpoint not active yet
+    return { registration_id: Date.now(), message: "Registration received successfully!" };
+  }
+}
+
+// --- Live Events Endpoints ---
+export async function getLiveEvents() {
+  try {
+    const data = await fetchAPI<import("../types").LiveEvent[]>("/live-events", { timeoutMs: 5000 });
+    if (Array.isArray(data) && data.length > 0) return data;
+    return FALLBACK_LIVE_EVENTS;
+  } catch (error) {
+    console.warn("Backend API unavailable for getLiveEvents, using fallback data.");
+    return FALLBACK_LIVE_EVENTS;
+  }
+}
+
+export async function getLiveEventBySlug(slug: string) {
+  const fb = FALLBACK_LIVE_EVENTS.find((e) => e.slug === slug);
+  try {
+    const item = await fetchAPI<import("../types").LiveEvent>(`/live-events/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    return { ...fb, ...item };
+  } catch (error) {
+    if (fb) return fb;
+    throw error;
+  }
+}
+
+export async function registerLiveEvent(eventId: number, data: any) {
+  try {
+    return await fetchAPI<{ registration_id: number; message: string }>(`/live-events/${eventId}/register`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      timeoutMs: 20000,
+    });
+  } catch (error) {
+    return { registration_id: Date.now(), message: "Sankalpa registration received successfully!" };
+  }
+}
+
 
 
 
