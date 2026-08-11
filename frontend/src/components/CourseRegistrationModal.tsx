@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Course } from "@/types";
 import { registerCourse, verifyPayment } from "@/lib/api-client";
-import { X, CheckCircle2, Loader2, BookOpen, Clock, AlertCircle, CreditCard, ExternalLink } from "lucide-react";
+import { X, CheckCircle2, Loader2, BookOpen, Clock, AlertCircle, CreditCard, ExternalLink, MessageSquare } from "lucide-react";
 
 const courseSchema = z.object({
   name: z.string().min(2, "Full Name is required"),
@@ -46,6 +46,7 @@ export default function CourseRegistrationModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [submittedName, setSubmittedName] = useState("");
 
   const {
     register,
@@ -64,6 +65,7 @@ export default function CourseRegistrationModal({
   const onSubmit = async (data: CourseFormData) => {
     setIsSubmitting(true);
     setErrorMessage("");
+    setSubmittedName(data.name);
 
     try {
       const regRes = await registerCourse(course.id, {
@@ -167,7 +169,7 @@ export default function CourseRegistrationModal({
         {/* Content */}
         <div className="p-6">
           {isSuccess ? (
-            <div className="text-center py-8 space-y-4">
+            <div className="text-center py-6 space-y-4">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
@@ -177,10 +179,23 @@ export default function CourseRegistrationModal({
               <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
                 Thank you for enrolling in <strong className="text-slate-900">{course.title}</strong>. Shri Pradeep Nadig’s team will contact you via WhatsApp with your class access link and study materials.
               </p>
-              <div className="pt-4">
+
+              <div className="pt-2 space-y-2">
+                <a
+                  href={`https://wa.me/919844000000?text=${encodeURIComponent(
+                    `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${submittedName || 'Devotee'}\nCourse: ${course.title}\nFee Status: ${course.price > 0 ? `Paid (₹${course.price})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Open WhatsApp Confirmation Message &rarr;</span>
+                </a>
+
                 <button
                   onClick={handleClose}
-                  className="px-6 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl text-sm transition-colors"
+                  className="w-full py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition-colors"
                 >
                   Close &amp; Return
                 </button>

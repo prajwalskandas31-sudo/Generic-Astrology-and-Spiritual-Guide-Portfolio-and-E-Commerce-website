@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { fetchAPI } from "@/lib/api-client";
+import { fetchAPI, getLocalUserRegistrations } from "@/lib/api-client";
 import { DashboardStats } from "@/types";
 import {
   MessageSquare,
@@ -16,14 +16,22 @@ import {
   ArrowRight,
   BookOpenCheck,
   Radio,
+  Sparkles,
+  GraduationCap,
+  Users,
+  TrendingUp,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [localRegs, setLocalRegs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadStats();
+    if (typeof window !== "undefined") {
+      setLocalRegs(getLocalUserRegistrations());
+    }
   }, []);
 
   const loadStats = async () => {
@@ -39,6 +47,31 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Calculate metrics
+  const recentEnquiries = stats?.recent_enquiries || [];
+  const recentRegistrations = stats?.recent_registrations || [];
+
+  const combinedItems = [
+    ...localRegs,
+    ...recentEnquiries.map((e: any) => ({ request_type: e.enquiry_type || e.category, amount: 0 })),
+    ...recentRegistrations.map((r: any) => ({ request_type: "Workshop", amount: r.amount })),
+  ];
+
+  const getMetricCount = (typeKeyword: string) => {
+    return combinedItems.filter((item: any) => {
+      const t = (item.request_type || item.service_name || "").toLowerCase();
+      return t.includes(typeKeyword.toLowerCase());
+    }).length;
+  };
+
+  const serviceCount = getMetricCount("service");
+  const consultationCount = getMetricCount("consultation");
+  const workshopCount = getMetricCount("workshop") + (stats?.upcoming_workshops?.length || 0);
+  const classCount = getMetricCount("class");
+  const courseCount = getMetricCount("course");
+  const liveEventCount = getMetricCount("live event") + getMetricCount("sankalpa");
+  const totalSubmissions = combinedItems.length;
+
   if (isLoading) {
     return (
       <div className="py-24 text-center text-slate-500 flex items-center justify-center gap-2">
@@ -49,15 +82,128 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-serif font-bold text-slate-900">
           Admin Dashboard
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Overview of recent enquiries, upcoming workshops, courses, live events, and quick CMS management actions.
+          Real-time metrics, incoming enquiries, registrations, and quick CMS controls.
         </p>
+      </div>
+
+      {/* METRICS OVERVIEW CARDS */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+          <TrendingUp className="w-4 h-4 text-amber-700" />
+          <span>Enquiries &amp; Registrations Overview</span>
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          
+          {/* 1. Services */}
+          <Link
+            href="/admin/enquiries?type=service"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Services</span>
+              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                🪔
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{serviceCount}</span>
+              <span className="text-[10px] text-amber-700 font-semibold group-hover:underline">View Services &rarr;</span>
+            </div>
+          </Link>
+
+          {/* 2. Consultation */}
+          <Link
+            href="/admin/enquiries?type=consultation"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Consultation</span>
+              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                🔮
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{consultationCount}</span>
+              <span className="text-[10px] text-purple-700 font-semibold group-hover:underline">View Consultations &rarr;</span>
+            </div>
+          </Link>
+
+          {/* 3. Workshops */}
+          <Link
+            href="/admin/enquiries?type=workshop"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Workshops</span>
+              <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                <Calendar className="w-4 h-4 text-orange-700" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{workshopCount}</span>
+              <span className="text-[10px] text-orange-700 font-semibold group-hover:underline">View Registrations &rarr;</span>
+            </div>
+          </Link>
+
+          {/* 4. Classes */}
+          <Link
+            href="/admin/enquiries?type=class"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Classes</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                <GraduationCap className="w-4 h-4 text-emerald-700" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{classCount}</span>
+              <span className="text-[10px] text-emerald-700 font-semibold group-hover:underline">View Classes &rarr;</span>
+            </div>
+          </Link>
+
+          {/* 5. Courses */}
+          <Link
+            href="/admin/enquiries?type=course"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Courses</span>
+              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                <BookOpenCheck className="w-4 h-4 text-blue-700" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{courseCount}</span>
+              <span className="text-[10px] text-blue-700 font-semibold group-hover:underline">View Enrollments &rarr;</span>
+            </div>
+          </Link>
+
+          {/* 6. Live Events */}
+          <Link
+            href="/admin/enquiries?type=live event"
+            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Live Events</span>
+              <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+                <Radio className="w-4 h-4 text-rose-700 animate-pulse" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="text-2xl font-serif font-bold text-slate-900 block">{liveEventCount}</span>
+              <span className="text-[10px] text-rose-700 font-semibold group-hover:underline">View Sankalpas &rarr;</span>
+            </div>
+          </Link>
+
+        </div>
       </div>
 
       {/* QUICK ACTIONS BAR */}

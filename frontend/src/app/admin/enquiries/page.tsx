@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration, bulkDeleteWorkshopRegistrations } from "@/lib/api-client";
+import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration, bulkDeleteWorkshopRegistrations, getLocalUserRegistrations } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -24,7 +24,11 @@ import {
   Send,
   AlertCircle,
   Users,
-  Trash2
+  Trash2,
+  BookOpen,
+  Radio,
+  Sparkles,
+  Filter
 } from "lucide-react";
 
 export default function AdminRequestsPage() {
@@ -46,8 +50,12 @@ export default function AdminRequestsPage() {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       const tabParam = urlParams.get("tab");
+      const typeParam = urlParams.get("type");
       if (tabParam === "registrations" || tabParam === "archived" || tabParam === "active" || tabParam === "rejected") {
         setActiveTab(tabParam as any);
+      }
+      if (typeParam) {
+        setTypeFilter(typeParam);
       }
     }
   }, []);
@@ -62,45 +70,73 @@ export default function AdminRequestsPage() {
 
   const loadRequests = async () => {
     setIsLoading(true);
+    let apiRequests: RequestThread[] = [];
     try {
       const data = await fetchAPI<RequestThread[]>(`/requests?tab=${activeTab}`, {
         headers: { Authorization: "Bearer mock-admin-token" },
       });
-      if (Array.isArray(data) && data.length > 0) {
-        setRequests(data);
-        setIsLoading(false);
-        return;
+      if (Array.isArray(data)) {
+        apiRequests = data;
       }
     } catch (err: any) {
       console.warn("Failed to load request threads, attempting /admin/stats fallback:", err);
+      try {
+        const stats = await fetchAPI<any>("/admin/stats", {
+          headers: { Authorization: "Bearer mock-admin-token" },
+        });
+        if (stats && Array.isArray(stats.recent_enquiries)) {
+          apiRequests = stats.recent_enquiries.map((enq: any) => ({
+            id: enq.id,
+            request_id: `REQ-${enq.id}`,
+            request_type: enq.enquiry_type || "Enquiry",
+            service_name: enq.category || "General Enquiry",
+            customer: {
+              name: enq.name,
+              phone: enq.mobile,
+              email: enq.email,
+            },
+            city: enq.city,
+            notes: enq.additional_notes,
+            status: enq.status || "NEW",
+            amount: 0,
+            payment_status: "N/A",
+            created_at: enq.created_at || new Date().toISOString(),
+            message_logs: [],
+          }));
+        }
+      } catch (_) {}
     }
 
-    try {
-      const stats = await fetchAPI<any>("/admin/stats", {
-        headers: { Authorization: "Bearer mock-admin-token" },
-      });
-      if (stats && Array.isArray(stats.recent_enquiries)) {
-        const mapped: RequestThread[] = stats.recent_enquiries.map((enq: any) => ({
-          id: enq.id,
-          request_id: `REQ-${enq.id}`,
-          request_type: enq.enquiry_type || "Enquiry",
-          service_name: enq.category || "General Enquiry",
-          customer: {
-            name: enq.name,
-            phone: enq.mobile,
-            email: enq.email,
-          },
-          city: enq.city,
-          notes: enq.additional_notes,
-          status: enq.status || "NEW",
-          amount: 0,
-          payment_status: "N/A",
-          created_at: enq.created_at || new Date().toISOString(),
-          message_logs: [],
-        }));
-        setRequests(mapped);
-      }
-    } catch (_) {}
+    const localRegs = getLocalUserRegistrations();
+    const mappedLocal: RequestThread[] = localRegs.map((reg: any) => ({
+      id: reg.id,
+      customer_id: reg.id || 1,
+      request_id: reg.request_id || `REG-${reg.id}`,
+      request_type: reg.request_type || "General",
+      service_name: reg.service_name || "Vedic Service",
+      customer: {
+        id: reg.id || 1,
+        name: reg.customer?.name || "Devotee",
+        phone: reg.customer?.phone || "N/A",
+        email: reg.customer?.email || "N/A",
+      },
+      city: reg.gothra ? `Gothra: ${reg.gothra} | Nakshatra: ${reg.nakshatra || 'N/A'} | Rashi: ${reg.rashi || 'N/A'}` : (reg.city || "Online Form"),
+      notes: reg.sankalpa_wish ? `Sankalpa Wish: ${reg.sankalpa_wish}` : reg.notes,
+      status: reg.status || "NEW",
+      amount: reg.amount || 0,
+      payment_status: reg.payment_status || (reg.amount > 0 ? "Paid" : "Free"),
+      created_at: reg.created_at || new Date().toISOString(),
+      updated_at: reg.created_at || new Date().toISOString(),
+      message_logs: [],
+    }));
+
+    const combined = [...mappedLocal, ...apiRequests];
+    const uniqueMap = new Map<string, RequestThread>();
+    for (const item of combined) {
+      uniqueMap.set(String(item.request_id || item.id), item);
+    }
+
+    setRequests(Array.from(uniqueMap.values()));
     setIsLoading(false);
   };
 
@@ -317,33 +353,69 @@ export default function AdminRequestsPage() {
           </button>
         </div>
 
-        {/* Search & Type Filter */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-            <input
-              type="text"
-              placeholder={activeTab === "registrations" ? "Search Name, Phone, City, Order ID..." : "Search Request ID, Name, Phone..."}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 w-64"
-            />
-          </div>
-
-          {activeTab !== "registrations" && (
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500"
-            >
-              <option value="all">All Request Types</option>
-              <option value="consultation">Consultations</option>
-              <option value="service">Services</option>
-              <option value="workshop">Workshops</option>
-              <option value="class enquiry">Classes</option>
-            </select>
-          )}
+      {/* Category Subsections Filter Pill Buttons */}
+      {activeTab !== "registrations" && (
+        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-amber-50/60 rounded-2xl border border-amber-200/80">
+          <span className="text-[11px] font-bold text-amber-900 px-3 uppercase tracking-wider flex items-center gap-1">
+            <Filter className="w-3.5 h-3.5 text-amber-700" />
+            <span>Category:</span>
+          </span>
+          {[
+            { id: "all", label: "🌟 All Submissions" },
+            { id: "service", label: "🪔 Services" },
+            { id: "consultation", label: "🔮 Consultation" },
+            { id: "workshop", label: "📅 Workshops" },
+            { id: "class", label: "🎓 Classes" },
+            { id: "course", label: "📚 Courses" },
+            { id: "live event", label: "🚩 Live Events" },
+          ].map((cat) => {
+            const isSelected = typeFilter.toLowerCase() === cat.id.toLowerCase();
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setTypeFilter(cat.id)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  isSelected
+                    ? "bg-amber-800 text-white shadow-xs"
+                    : "bg-white text-slate-700 hover:bg-amber-100 hover:text-amber-900 border border-slate-200"
+                }`}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
+      )}
+
+      {/* Search & Type Filter */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <input
+            type="text"
+            placeholder={activeTab === "registrations" ? "Search Name, Phone, City, Order ID..." : "Search Request ID, Name, Phone, Gothra..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 w-full"
+          />
+        </div>
+
+        {activeTab !== "registrations" && (
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500"
+          >
+            <option value="all">All Categories</option>
+            <option value="service">Services (Homas/Poojas)</option>
+            <option value="consultation">Consultations</option>
+            <option value="workshop">Workshops</option>
+            <option value="class">Classes</option>
+            <option value="course">Courses</option>
+            <option value="live event">Live Events</option>
+          </select>
+        )}
+      </div>
       </div>
 
       {/* Main Content List */}

@@ -640,7 +640,79 @@ export async function getCourseBySlug(slug: string) {
   throw new Error("Course not found");
 }
 
+export function saveLocalUserRegistration(record: {
+  id?: number | string;
+  request_id?: string;
+  type: "Service" | "Consultation" | "Workshop" | "Class" | "Course" | "Live Event";
+  service_name: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  gothra?: string;
+  nakshatra?: string;
+  rashi?: string;
+  sankalpa_wish?: string;
+  notes?: string;
+  amount?: number;
+  payment_status?: "Paid" | "Pending" | "Free";
+  status?: string;
+}) {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = localStorage.getItem("admin_all_registrations_override");
+    const existing: any[] = raw ? JSON.parse(raw) : [];
+    const newRecord = {
+      id: record.id || Date.now(),
+      request_id: record.request_id || `REG-${Date.now().toString().slice(-6)}`,
+      request_type: record.type,
+      service_name: record.service_name,
+      customer: {
+        name: record.customer_name,
+        phone: record.customer_phone,
+        email: record.customer_email,
+      },
+      gothra: record.gothra || "",
+      nakshatra: record.nakshatra || "",
+      rashi: record.rashi || "",
+      sankalpa_wish: record.sankalpa_wish || "",
+      notes: record.notes || "",
+      amount: record.amount || 0,
+      payment_status: record.payment_status || (record.amount && record.amount > 0 ? "Paid" : "Free"),
+      status: record.status || "NEW",
+      created_at: new Date().toISOString(),
+      message_logs: [],
+    };
+    existing.unshift(newRecord);
+    localStorage.setItem("admin_all_registrations_override", JSON.stringify(existing));
+  } catch (_) {}
+}
+
+export function getLocalUserRegistrations(): any[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("admin_all_registrations_override");
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
+  }
+}
+
 export async function registerCourse(courseId: number, data: any) {
+  const courseList = await getCourses();
+  const matched = courseList.find((c) => c.id === courseId);
+  const courseName = matched ? matched.title : `Course #${courseId}`;
+
+  saveLocalUserRegistration({
+    type: "Course",
+    service_name: courseName,
+    customer_name: data.name,
+    customer_phone: data.mobile,
+    customer_email: data.email,
+    notes: data.additional_notes || data.preferred_batch,
+    amount: data.amount || 0,
+    payment_status: data.amount > 0 ? "Paid" : "Free",
+  });
+
   try {
     return await fetchAPI<{ registration_id: number; message: string }>(`/courses/${courseId}/register`, {
       method: "POST",
@@ -685,6 +757,24 @@ export async function getLiveEventBySlug(slug: string) {
 }
 
 export async function registerLiveEvent(eventId: number, data: any) {
+  const eventList = await getLiveEvents();
+  const matched = eventList.find((e) => e.id === eventId);
+  const eventName = matched ? matched.title : `Live Event #${eventId}`;
+
+  saveLocalUserRegistration({
+    type: "Live Event",
+    service_name: eventName,
+    customer_name: data.name,
+    customer_phone: data.mobile,
+    customer_email: data.email,
+    gothra: data.gothra,
+    nakshatra: data.nakshatra,
+    rashi: data.rashi,
+    sankalpa_wish: data.sankalpa_wish,
+    amount: data.amount || 0,
+    payment_status: data.amount > 0 ? "Paid" : "Free",
+  });
+
   try {
     return await fetchAPI<{ registration_id: number; message: string }>(`/live-events/${eventId}/register`, {
       method: "POST",
