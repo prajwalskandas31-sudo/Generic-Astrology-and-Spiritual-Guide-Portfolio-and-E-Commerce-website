@@ -78,13 +78,22 @@ async def register_for_workshop(
         elif len(batches) > 1:
             raise HTTPException(status_code=400, detail="Batch selection is required")
 
-    # Generate Razorpay Order ID (try real Razorpay API if credentials exist)
+    has_payment = getattr(workshop, "has_payment", True)
+    if has_payment is None:
+        has_payment = True
+    payment_mode = getattr(workshop, "payment_mode", "RAZORPAY") or "RAZORPAY"
+    custom_payment_link = getattr(workshop, "custom_payment_link", None)
+
+    if not has_payment:
+        payment_mode = "FREE"
+
     order_id = f"order_{uuid.uuid4().hex[:12]}"
     is_real_order = False
     rzp_key = settings.RAZORPAY_KEY_ID.strip() if settings.RAZORPAY_KEY_ID else None
     rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
 
-    if rzp_key and rzp_secret:
+    # If paid via Razorpay, generate real order ID if credentials exist
+    if has_payment and payment_mode == "RAZORPAY" and rzp_key and rzp_secret:
         try:
             import razorpay
             client = razorpay.Client(auth=(rzp_key, rzp_secret))
@@ -105,6 +114,9 @@ async def register_for_workshop(
         except Exception as e:
             print(f"[Razorpay Order Creation Warning]: {e}")
 
+    initial_payment_status = "Pending" if has_payment else "Paid"
+    actual_amount = workshop.price if has_payment else 0.0
+
     registration = WorkshopRegistration(
         workshop_id=id,
         batch_id=batch.id if batch else None,
@@ -115,17 +127,24 @@ async def register_for_workshop(
         city=data.city,
         state=data.state,
         pin_code=data.pin_code,
-        payment_status="Pending",
-        amount=workshop.price,
+        payment_status=initial_payment_status,
+        amount=actual_amount,
         razorpay_order_id=order_id,
         additional_notes=data.additional_notes
     )
     
     db.add(registration)
+
+    # Decrement available seats if free registration
+    if not has_payment and batch:
+        batch.remaining_seats = max(0, batch.remaining_seats - 1)
+        if batch.remaining_seats == 0:
+            batch.status = "Full"
+
     await db.commit()
     await db.refresh(registration)
 
-    # Automatically create Workshop Request thread (suppress immediate WhatsApp dispatch until payment is verified)
+    # Automatically create Workshop Request thread
     req_obj = await create_request(
         request_type="Workshop",
         name=data.name,
@@ -139,10 +158,10 @@ async def register_for_workshop(
         state=data.state,
         pin_code=data.pin_code,
         notes=data.additional_notes,
-        amount=workshop.price,
-        payment_status="Pending",
+        amount=actual_amount,
+        payment_status=initial_payment_status,
         razorpay_order_id=order_id,
-        send_whatsapp=False,
+        send_whatsapp=True if not has_payment else False,
         db=db
     )
     
@@ -150,10 +169,13 @@ async def register_for_workshop(
         registration_id=registration.id,
         request_id=req_obj.request_id,
         razorpay_order_id=order_id,
-        amount=workshop.price,
+        amount=actual_amount,
         currency="INR",
         key_id=rzp_key,
-        is_real_order=is_real_order
+        is_real_order=is_real_order,
+        has_payment=has_payment,
+        payment_mode=payment_mode,
+        custom_payment_link=custom_payment_link
     )
 
 

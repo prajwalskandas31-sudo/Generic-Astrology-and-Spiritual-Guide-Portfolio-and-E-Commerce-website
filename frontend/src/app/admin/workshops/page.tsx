@@ -5,7 +5,7 @@ import { Workshop } from "@/types";
 import { getWorkshops, fetchAPI } from "@/lib/api-client";
 import MediaLibraryModal from "@/components/MediaLibraryModal";
 import WorkshopAdminDetailModal from "@/components/WorkshopAdminDetailModal";
-import { Calendar, Plus, Trash2, Edit3, Loader2, FolderOpen, Users } from "lucide-react";
+import { Calendar, Plus, Trash2, Edit3, Loader2, FolderOpen, Users, CreditCard, CheckCircle2, Link2 } from "lucide-react";
 
 export default function AdminWorkshopsPage() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
@@ -25,6 +25,9 @@ export default function AdminWorkshopsPage() {
   const [venue, setVenue] = useState("");
   const [address, setAddress] = useState("");
   const [price, setPrice] = useState(2500);
+  const [hasPayment, setHasPayment] = useState(true);
+  const [paymentMode, setPaymentMode] = useState<"RAZORPAY" | "CUSTOM_LINK" | "FREE">("RAZORPAY");
+  const [customPaymentLink, setCustomPaymentLink] = useState("");
   const [capacity, setCapacity] = useState(30);
   const [status, setStatus] = useState("Published");
   const [batchName, setBatchName] = useState("Morning Batch (7:00 AM - 10:00 AM)");
@@ -56,6 +59,9 @@ export default function AdminWorkshopsPage() {
     setVenue(ws.venue || "");
     setAddress(ws.address || "");
     setPrice(ws.price || 2500);
+    setHasPayment(ws.has_payment !== false);
+    setPaymentMode(ws.payment_mode || "RAZORPAY");
+    setCustomPaymentLink(ws.custom_payment_link || "");
     setCapacity(ws.capacity || 30);
     setStatus(ws.status || "Published");
     if (ws.batches && ws.batches.length > 0) {
@@ -77,7 +83,10 @@ export default function AdminWorkshopsPage() {
       venue,
       address,
       duration: "3 Days",
-      price: Number(price),
+      price: hasPayment ? Number(price) : 0,
+      has_payment: hasPayment,
+      payment_mode: hasPayment ? paymentMode : "FREE",
+      custom_payment_link: hasPayment && paymentMode === "CUSTOM_LINK" ? customPaymentLink : null,
       capacity: Number(capacity),
       status,
       featured: true,
@@ -137,6 +146,10 @@ export default function AdminWorkshopsPage() {
     setEndDate("");
     setVenue("");
     setAddress("");
+    setPrice(2500);
+    setHasPayment(true);
+    setPaymentMode("RAZORPAY");
+    setCustomPaymentLink("");
     setIsEditing(false);
   };
 
@@ -214,17 +227,85 @@ export default function AdminWorkshopsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Price (₹) *</label>
-              <input
-                type="number"
-                required
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
-              />
+          {/* SELF-SERVICE PAYMENT INTEGRATION OPTION */}
+          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-amber-700" />
+                <div>
+                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Payment Setup &amp; Integration</h3>
+                  <p className="text-[11px] text-slate-600">Instantly integrate payment collection without code changes</p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasPayment}
+                  onChange={(e) => {
+                    setHasPayment(e.target.checked);
+                    if (!e.target.checked) setPrice(0);
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-700"></div>
+                <span className="ml-2 text-xs font-bold text-slate-800">
+                  {hasPayment ? "Include Payment (Paid Event)" : "Free Registration (No Payment)"}
+                </span>
+              </label>
             </div>
+
+            {hasPayment ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-amber-200/60">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Registration Fee (₹) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-amber-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Payment Method *</label>
+                  <select
+                    value={paymentMode}
+                    onChange={(e: any) => setPaymentMode(e.target.value)}
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-medium"
+                  >
+                    <option value="RAZORPAY">⚡ Automatic Online Payment Gateway (Razorpay)</option>
+                    <option value="CUSTOM_LINK">🔗 Custom Payment Link / UPI Direct Link</option>
+                  </select>
+                </div>
+                {paymentMode === "CUSTOM_LINK" && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Payment Link / UPI URL *</label>
+                    <input
+                      type="url"
+                      required
+                      placeholder="https://rzp.io/l/... or upi://pay?..."
+                      value={customPaymentLink}
+                      onChange={(e) => setCustomPaymentLink(e.target.value)}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-mono"
+                    />
+                  </div>
+                )}
+                <div className="sm:col-span-3 flex items-center gap-1.5 text-[11px] text-emerald-800 font-semibold bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    Payment collection will be immediately active for users as soon as this workshop is published!
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200">
+                Users will register directly for free without any payment checkout step.
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">Start Date *</label>
               <input
@@ -357,7 +438,20 @@ export default function AdminWorkshopsPage() {
                         <span>View Participants &amp; Broadcast</span>
                       </button>
                     </td>
-                    <td className="p-4 font-semibold text-amber-800">₹{ws.price}</td>
+                    <td className="p-4">
+                      {ws.has_payment !== false ? (
+                        <div>
+                          <span className="font-bold text-amber-900 block">₹{ws.price}</span>
+                          <span className="text-[10px] text-slate-500 font-medium">
+                            {ws.payment_mode === "CUSTOM_LINK" ? "🔗 Custom Link" : "⚡ Razorpay"}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                          Free Registration
+                        </span>
+                      )}
+                    </td>
                     <td className="p-4 text-slate-600">{ws.venue || "N/A"}</td>
                     <td className="p-4">
                       <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-semibold text-[10px]">

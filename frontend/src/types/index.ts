@@ -44,6 +44,9 @@ export interface Workshop {
   google_maps_link?: string;
   duration?: string;
   price: number;
+  has_payment?: boolean;
+  payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
+  custom_payment_link?: string;
   capacity: number;
   status: string;
   registration_deadline?: string;

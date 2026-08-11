@@ -93,7 +93,7 @@ export default function WorkshopRegistrationModal({
     setErrorMessage("");
 
     try {
-      // 1. Create registration record & Razorpay order
+      // 1. Create registration record & order
       const regResult = await registerWorkshop(workshop.id, {
         batch_id: data.batch_id || defaultBatch,
         name: data.name,
@@ -110,7 +110,29 @@ export default function WorkshopRegistrationModal({
         setConfirmedRequestId((regResult as any).request_id);
       }
 
-      // 2. Load Razorpay SDK Script
+      // Check payment mode
+      const hasPayment = (regResult as any).has_payment !== false && workshop.has_payment !== false;
+      const paymentMode = (regResult as any).payment_mode || workshop.payment_mode || "RAZORPAY";
+      const customLink = (regResult as any).custom_payment_link || workshop.custom_payment_link;
+
+      if (!hasPayment || paymentMode === "FREE") {
+        // Free registration - confirm instantly
+        setConfirmedRegistrationId(regResult.registration_id);
+        setIsSuccess(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (paymentMode === "CUSTOM_LINK" && customLink) {
+        // Custom link payment - open link & mark registered
+        window.open(customLink, "_blank");
+        setConfirmedRegistrationId(regResult.registration_id);
+        setIsSuccess(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Load Razorpay SDK Script for standard online payment
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         throw new Error("Razorpay SDK failed to load. Please check your internet connection.");
@@ -349,7 +371,11 @@ export default function WorkshopRegistrationModal({
                 ) : (
                   <>
                     <CreditCard className="w-5 h-5" />
-                    <span>Pay ₹{workshop.price} &amp; Complete Registration</span>
+                    <span>
+                      {workshop.has_payment !== false
+                        ? `Pay ₹${workshop.price} & Complete Registration`
+                        : "Complete Free Registration"}
+                    </span>
                   </>
                 )}
               </button>

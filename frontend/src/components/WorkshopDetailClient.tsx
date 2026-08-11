@@ -156,12 +156,14 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
           <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-100 space-y-6">
             <div className="text-center pb-4 border-b border-slate-100 space-y-1">
               <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">
-                Registration Fee
+                {workshop.has_payment !== false ? "Registration Fee" : "Event Fee"}
               </span>
               <div className="text-4xl font-serif font-bold text-amber-900">
-                ₹{workshop.price}
+                {workshop.has_payment !== false ? `₹${workshop.price}` : "Free"}
               </div>
-              <p className="text-xs text-slate-500">Per Participant (Inclusive of all materials)</p>
+              <p className="text-xs text-slate-500">
+                {workshop.has_payment !== false ? "Per Participant (Inclusive of all materials)" : "Open Entry upon Registration"}
+              </p>
             </div>
 
             <div className="space-y-3 text-xs text-slate-600">
@@ -181,7 +183,13 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
               className="w-full py-4 bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white font-bold rounded-xl text-base transition-colors shadow-lg flex items-center justify-center gap-2 group"
             >
               <CreditCard className="w-5 h-5" />
-              <span>{isFull ? "Registration Closed" : "Register Now"}</span>
+              <span>
+                {isFull
+                  ? "Registration Closed"
+                  : workshop.has_payment !== false
+                  ? "Register & Pay Now"
+                  : "Register for Free"}
+              </span>
             </button>
           </div>
         </div>

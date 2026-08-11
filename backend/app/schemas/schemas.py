@@ -66,6 +66,9 @@ class WorkshopBase(BaseModel):
     google_maps_link: Optional[str] = None
     duration: Optional[str] = None
     price: float = 0.0
+    has_payment: bool = True
+    payment_mode: str = "RAZORPAY"
+    custom_payment_link: Optional[str] = None
     capacity: int = 30
     registration_deadline: Optional[str] = None
     status: str = "Published"
@@ -231,8 +234,11 @@ class WorkshopRegisterResponse(BaseModel):
     razorpay_order_id: str
     amount: float
     currency: str = "INR"
-    key_id: str
+    key_id: Optional[str] = None
     is_real_order: bool = False
+    has_payment: bool = True
+    payment_mode: str = "RAZORPAY"
+    custom_payment_link: Optional[str] = None
 
 class PaymentVerifyRequest(BaseModel):
     registration_id: int

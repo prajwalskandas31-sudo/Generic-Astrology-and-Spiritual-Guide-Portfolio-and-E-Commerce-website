@@ -42,6 +42,9 @@ class Workshop(Base):
     google_maps_link = Column(String(500), nullable=True)
     duration = Column(String(100), nullable=True)
     price = Column(Float, default=0.0)
+    has_payment = Column(Boolean, default=True)
+    payment_mode = Column(String(50), default="RAZORPAY")  # RAZORPAY | CUSTOM_LINK | FREE
+    custom_payment_link = Column(String(500), nullable=True)
     capacity = Column(Integer, default=30)
     registration_deadline = Column(String(100), nullable=True)
     status = Column(String(50), default="Published")  # Draft | Published | Completed | Archived

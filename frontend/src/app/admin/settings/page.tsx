@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getSettings, fetchAPI, getCalendarStatus } from "@/lib/api-client";
-import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle } from "lucide-react";
+import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle, CreditCard, Key } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, any>>({});
@@ -162,6 +162,70 @@ export default function AdminSettingsPage() {
               className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
             />
           </div>
+        </div>
+
+        {/* PAYMENT GATEWAY & UPI CONFIGURATION */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-amber-700" />
+              <span>Payment Gateway &amp; UPI Configuration</span>
+            </h2>
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+              <Key className="w-3 h-3 text-amber-600" />
+              <span>Self-Service Setup</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Razorpay Key ID (Public)</label>
+              <input
+                type="text"
+                placeholder="rzp_live_xxxxxxxxxxxxxx"
+                value={settings.razorpay_key_id || ""}
+                onChange={(e) => handleFieldChange("razorpay_key_id", e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Razorpay Key Secret (Private)</label>
+              <input
+                type="password"
+                placeholder="••••••••••••••••••••"
+                value={settings.razorpay_key_secret || ""}
+                onChange={(e) => handleFieldChange("razorpay_key_secret", e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Default UPI VPA / ID (Optional)</label>
+              <input
+                type="text"
+                placeholder="pradeepnadig@upi"
+                value={settings.default_upi_id || ""}
+                onChange={(e) => handleFieldChange("default_upi_id", e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Default Custom Payment Link (Optional)</label>
+              <input
+                type="url"
+                placeholder="https://rzp.io/l/default"
+                value={settings.default_payment_link || ""}
+                onChange={(e) => handleFieldChange("default_payment_link", e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-mono"
+              />
+            </div>
+          </div>
+
+          <p className="text-[11px] text-slate-500 bg-amber-50/60 p-3 rounded-xl border border-amber-100">
+            💡 <strong>Note:</strong> When you enable &quot;Include Payment&quot; on any workshop, these credentials will be automatically used to process instant online payments.
+          </p>
         </div>
 
         {/* GOOGLE CALENDAR INTEGRATION STATUS */}
