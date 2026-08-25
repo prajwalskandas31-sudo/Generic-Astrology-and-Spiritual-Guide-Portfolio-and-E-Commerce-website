@@ -248,6 +248,57 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* 4. KANNADA PUROHIT & VEDIC PANDIT LOCAL HIGHLIGHTS SECTION */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-amber-900 via-orange-950 to-amber-950 text-white border-y border-amber-500/30">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-amber-500/20 pb-6">
+            <div>
+              <span className="px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                Local Search &amp; Service Coverage
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-amber-100 mt-2">
+                Kannada Purohit &amp; Vedic Vadhyar Near Me in Bangalore
+              </h2>
+            </div>
+            <a
+              href="https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-sm shadow-lg transition-all"
+            >
+              📍 Location on Google Maps: Pradeep Nadig
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-amber-950/60 p-6 rounded-2xl border border-amber-500/30 space-y-3">
+              <h3 className="font-serif font-bold text-lg text-amber-200">
+                Griha Pravesha &amp; Vastu Homa
+              </h3>
+              <p className="text-xs text-amber-100/80 leading-relaxed">
+                Searching for an authentic <strong>Kannada Purohit near me</strong> for new home housewarming or office Vastu Puja? Veda Brahma Shri Pradeep Nadig provides end-to-end ritual samagri, Vastu Purusha Mandalarchana, and room-by-room Kalasa Prokshana.
+              </p>
+            </div>
+            <div className="bg-amber-950/60 p-6 rounded-2xl border border-amber-500/30 space-y-3">
+              <h3 className="font-serif font-bold text-lg text-amber-200">
+                Ganapathi &amp; Navagraha Shanthi
+              </h3>
+              <p className="text-xs text-amber-100/80 leading-relaxed">
+                Book an experienced <strong>Kannada Vadhyar / Pandit</strong> for Mahaganapathi Homa, Navagraha Shanthi, Mrityunjaya Homa, and Naga Shanthi across Bengaluru including Vaderahalli, Yelahanka, Vidyaranyapura, Hebbal, and Malleswaram.
+              </p>
+            </div>
+            <div className="bg-amber-950/60 p-6 rounded-2xl border border-amber-500/30 space-y-3">
+              <h3 className="font-serif font-bold text-lg text-amber-200">
+                In-Person &amp; Online Astrology
+              </h3>
+              <p className="text-xs text-amber-100/80 leading-relaxed">
+                Looking for a <strong>Kannada Astrologer near me</strong>? Book an in-person Janma Kundali analysis at Shaankari Kendra Bengaluru or HD Zoom video consultation for career guidance, marriage matching, and Parihara remedies.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FEATURED OFFERINGS PREVIEW */}
       {featuredOfferings.length > 0 && (
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-100">

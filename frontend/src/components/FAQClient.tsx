@@ -10,6 +10,7 @@ export interface FAQClientProps {
 
 const CATEGORIES = [
   "All",
+  "Local Purohit Services",
   "Pooja & Homa",
   "Astrology & Consultations",
   "Live Events & Sankalpa",
@@ -31,6 +32,7 @@ export default function FAQClient({ faqList }: FAQClientProps) {
       selectedCategory === "All" ||
       !item.category ||
       item.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      (selectedCategory === "Local Purohit Services" && (item.category.includes("Local") || item.question.toLowerCase().includes("purohit") || item.question.toLowerCase().includes("pandit") || item.question.toLowerCase().includes("kannada") || item.question.toLowerCase().includes("maps") || item.question.toLowerCase().includes("vadhyar"))) ||
       (selectedCategory === "Pooja & Homa" && (item.category.includes("Pooja") || item.category.includes("Homa") || item.question.toLowerCase().includes("homa") || item.question.toLowerCase().includes("pooja"))) ||
       (selectedCategory === "Astrology & Consultations" && (item.category.includes("Astrology") || item.category.includes("Consultation") || item.question.toLowerCase().includes("astrology") || item.question.toLowerCase().includes("horoscope") || item.question.toLowerCase().includes("kundali"))) ||
       (selectedCategory === "Live Events & Sankalpa" && (item.category.includes("Event") || item.category.includes("Sankalpa") || item.question.toLowerCase().includes("event") || item.question.toLowerCase().includes("live"))) ||

@@ -140,8 +140,18 @@ export default function Footer({
           </div>
         </div>
 
+        {/* Local SEO Service Areas Footer Banner */}
+        <div className="mt-12 pt-8 border-t border-amber-300/60 space-y-3">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950 font-serif">
+            Kannada Purohit &amp; Vadhyar Services in Bangalore (Near Me)
+          </h4>
+          <p className="text-xs text-slate-700 leading-relaxed">
+            Veda Brahma Shri Pradeep Nadig provides authentic <strong>Kannada Purohit</strong>, <strong>Vedic Vadhyar</strong>, and <strong>Pandit Services</strong> for Griha Pravesha, Ganapathi Homa, Navagraha Homa, Vastu Homa, Mrityunjaya Homa, Naga Shanthi, and Satyanarayana Pooja across Bengaluru including <strong>Vaderahalli, Yelahanka, Vidyaranyapura, Hebbal, Sahakara Nagar, Malleswaram, Rajajinagar, Jayanagar, Indiranagar, and Whitefield</strong>.
+          </p>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-amber-800/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
+        <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
           <p>&copy; {currentYear} {siteName}. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <Link href="/admin/login" className="text-slate-700 hover:text-amber-900 transition-colors">

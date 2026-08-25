@@ -92,6 +92,36 @@ const DEFAULT_FAQS: FAQItem[] = [
     category: "Booking & Logistics",
     question: "What is the advance booking window recommended for Griha Pravesha Vastu Homa?",
     answer: "We recommend booking 2 to 4 weeks in advance, especially during major auspicious Muhurtha seasons (such as Vastu Puja days and Akshaya Tritiya), to ensure date availability and custom Muhurtha calculation."
+  },
+  {
+    id: 11,
+    category: "Local Purohit Services",
+    question: "How do I find an authentic Kannada Purohit near me in Bengaluru?",
+    answer: "Veda Brahma Shri Pradeep Nadig is a highly experienced Kannada Purohit and Vedic Scholar based in Asharaya Layout, Vaderahalli, Bengaluru (Pin: 560097). He conducts traditional Kannada Vadhyar rituals, Griha Pravesha, Ganapathi Homa, Vastu Homa, and Navagraha Homas across Bengaluru including Yelahanka, Vidyaranyapura, Hebbal, Sahakara Nagar, Malleswaram, and Jayanagar."
+  },
+  {
+    id: 12,
+    category: "Local Purohit Services",
+    question: "Is a Vedic Pandit near me available for Griha Pravesha and Vastu Homa at home?",
+    answer: "Yes! Shri Pradeep Nadig and his trained team of Vedic Pandits travel directly to your residence, newly built apartment, or office in Bengaluru for Griha Pravesha, Vastu Purusha Homa, and Navagraha Shanthi. All sacred Samagri and Veda Samithu are arranged by the Purohit."
+  },
+  {
+    id: 13,
+    category: "Local Purohit Services",
+    question: "How can I locate Veda Brahma Shri Pradeep Nadig on Google Maps?",
+    answer: "You can search for 'Pradeep Nadig Asharaya layout Vaderahalli' on Google Maps or open our official Google Maps location link: https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097. In-person consultations and prayer bookings are held at our center in Vaderahalli, North Bengaluru."
+  },
+  {
+    id: 14,
+    category: "Astrology & Consultations",
+    question: "Can I book a Kannada Astrologer near me for in-person birth chart reading?",
+    answer: "Yes, Shri Pradeep Nadig offers in-person Vedic astrology consultations at Shaankari Kendra in Bengaluru as well as online HD Zoom video calls for outstation and overseas clients. Birth chart (Janma Kundali) reading, Dasha predictions, and practical Parihara remedies are provided."
+  },
+  {
+    id: 15,
+    category: "Local Purohit Services",
+    question: "Which areas in Bangalore are covered by Kannada Vadhyar Shri Pradeep Nadig for Pooja services?",
+    answer: "Shri Pradeep Nadig provides authentic Purohit and Vadhyar services across all Bangalore localities including Vaderahalli, Yelahanka, Vidyaranyapura, Hebbal, Sahakara Nagar, Rajajinagar, Malleswaram, Indiranagar, Koramangala, Whitefield, HSR Layout, and Jayanagar."
   }
 ];
 
@@ -107,7 +137,15 @@ export default async function FAQPage() {
     apiFaqs = await getFAQ();
   } catch (_) {}
 
-  const finalFaqs = apiFaqs && apiFaqs.length > 0 ? apiFaqs : DEFAULT_FAQS;
+  // Smart Merge: ensure all 15 FAQs are present
+  const mapByQ = new Map<string, FAQItem>();
+  for (const f of DEFAULT_FAQS) {
+    mapByQ.set(f.question, f);
+  }
+  for (const f of apiFaqs) {
+    mapByQ.set(f.question, f);
+  }
+  const finalFaqs = Array.from(mapByQ.values());
   const jsonLd = buildFAQSchema(finalFaqs.map((f) => ({ question: f.question, answer: f.answer })));
 
   return (

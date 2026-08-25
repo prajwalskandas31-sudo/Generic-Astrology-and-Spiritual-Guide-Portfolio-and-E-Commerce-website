@@ -19,6 +19,34 @@ export default function ServicesClient({ services, poojas, consultations }: Serv
 
   return (
     <div className="space-y-12 max-w-7xl mx-auto">
+      {/* LOCAL KANNADA PUROHIT SEO HIGHLIGHT BANNER */}
+      <div className="bg-gradient-to-r from-amber-900 via-orange-950 to-amber-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-500/30 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-amber-500/20 pb-4">
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+              Local Purohit &amp; Vadhyar Services
+            </span>
+            <span className="text-xs text-amber-200/80">Bengaluru &amp; Surrounding Areas</span>
+          </div>
+          <a
+            href="https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 hover:text-white bg-amber-800/60 px-3.5 py-1.5 rounded-full border border-amber-400/30 transition-colors"
+          >
+            📍 Find Pradeep Nadig on Google Maps
+          </a>
+        </div>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-serif font-bold text-amber-100">
+            Authentic Kannada Purohit &amp; Vedic Pandit Near Me in Bangalore
+          </h2>
+          <p className="text-amber-100/80 text-sm mt-2 leading-relaxed">
+            Veda Brahma Shri Pradeep Nadig provides traditional <strong>Kannada Vadhyar</strong> and <strong>Vedic Pandit</strong> services for <strong>Griha Pravesha</strong>, <strong>Ganapathi Homa</strong>, <strong>Navagraha Homa</strong>, <strong>Vastu Homa</strong>, <strong>Maha Mrityunjaya Homa</strong>, and <strong>Satyanarayana Pooja</strong>. In-person home and office visits available across all Bengaluru locations: <strong>Vaderahalli, Yelahanka, Vidyaranyapura, Hebbal, Sahakara Nagar, Malleswaram, Rajajinagar, Jayanagar, Indiranagar, and Whitefield</strong>.
+          </p>
+        </div>
+      </div>
+
       {/* 1. HOMAS & SACRED FIRE RITUALS SECTION */}
       <div id="homas" className="bg-white rounded-3xl border border-amber-200/80 shadow-md overflow-hidden transition-all scroll-mt-24">
         {/* Accordion Heading Bar */}
