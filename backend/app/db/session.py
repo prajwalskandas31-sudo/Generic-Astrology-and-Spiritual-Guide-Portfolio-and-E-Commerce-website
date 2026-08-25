@@ -58,12 +58,29 @@ Base = declarative_base()
 
 from sqlalchemy import text
 
+sqlite_url = "sqlite+aiosqlite:///./pradeep_dev.db"
+sqlite_engine = create_async_engine(sqlite_url, echo=False, future=True)
+SQLiteSessionLocal = async_sessionmaker(sqlite_engine, class_=AsyncSession, expire_on_commit=False)
+
 async def get_db():
-    async with AsyncSessionLocal() as session:
-        try:
+    use_sqlite = False
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(text("SELECT 1"))
             yield session
+            return
+    except Exception as e:
+        use_sqlite = True
+
+    if use_sqlite:
+        try:
+            async with sqlite_engine.begin() as conn:
+                from app.models.models import Base
+                await conn.run_sync(Base.metadata.create_all)
+            async with SQLiteSessionLocal() as session:
+                yield session
         finally:
-            await session.close()
+            pass
 
 async def migrate_db_schema():
     """

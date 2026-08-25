@@ -24,3 +24,7 @@ frontend/.next/
 # OS
 .DS_Store
 Thumbs.db
+
+# Databases
+*.db
+*.sqlite3

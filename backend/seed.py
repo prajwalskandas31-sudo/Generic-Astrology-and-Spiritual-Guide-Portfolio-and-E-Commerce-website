@@ -1,5 +1,5 @@
 import asyncio
-from app.db.session import engine, Base, AsyncSessionLocal, migrate_db_schema
+from app.db.session import get_db, Base
 from app.models.models import (
     Offering, Workshop, WorkshopBatch, ClassItem,
     Blog, GalleryAlbum, GalleryItem, MediaItem, FAQItem, Setting
@@ -7,12 +7,8 @@ from app.models.models import (
 from sqlalchemy.future import select
 
 async def seed_database():
-    print("Creating all tables in database...")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    await migrate_db_schema()
-    
-    async with AsyncSessionLocal() as db:
+    print("Seeding database via get_db()...")
+    async for db in get_db():
         # 1. Seed Settings
         existing_settings = await db.execute(select(Setting))
         if not existing_settings.scalars().all():
