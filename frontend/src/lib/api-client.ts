@@ -85,7 +85,7 @@ export async function getSettings() {
     }
     return merged;
   } catch (error) {
-    console.warn("Backend API unavailable for getSettings, using fallback data.");
+    console.info("Using fallback data for getSettings.");
     return FALLBACK_SETTINGS;
   }
 }
@@ -99,7 +99,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
     const query = params.toString() ? `?${params.toString()}` : "";
     offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getOfferings, using fallback data.");
+    console.info("Using fallback data for getOfferings.");
     offerings = FALLBACK_OFFERINGS;
   }
 
@@ -162,7 +162,7 @@ export async function getWorkshops(status_filter?: string) {
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
     workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getWorkshops, using fallback data.");
+    console.info("Using fallback data for getWorkshops.");
     workshops = FALLBACK_WORKSHOPS;
   }
 
@@ -253,7 +253,7 @@ export async function getClasses() {
     const data = await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 5000 });
     if (Array.isArray(data) && data.length > 0) base = data;
   } catch (error) {
-    console.warn("Backend API unavailable for getClasses, using fallback data.");
+    console.info("Using fallback data for getClasses.");
   }
   const overrides = getLocalClassesOverride();
   const mapById = new Map<number, import("../types").ClassItem>();
@@ -274,7 +274,7 @@ export async function getBlogs(category?: string) {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
     return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 5000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getBlogs, using fallback data.");
+    console.info("Using fallback data for getBlogs.");
     if (category) {
       return FALLBACK_BLOGS.filter((b) => b.category === category);
     }
@@ -286,7 +286,7 @@ export async function getBlogBySlug(slug: string) {
   try {
     return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
   } catch (error) {
-    console.warn(`Backend API unavailable for getBlogBySlug(${slug}), using fallback data.`);
+    console.info(`Using fallback data for getBlogBySlug(${slug}).`);
     const item = FALLBACK_BLOGS.find((b) => b.slug === slug);
     if (!item) throw error;
     return item;
@@ -298,7 +298,7 @@ export async function getGallery() {
   try {
     items = await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 5000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getGallery, using fallback data.");
+    console.info("Using fallback data for getGallery.");
     return FALLBACK_GALLERY;
   }
 
@@ -321,7 +321,7 @@ export async function getFAQ(category?: string) {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
     return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`, { timeoutMs: 5000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getFAQ, using fallback data.");
+    console.info("Using fallback data for getFAQ.");
     if (category) {
       return FALLBACK_FAQS.filter((f) => f.category === category);
     }
@@ -632,7 +632,7 @@ export async function getCourses() {
     const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
     if (Array.isArray(data) && data.length > 0) fetched = data;
   } catch (error) {
-    console.warn("Backend API unavailable for getCourses, using fallback data.");
+    console.info("Using fallback data for getCourses.");
   }
   const mapBySlug = new Map<string, import("../types").Course>();
   for (const fb of FALLBACK_COURSES as any) {
@@ -773,7 +773,7 @@ export async function getLiveEvents() {
     const data = await fetchAPI<import("../types").LiveEvent[]>("/live-events", { timeoutMs: 5000 });
     if (Array.isArray(data) && data.length > 0) fetched = data;
   } catch (error) {
-    console.warn("Backend API unavailable for getLiveEvents, using fallback data.");
+    console.info("Using fallback data for getLiveEvents.");
   }
   const mapBySlug = new Map<string, import("../types").LiveEvent>();
   for (const fb of FALLBACK_LIVE_EVENTS as any) {
