@@ -10,13 +10,12 @@ import {
   FALLBACK_LIVE_EVENTS,
 } from "./fallback-data";
 
-const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
-
-if (typeof window !== "undefined" && !process.env.NEXT_PUBLIC_API_URL) {
-  console.warn(
-    "[API Client]: NEXT_PUBLIC_API_URL is not configured. Defaulting to relative path " + rawBaseUrl
-  );
+function getBaseUrl(): string {
+  if (typeof window === "undefined" && process.env.INTERNAL_API_URL) {
+    return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
+  }
+  const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+  return rawBaseUrl.replace(/\/+$/, "");
 }
 
 export async function fetchAPI<T>(
@@ -24,7 +23,7 @@ export async function fetchAPI<T>(
   options: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  const url = `${API_BASE_URL}${cleanEndpoint}`;
+  const url = `${getBaseUrl()}${cleanEndpoint}`;
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),

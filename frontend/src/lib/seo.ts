@@ -195,3 +195,79 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
     })),
   };
 }
+
+/**
+ * Builds LocalBusiness & ProfessionalService JSON-LD schema for Google Maps Pack ranking.
+ */
+export function buildLocalBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "ProfessionalService"],
+    name: "Veda Brahma Shri Pradeep Nadig - Vedic Purohit & Astrologer",
+    alternateName: "Shaankari Creations - Pradeep Nadig",
+    image: "https://pradeepnadig.in/pradeep-nadig.jpg",
+    logo: "https://pradeepnadig.in/shaankari-logo.png",
+    url: "https://pradeepnadig.in",
+    telephone: "+919844042068",
+    priceRange: "₹₹",
+    hasMap: "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Asharaya layout, Vaderahalli, K.G.Vaderahalli",
+      addressLocality: "Bengaluru",
+      addressRegion: "Karnataka",
+      postalCode: "560097",
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 13.0903,
+      longitude: 77.5458,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "06:00",
+        closes: "21:00",
+      },
+    ],
+    areaServed: [
+      "Bengaluru",
+      "Vaderahalli",
+      "Yelahanka",
+      "Vidyaranyapura",
+      "Hebbal",
+      "Sahakara Nagar",
+      "Jayanagar",
+      "Malleswaram",
+      "Karnataka",
+      "India",
+    ],
+    knowsAbout: [
+      "Kannada Purohit",
+      "Vedic Pandit",
+      "Kannada Vadhyar",
+      "Vastu Homa",
+      "Griha Pravesha Pooja",
+      "Ganapathi Homa",
+      "Navagraha Homa",
+      "Maha Mrityunjaya Homa",
+      "Vedic Astrology Consultation",
+    ],
+    sameAs: [
+      "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097",
+      "https://facebook.com",
+      "https://instagram.com",
+      "https://youtube.com",
+    ],
+  };
+}
