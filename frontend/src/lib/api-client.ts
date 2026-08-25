@@ -11,8 +11,14 @@ import {
 } from "./fallback-data";
 
 function getBaseUrl(): string {
-  if (typeof window === "undefined" && process.env.INTERNAL_API_URL) {
-    return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
+  if (typeof window === "undefined") {
+    if (process.env.INTERNAL_API_URL) {
+      return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
+    }
+    if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith("http")) {
+      return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+    }
+    return "http://127.0.0.1:8000/api/v1";
   }
   const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
   return rawBaseUrl.replace(/\/+$/, "");
