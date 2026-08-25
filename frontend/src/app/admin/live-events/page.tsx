@@ -76,16 +76,16 @@ export default function AdminLiveEventsPage() {
     setFullDescription(ev.full_description || "");
     setEventDate(ev.event_date || "");
     setEventTime(ev.event_time || "");
-    setVenueType(ev.venue_type || "In-Person & Live Stream");
+    setVenueType((ev.venue_type as any) || "In-Person & Live Stream");
     setVenueAddress(ev.venue_address || "");
     setStreamUrl(ev.stream_url || "");
     setCoverImage(ev.cover_image || "");
     setPrice(ev.price || 0);
-    setHasPayment(ev.has_payment !== undefined ? ev.has_payment : ev.price > 0);
-    setPaymentMode(ev.payment_mode || (ev.price > 0 ? "RAZORPAY" : "FREE"));
+    setHasPayment(ev.has_payment !== undefined ? ev.has_payment : (ev.price || 0) > 0);
+    setPaymentMode(ev.payment_mode || ((ev.price || 0) > 0 ? "RAZORPAY" : "FREE"));
     setCustomPaymentLink(ev.custom_payment_link || "");
     setPanditsCount(ev.pandits_count || 11);
-    setStatus(ev.status || "Upcoming");
+    setStatus((ev.status as any) || "Upcoming");
     setIsEditing(true);
   };
 

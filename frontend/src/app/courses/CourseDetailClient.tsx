@@ -29,14 +29,17 @@ export default function CourseDetailClient({ course: initialCourse }: CourseDeta
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
 
   useEffect(() => {
-    getCourseBySlug(initialCourse.slug).then(setCourse).catch(() => {});
-  }, [initialCourse.slug]);
+    if (initialCourse?.slug) {
+      getCourseBySlug(initialCourse.slug).then((c: any) => setCourse(c)).catch(() => {});
+    }
+  }, [initialCourse?.slug]);
 
   const toggleModule = (idx: number) => {
     setOpenModuleIndex(openModuleIndex === idx ? null : idx);
   };
 
-  const isPaid = course.has_payment !== false && course.price > 0;
+  const coursePrice = course.price || 0;
+  const isPaid = course.has_payment !== false && coursePrice > 0;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -107,14 +110,14 @@ export default function CourseDetailClient({ course: initialCourse }: CourseDeta
             <div>
               <span className="text-xs text-slate-400 uppercase tracking-wider block font-semibold">Total Fee</span>
               <span className="text-3xl font-serif font-bold text-amber-900">
-                {isPaid ? `₹${course.price.toLocaleString("en-IN")}` : "Free Enrollment"}
+                {isPaid ? `₹${coursePrice.toLocaleString("en-IN")}` : "Free Enrollment"}
               </span>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-full sm:w-auto px-8 py-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-amber-700/20 transition-all text-base"
             >
-              {isPaid ? `Enroll & Pay ₹${course.price.toLocaleString("en-IN")} \u2192` : "Register Free Enrollment \u2192"}
+              {isPaid ? `Enroll & Pay ₹${coursePrice.toLocaleString("en-IN")} \u2192` : "Register Free Enrollment \u2192"}
             </button>
           </div>
         </div>
@@ -129,7 +132,7 @@ export default function CourseDetailClient({ course: initialCourse }: CourseDeta
           </div>
 
           <div className="space-y-4">
-            {course.syllabus_modules.map((module, idx) => (
+            {(course.syllabus_modules || []).map((module, idx) => (
               <div
                 key={idx}
                 className="border border-slate-200 rounded-2xl overflow-hidden transition-colors"

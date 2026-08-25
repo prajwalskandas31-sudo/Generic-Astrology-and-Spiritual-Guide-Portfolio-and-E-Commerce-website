@@ -157,7 +157,7 @@ export default function AdminFAQPage() {
                 <h3 className="font-serif font-bold text-base text-slate-900">Q: {item.question}</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">A: {item.answer}</p>
               </div>
-              <button onClick={() => handleDelete(item.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg shrink-0">
+              <button onClick={() => item.id && handleDelete(item.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg shrink-0">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>

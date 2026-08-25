@@ -580,16 +580,46 @@ async def seed_database():
             print("Seeding initial FAQ...")
             faqs = [
                 FAQItem(
-                    question="How can I book a service or home ritual?",
-                    answer="You can request a service directly through the website or contact us via WhatsApp.",
-                    category="Services",
+                    question="What is the procedure to book a Homa or Pooja with Shri Pradeep Nadig?",
+                    answer="You can send an enquiry directly via our website by selecting the desired Homa or Pooja service. Our team will verify auspicious Tithis and Muhurthas based on your birth details and contact you within 24 hours to confirm date, venue, and samagri requirements.",
+                    category="Pooja & Homa",
                     display_order=1
                 ),
                 FAQItem(
-                    question="Are online consultation sessions available?",
-                    answer="Yes, consultations can be conducted virtually over Google Meet or phone call.",
-                    category="Consultations",
+                    question="Are all ritual materials and Samagri provided by the Purohit?",
+                    answer="Yes, Veda Brahma Shri Pradeep Nadig arranges all sacred Veda Samithu wood, pure desi cow ghee, dravya powders, dry coconut, modaka, and ritual samagri required for authentic Homas in Bengaluru. Clients only need to provide basic household items like fresh flowers and fruits.",
+                    category="Pooja & Homa",
                     display_order=2
+                ),
+                FAQItem(
+                    question="Can Homas be performed at our home or business premises in Bengaluru?",
+                    answer="Yes, all Homas (including Ganapathi Homa, Navagraha Homa, Vastu Homa, Mrityunjaya Homa, and Durga Homa) can be conducted at your personal residence, newly constructed home, apartment, commercial office, or chosen venue in Bengaluru.",
+                    category="Pooja & Homa",
+                    display_order=3
+                ),
+                FAQItem(
+                    question="What birth details are required for a Vedic Astrology Consultation?",
+                    answer="For an accurate horoscope (Janma Kundali) analysis, you need to provide your Date of Birth, exact Time of Birth, and Place of Birth. If exact birth time is unavailable, a Prashna Marga (Horary Astrology) consultation can be performed.",
+                    category="Astrology & Consultations",
+                    display_order=4
+                ),
+                FAQItem(
+                    question="How are online video astrology consultations conducted for international clients?",
+                    answer="Online consultations are conducted via HD Zoom or WhatsApp Video call. Shri Pradeep Nadig prepares your digital birth chart in advance, reviews Dasha-Bhukti transits, and guides you through remedies and practical solutions.",
+                    category="Astrology & Consultations",
+                    display_order=5
+                ),
+                FAQItem(
+                    question="How does remote Sankalpa work for Live Events like Mahashivaratri or Eclipse Pooja?",
+                    answer="When you register for a remote Sankalpa, your Name, Gothra, Nakshatra, and specific prayer intentions are solemnly uttered during the main ritual initiation by Shri Pradeep Nadig. The live stream link is emailed/whatsapped to you so you can participate from anywhere worldwide.",
+                    category="Live Events & Sankalpa",
+                    display_order=6
+                ),
+                FAQItem(
+                    question="Are prerequisites required to join the Sacred Vedic Chanting Course?",
+                    answer="No prior knowledge of Sanskrit is necessary. The foundation course starts from basic pronunciation rules (Sanskrit Varna Chintane), Swara accents (Udatta, Anudatta, Svarita), and step-by-step recitation of Suktas and Stotrams.",
+                    category="Classes & Workshops",
+                    display_order=7
                 )
             ]
             db.add_all(faqs)

@@ -70,7 +70,7 @@ export default async function WorkshopsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {upcomingWorkshops.map((ws) => {
-                const totalRemaining = ws.batches.reduce((sum, b) => sum + b.remaining_seats, 0);
+                const totalRemaining = (ws.batches || []).reduce((sum, b) => sum + b.remaining_seats, 0);
                 const isFull = totalRemaining <= 0;
                 return (
                   <div

@@ -66,7 +66,7 @@ export default function ClassesClient({ classesList }: ClassesClientProps) {
             </div>
 
             <button
-              onClick={() => handleEnquire(item.name)}
+              onClick={() => handleEnquire(item.name || item.title || "")}
               className="w-full py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-sm rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />

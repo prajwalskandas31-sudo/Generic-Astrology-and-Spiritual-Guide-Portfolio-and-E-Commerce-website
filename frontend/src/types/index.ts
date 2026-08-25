@@ -37,39 +37,66 @@ export interface Workshop {
   slug: string;
   cover_image?: string;
   description?: string;
+  short_description?: string;
   start_date: string;
   end_date: string;
+  timings?: string;
   venue?: string;
   address?: string;
+  location?: string;
+  mode?: "Online" | "Offline" | "Hybrid" | string;
   google_maps_link?: string;
   duration?: string;
   price: number;
   has_payment?: boolean;
   payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
   custom_payment_link?: string;
-  capacity: number;
+  capacity?: number;
+  seats_limit?: number;
   status: string;
   registration_deadline?: string;
-  featured: boolean;
+  featured?: boolean;
   seo_title?: string;
   seo_description?: string;
-  batches: WorkshopBatch[];
+  images?: string[];
+  faq?: { question: string; answer: string }[];
+  batches?: WorkshopBatch[];
   created_at?: string;
   updated_at?: string;
 }
 
+export interface CourseModule {
+  title: string;
+  duration?: string;
+  topics: string[];
+}
+
 export interface ClassItem {
   id: number;
-  name: string;
+  name?: string;
+  title: string;
+  slug: string;
   description?: string;
+  short_description?: string;
+  full_description?: string;
   duration?: string;
   suitable_for?: string;
-  mode: "Online" | "Offline" | "Hybrid";
+  category?: string;
+  mode: "Online" | "Offline" | "Hybrid" | "Online Live" | string;
   price?: number;
   has_payment?: boolean;
   payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
   custom_payment_link?: string | null;
   status: string;
+  instructor?: string;
+  level?: string;
+  cover_image?: string;
+  images?: string[];
+  schedule?: string;
+  syllabus_modules?: CourseModule[];
+  seo_title?: string;
+  seo_description?: string;
+  faq?: { question: string; answer: string }[];
 }
 
 export interface Blog {
@@ -84,6 +111,7 @@ export interface Blog {
   content: string;
   seo_title?: string;
   seo_description?: string;
+  status?: string;
 }
 
 export interface GalleryAlbum {
@@ -114,11 +142,11 @@ export interface MediaItem {
 }
 
 export interface FAQItem {
-  id: number;
+  id?: number;
   question: string;
   answer: string;
   category?: string;
-  display_order: number;
+  display_order?: number;
 }
 
 export interface Enquiry {
@@ -222,32 +250,27 @@ export interface DashboardStats {
   recent_registrations: WorkshopRegistration[];
 }
 
-export interface CourseModule {
-  title: string;
-  duration?: string;
-  topics: string[];
-}
-
 export interface Course {
   id: number;
   title: string;
   slug: string;
-  short_description: string;
-  full_description: string;
-  instructor: string;
-  duration: string;
-  level: "Beginner" | "Intermediate" | "Advanced" | "All Levels";
-  mode: "Online Live" | "Hybrid" | "Recorded";
-  price: number;
+  short_description?: string;
+  full_description?: string;
+  instructor?: string;
+  duration?: string;
+  level?: "Beginner" | "Intermediate" | "Advanced" | "All Levels" | string;
+  mode?: "Online Live" | "Hybrid" | "Recorded" | "Online" | string;
+  price?: number;
   has_payment?: boolean;
   payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
   custom_payment_link?: string | null;
-  cover_image: string;
+  cover_image?: string;
+  images?: string[];
   prerequisites?: string;
   schedule?: string;
-  status: "Active" | "Upcoming" | "Completed";
+  status?: "Active" | "Upcoming" | "Completed" | string;
   featured?: boolean;
-  syllabus_modules: CourseModule[];
+  syllabus_modules?: CourseModule[];
   faq?: { question: string; answer: string }[];
   created_at?: string;
 }
@@ -278,16 +301,17 @@ export interface LiveEvent {
   full_description: string;
   event_date: string;
   event_time: string;
-  venue_type: "Online Stream" | "In-Person & Live Stream" | "Temple Ground";
+  venue_type: "Online Stream" | "In-Person & Live Stream" | "Temple Ground" | "Hybrid" | string;
   venue_address?: string;
   stream_url?: string;
   price: number;
   has_payment?: boolean;
   payment_mode?: "RAZORPAY" | "CUSTOM_LINK" | "FREE";
   custom_payment_link?: string | null;
-  cover_image: string;
+  cover_image?: string;
+  images?: string[];
   featured?: boolean;
-  status: "Upcoming" | "Live Now" | "Ended";
+  status: "Upcoming" | "Live Now" | "Ended" | string;
   agenda: LiveEventAgendaItem[];
   pandits_count?: number;
   faq?: { question: string; answer: string }[];
@@ -308,4 +332,3 @@ export interface LiveEventRegistration {
   payment_status: "Pending" | "Paid";
   created_at?: string;
 }
-

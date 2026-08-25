@@ -33,7 +33,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
   const filteredCourses = courses.filter((c) => {
     const matchesQuery =
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.short_description.toLowerCase().includes(searchQuery.toLowerCase());
+      (c.short_description || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLevel = selectedLevel === "All" || c.level === selectedLevel;
     return matchesQuery && matchesLevel;
   });
@@ -119,10 +119,10 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                 <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-100 space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-amber-900 uppercase tracking-wider">
                     <Layers className="w-4 h-4 text-amber-700" />
-                    <span>Key Syllabus Highlights ({course.syllabus_modules.length} Modules)</span>
+                    <span>Key Syllabus Highlights ({(course.syllabus_modules || []).length} Modules)</span>
                   </div>
                   <ul className="space-y-1 text-xs text-slate-700">
-                    {course.syllabus_modules.slice(0, 3).map((m, idx) => (
+                    {(course.syllabus_modules || []).slice(0, 3).map((m, idx) => (
                       <li key={idx} className="flex items-center gap-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                         <span className="truncate">{m.title}</span>
@@ -156,8 +156,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                   onClick={() => setActiveCourseModal(course)}
                   className="w-full sm:w-1/2 py-3 px-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl text-xs shadow-md transition-colors text-center"
                 >
-                  {course.has_payment !== false && course.price > 0
-                    ? `Enroll Now • ₹${course.price.toLocaleString("en-IN")}`
+                  {course.has_payment !== false && (course.price || 0) > 0
+                    ? `Enroll Now • ₹${(course.price || 0).toLocaleString("en-IN")}`
                     : "Enroll Free (No Fee)"}
                 </button>
               </div>

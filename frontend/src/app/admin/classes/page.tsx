@@ -38,7 +38,7 @@ export default function AdminClassesPage() {
 
   const handleEdit = (item: ClassItem) => {
     setEditingId(item.id);
-    setName(item.name);
+    setName(item.name || item.title || "");
     setDescription(item.description || "");
     setDuration(item.duration || "");
     setSuitableFor(item.suitable_for || "");

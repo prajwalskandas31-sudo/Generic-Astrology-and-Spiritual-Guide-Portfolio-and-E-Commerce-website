@@ -437,7 +437,7 @@ export default function AdminWorkshopsPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {workshops.map((ws) => {
-                const totalRemaining = ws.batches.reduce((s, b) => s + b.remaining_seats, 0);
+                const totalRemaining = (ws.batches || []).reduce((s, b) => s + b.remaining_seats, 0);
                 return (
                   <tr key={ws.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="p-4">
@@ -467,7 +467,7 @@ export default function AdminWorkshopsPage() {
                     <td className="p-4 text-slate-600">{ws.venue || "N/A"}</td>
                     <td className="p-4">
                       <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-semibold text-[10px]">
-                        {ws.batches.length} Batch ({totalRemaining} seats left)
+                        {(ws.batches || []).length} Batch ({totalRemaining} seats left)
                       </span>
                     </td>
                     <td className="p-4">

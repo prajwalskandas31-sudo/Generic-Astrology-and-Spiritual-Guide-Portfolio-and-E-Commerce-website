@@ -318,7 +318,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="text-slate-500 flex justify-between">
                     <span>Venue: {ws.venue || "N/A"}</span>
-                    <span>{ws.batches.length} Batches</span>
+                    <span>{(ws.batches || []).length} Batches</span>
                   </div>
                 </div>
               ))

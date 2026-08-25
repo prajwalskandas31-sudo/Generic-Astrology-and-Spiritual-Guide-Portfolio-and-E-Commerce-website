@@ -54,7 +54,7 @@ export default function WorkshopRegistrationModal({
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmedRegistrationId, setConfirmedRegistrationId] = useState<number | null>(null);
 
-  const activeBatches = workshop.batches.filter((b) => b.remaining_seats > 0 && b.status === "Active");
+  const activeBatches = (workshop.batches || []).filter((b) => b.remaining_seats > 0 && b.status === "Active");
   const defaultBatch = selectedBatchId
     ? selectedBatchId
     : activeBatches.length > 0

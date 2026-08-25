@@ -628,7 +628,7 @@ export function deleteLocalClass(id: number) {
 
 // --- Courses Endpoints ---
 export async function getCourses() {
-  let base: import("../types").Course[] = FALLBACK_COURSES;
+  let base: import("../types").Course[] = FALLBACK_COURSES as any;
   try {
     const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
     if (Array.isArray(data) && data.length > 0) base = data;

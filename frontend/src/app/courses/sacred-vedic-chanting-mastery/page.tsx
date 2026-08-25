@@ -13,7 +13,7 @@ export default async function SacredVedicChantingMasteryPage() {
 
   return (
     <PublicLayout settings={settings}>
-      <CourseDetailClient course={course} />
+      <CourseDetailClient course={course as any} />
     </PublicLayout>
   );
 }

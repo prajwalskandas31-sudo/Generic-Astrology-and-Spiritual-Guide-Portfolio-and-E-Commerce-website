@@ -11,9 +11,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   try {
     const blog = await getBlogBySlug(slug);
+    if (!blog) throw new Error("Not found");
+
+    const title = blog.seo_title || `${blog.title} | Veda Brahma Shri Pradeep Nadig`;
+    const description = blog.seo_description || blog.content.substring(0, 160);
+    const url = `https://pradeepnadig.in/blogs/${slug}`;
+
     return {
-      title: blog.seo_title || `${blog.title} | Veda Brahma Shri Pradeep Nadig`,
-      description: blog.seo_description || blog.content.substring(0, 160),
+      title,
+      description,
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        title,
+        description,
+        url,
+        siteName: "Pradeep Nadig",
+        type: "article",
+        publishedTime: blog.publish_date,
+        authors: [blog.author || "Pradeep Nadig"],
+        images: blog.cover_image ? [{ url: blog.cover_image }] : ["/pradeep-nadig.jpg"],
+      },
     };
   } catch (_) {
     return {
@@ -41,8 +60,38 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     notFound();
   }
 
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: blog.title,
+    description: blog.seo_description || blog.content.substring(0, 160),
+    image: blog.cover_image || "https://pradeepnadig.in/pradeep-nadig.jpg",
+    author: {
+      "@type": "Person",
+      name: blog.author || "Veda Brahma Shri Pradeep Nadig",
+      url: "https://pradeepnadig.in",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Shaankari",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://pradeepnadig.in/shaankari-logo.png",
+      },
+    },
+    datePublished: blog.publish_date || "2026-01-01",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://pradeepnadig.in/blogs/${slug}`,
+    },
+  };
+
   return (
     <PublicLayout settings={settings}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
       <article className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-4xl mx-auto space-y-8">
           <Link
@@ -87,7 +136,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           )}
 
           <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-xs border border-slate-200 prose prose-slate max-w-none text-slate-700 leading-relaxed font-sans">
-            <p>{blog.content}</p>
+            <p className="whitespace-pre-line">{blog.content}</p>
           </div>
 
           {blog.tags && blog.tags.length > 0 && (

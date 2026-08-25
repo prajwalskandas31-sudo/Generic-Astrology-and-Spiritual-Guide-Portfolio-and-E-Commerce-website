@@ -22,11 +22,12 @@ export interface WorkshopDetailClientProps {
 
 export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const batches = workshop.batches || [];
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(
-    workshop.batches.length === 1 ? workshop.batches[0].id : undefined
+    batches.length === 1 ? batches[0].id : undefined
   );
 
-  const totalRemaining = workshop.batches.reduce((sum, b) => sum + b.remaining_seats, 0);
+  const totalRemaining = batches.reduce((sum, b) => sum + b.remaining_seats, 0);
   const isFull = totalRemaining <= 0 || workshop.status !== "Published";
 
   return (
@@ -109,11 +110,11 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
             <h3 className="text-xl font-serif font-bold text-slate-900">
               Available Batches
             </h3>
-            {workshop.batches.length === 0 ? (
+            {batches.length === 0 ? (
               <p className="text-xs text-slate-500">No batches configured.</p>
             ) : (
               <div className="space-y-3">
-                {workshop.batches.map((b) => {
+                {batches.map((b) => {
                   const bFull = b.remaining_seats <= 0 || b.status !== "Active";
                   const isSelected = selectedBatchId === b.id;
                   return (

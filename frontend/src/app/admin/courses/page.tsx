@@ -74,16 +74,16 @@ export default function AdminCoursesPage() {
     setFullDescription(c.full_description || "");
     setInstructor(c.instructor || "Veda Brahma Shri Pradeep Nadig");
     setDuration(c.duration || "8 Weeks");
-    setLevel(c.level || "Beginner");
-    setMode(c.mode || "Online Live");
+    setLevel((c.level as any) || "Beginner");
+    setMode((c.mode as any) || "Online Live");
     setCoverImage(c.cover_image || "");
     setPrice(c.price || 0);
-    setHasPayment(c.has_payment !== undefined ? c.has_payment : c.price > 0);
-    setPaymentMode(c.payment_mode || (c.price > 0 ? "RAZORPAY" : "FREE"));
+    setHasPayment(c.has_payment !== undefined ? c.has_payment : (c.price || 0) > 0);
+    setPaymentMode(c.payment_mode || ((c.price || 0) > 0 ? "RAZORPAY" : "FREE"));
     setCustomPaymentLink(c.custom_payment_link || "");
     setSchedule(c.schedule || "");
     setPrerequisites(c.prerequisites || "");
-    setStatus(c.status || "Active");
+    setStatus((c.status as any) || "Active");
     setIsEditing(true);
   };
 
@@ -432,9 +432,9 @@ export default function AdminCoursesPage() {
                     <span className="text-[11px] text-slate-500 line-clamp-1">{course.short_description}</span>
                   </td>
                   <td className="p-4">
-                    {course.price > 0 ? (
+                    {(course.price || 0) > 0 ? (
                       <div>
-                        <span className="font-bold text-amber-900 block">₹{course.price.toLocaleString("en-IN")}</span>
+                        <span className="font-bold text-amber-900 block">₹{(course.price || 0).toLocaleString("en-IN")}</span>
                         <span className="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                           ⚡ Payment Gateway Active
                         </span>

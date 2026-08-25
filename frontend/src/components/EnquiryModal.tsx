@@ -101,7 +101,7 @@ export default function EnquiryModal({
     } else if (selectedType === "Consultation") {
       list = offerings.filter((o) => o.type === "Consultation").map((o) => o.title);
     } else if (selectedType === "Class Enquiry") {
-      list = classesList.map((c) => c.name);
+      list = classesList.map((c) => c.name || c.title || "").filter(Boolean);
     } else {
       list = ["General Guidance & Enquiry"];
     }

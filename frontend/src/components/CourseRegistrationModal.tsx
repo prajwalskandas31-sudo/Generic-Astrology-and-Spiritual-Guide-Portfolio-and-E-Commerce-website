@@ -62,6 +62,8 @@ export default function CourseRegistrationModal({
 
   if (!isOpen) return null;
 
+  const coursePrice = course?.price || 0;
+
   const onSubmit = async (data: CourseFormData) => {
     setIsSubmitting(true);
     setErrorMessage("");
@@ -71,11 +73,11 @@ export default function CourseRegistrationModal({
       const hasPayToggle = (course as any).has_payment !== false;
       const payMode = (course as any).payment_mode || "RAZORPAY";
       const customLink = (course as any).custom_payment_link;
-      const isPaid = hasPayToggle && payMode !== "FREE" && course.price > 0;
+      const isPaid = hasPayToggle && payMode !== "FREE" && coursePrice > 0;
 
       const regRes = await registerCourse(course.id, {
         ...data,
-        amount: isPaid ? course.price : 0,
+        amount: isPaid ? coursePrice : 0,
       });
 
       const waMsg = encodeURIComponent(
@@ -96,7 +98,7 @@ export default function CourseRegistrationModal({
           const razorpayKey = (regRes as any).key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo_key";
           const options: any = {
             key: razorpayKey,
-            amount: Math.round(course.price * 100),
+            amount: Math.round(coursePrice * 100),
             currency: "INR",
             name: "Veda Brahma Shri Pradeep Nadig",
             description: `Course Fee - ${course.title}`,
@@ -186,7 +188,7 @@ export default function CourseRegistrationModal({
               <Clock className="w-3.5 h-3.5" />
               {course.duration}
             </span>
-            <span>Fee: ₹{course.price.toLocaleString("en-IN")}</span>
+            <span>Fee: ₹{coursePrice.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
@@ -207,7 +209,7 @@ export default function CourseRegistrationModal({
               <div className="pt-2 space-y-2">
                 <a
                   href={`https://wa.me/919844000000?text=${encodeURIComponent(
-                    `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${submittedName || 'Devotee'}\nCourse: ${course.title}\nFee Status: ${course.price > 0 ? `Paid (₹${course.price})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
+                    `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${submittedName || 'Devotee'}\nCourse: ${course.title}\nFee Status: ${coursePrice > 0 ? `Paid (₹${coursePrice})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -316,10 +318,10 @@ export default function CourseRegistrationModal({
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span>Processing Payment &amp; Enrollment...</span>
                     </>
-                  ) : course.price > 0 ? (
+                  ) : coursePrice > 0 ? (
                     <span className="flex items-center gap-1.5">
                       <CreditCard className="w-4 h-4" />
-                      <span>Pay ₹{course.price.toLocaleString("en-IN")} &amp; Confirm Enrollment &rarr;</span>
+                      <span>Pay ₹{coursePrice.toLocaleString("en-IN")} &amp; Confirm Enrollment &rarr;</span>
                     </span>
                   ) : (
                     <span>Confirm Free Enrollment &rarr;</span>
