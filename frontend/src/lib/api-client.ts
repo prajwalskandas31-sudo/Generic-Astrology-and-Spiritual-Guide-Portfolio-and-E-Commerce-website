@@ -628,18 +628,28 @@ export function deleteLocalClass(id: number) {
 
 // --- Courses Endpoints ---
 export async function getCourses() {
-  let base: import("../types").Course[] = FALLBACK_COURSES as any;
+  let fetched: import("../types").Course[] = [];
   try {
     const data = await fetchAPI<import("../types").Course[]>("/courses", { timeoutMs: 5000 });
-    if (Array.isArray(data) && data.length > 0) base = data;
+    if (Array.isArray(data) && data.length > 0) fetched = data;
   } catch (error) {
     console.warn("Backend API unavailable for getCourses, using fallback data.");
   }
-  const overrides = getLocalCoursesOverride();
   const mapBySlug = new Map<string, import("../types").Course>();
-  for (const c of base) {
-    mapBySlug.set(c.slug, { ...c });
+  for (const fb of FALLBACK_COURSES as any) {
+    mapBySlug.set(fb.slug, { ...fb });
   }
+  for (const c of fetched) {
+    const fb = mapBySlug.get(c.slug);
+    const hasUnsplashImage = !c.images || c.images.length === 0 || c.images[0].includes("unsplash.com");
+    mapBySlug.set(c.slug, {
+      ...fb,
+      ...c,
+      cover_image: c.cover_image || fb?.cover_image,
+      images: hasUnsplashImage && fb?.images ? fb.images : (c.images?.length ? c.images : fb?.images || []),
+    });
+  }
+  const overrides = getLocalCoursesOverride();
   for (const ov of overrides) {
     if (ov.slug) {
       const existing = mapBySlug.get(ov.slug) || {};
@@ -759,18 +769,28 @@ export async function registerCourse(courseId: number, data: any) {
 
 // --- Live Events Endpoints ---
 export async function getLiveEvents() {
-  let base: import("../types").LiveEvent[] = FALLBACK_LIVE_EVENTS;
+  let fetched: import("../types").LiveEvent[] = [];
   try {
     const data = await fetchAPI<import("../types").LiveEvent[]>("/live-events", { timeoutMs: 5000 });
-    if (Array.isArray(data) && data.length > 0) base = data;
+    if (Array.isArray(data) && data.length > 0) fetched = data;
   } catch (error) {
     console.warn("Backend API unavailable for getLiveEvents, using fallback data.");
   }
-  const overrides = getLocalLiveEventsOverride();
   const mapBySlug = new Map<string, import("../types").LiveEvent>();
-  for (const e of base) {
-    mapBySlug.set(e.slug, { ...e });
+  for (const fb of FALLBACK_LIVE_EVENTS as any) {
+    mapBySlug.set(fb.slug, { ...fb });
   }
+  for (const e of fetched) {
+    const fb = mapBySlug.get(e.slug);
+    const hasUnsplashImage = !e.cover_image || e.cover_image.includes("unsplash.com");
+    mapBySlug.set(e.slug, {
+      ...fb,
+      ...e,
+      cover_image: hasUnsplashImage && fb?.cover_image ? fb.cover_image : e.cover_image || fb?.cover_image,
+      images: (e.images && e.images.length > 0) ? e.images : fb?.images,
+    });
+  }
+  const overrides = getLocalLiveEventsOverride();
   for (const ov of overrides) {
     if (ov.slug) {
       const existing = mapBySlug.get(ov.slug) || {};
