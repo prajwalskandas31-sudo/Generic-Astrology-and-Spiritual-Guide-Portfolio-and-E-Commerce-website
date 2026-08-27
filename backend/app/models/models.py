@@ -55,7 +55,7 @@ class Workshop(Base):
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     batches = relationship("WorkshopBatch", back_populates="workshop", cascade="all, delete-orphan")
-    registrations = relationship("WorkshopRegistration", back_populates="workshop")
+    registrations = relationship("WorkshopRegistration", back_populates="workshop", cascade="all, delete-orphan")
 
 
 class WorkshopBatch(Base):

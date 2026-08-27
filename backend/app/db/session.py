@@ -63,24 +63,23 @@ sqlite_engine = create_async_engine(sqlite_url, echo=False, future=True)
 SQLiteSessionLocal = async_sessionmaker(sqlite_engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db():
-    use_sqlite = False
+    is_postgres_ok = False
     try:
         async with AsyncSessionLocal() as session:
             await session.execute(text("SELECT 1"))
-            yield session
-            return
-    except Exception as e:
-        use_sqlite = True
+            is_postgres_ok = True
+    except Exception:
+        is_postgres_ok = False
 
-    if use_sqlite:
-        try:
-            async with sqlite_engine.begin() as conn:
-                from app.models.models import Base
-                await conn.run_sync(Base.metadata.create_all)
-            async with SQLiteSessionLocal() as session:
-                yield session
-        finally:
-            pass
+    if is_postgres_ok:
+        async with AsyncSessionLocal() as session:
+            yield session
+    else:
+        async with sqlite_engine.begin() as conn:
+            from app.models.models import Base
+            await conn.run_sync(Base.metadata.create_all)
+        async with SQLiteSessionLocal() as session:
+            yield session
 
 async def migrate_db_schema():
     """

@@ -5,7 +5,26 @@ import { Workshop } from "@/types";
 import { getWorkshops, fetchAPI } from "@/lib/api-client";
 import MediaLibraryModal from "@/components/MediaLibraryModal";
 import WorkshopAdminDetailModal from "@/components/WorkshopAdminDetailModal";
-import { Calendar, Plus, Trash2, Edit3, Loader2, FolderOpen, Users, CreditCard, CheckCircle2, Link2 } from "lucide-react";
+import { Calendar, Plus, Trash2, Edit3, Loader2, FolderOpen, Users, CreditCard, CheckCircle2, Link2, Upload, Image as ImageIcon } from "lucide-react";
+
+interface BatchFormState {
+  id?: number;
+  batch_name: string;
+  start_time: string;
+  end_time: string;
+  capacity: number;
+  remaining_seats?: number;
+  status?: string;
+}
+
+const DEFAULT_BATCH: BatchFormState = {
+  batch_name: "Morning Batch (7:00 AM - 10:00 AM)",
+  start_time: "07:00 AM",
+  end_time: "10:00 AM",
+  capacity: 30,
+  remaining_seats: 30,
+  status: "Active",
+};
 
 export default function AdminWorkshopsPage() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
@@ -28,10 +47,8 @@ export default function AdminWorkshopsPage() {
   const [hasPayment, setHasPayment] = useState(true);
   const [paymentMode, setPaymentMode] = useState<"RAZORPAY" | "CUSTOM_LINK" | "FREE">("RAZORPAY");
   const [customPaymentLink, setCustomPaymentLink] = useState("");
-  const [capacity, setCapacity] = useState(30);
   const [status, setStatus] = useState("Published");
-  const [batchName, setBatchName] = useState("Morning Batch (7:00 AM - 10:00 AM)");
-  const [batchCapacity, setBatchCapacity] = useState(30);
+  const [batches, setBatches] = useState<BatchFormState[]>([{ ...DEFAULT_BATCH }]);
 
   useEffect(() => {
     loadWorkshops();
@@ -48,6 +65,51 @@ export default function AdminWorkshopsPage() {
     }
   };
 
+  const handleDeviceFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setCoverImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const addBatch = () => {
+    setBatches((prev) => [
+      ...prev,
+      {
+        batch_name: `Batch ${prev.length + 1} (${prev.length === 1 ? "Evening" : "Special"} 5:00 PM - 8:00 PM)`,
+        start_time: "05:00 PM",
+        end_time: "08:00 PM",
+        capacity: 30,
+        remaining_seats: 30,
+        status: "Active",
+      },
+    ]);
+  };
+
+  const updateBatch = (index: number, field: keyof BatchFormState, value: any) => {
+    setBatches((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      if (field === "capacity") {
+        updated[index].remaining_seats = Number(value);
+      }
+      return updated;
+    });
+  };
+
+  const removeBatch = (index: number) => {
+    if (batches.length <= 1) {
+      alert("A workshop must have at least one batch.");
+      return;
+    }
+    setBatches((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleEdit = (ws: Workshop) => {
     setEditingId(ws.id);
     setTitle(ws.title);
@@ -62,17 +124,40 @@ export default function AdminWorkshopsPage() {
     setHasPayment(ws.has_payment !== false);
     setPaymentMode(ws.payment_mode || "RAZORPAY");
     setCustomPaymentLink(ws.custom_payment_link || "");
-    setCapacity(ws.capacity || 30);
     setStatus(ws.status || "Published");
     if (ws.batches && ws.batches.length > 0) {
-      setBatchName(ws.batches[0].batch_name);
-      setBatchCapacity(ws.batches[0].capacity);
+      setBatches(
+        ws.batches.map((b) => ({
+          id: b.id,
+          batch_name: b.batch_name,
+          start_time: b.start_time || "07:00 AM",
+          end_time: b.end_time || "10:00 AM",
+          capacity: b.capacity || 30,
+          remaining_seats: b.remaining_seats ?? b.capacity ?? 30,
+          status: b.status || "Active",
+        }))
+      );
+    } else {
+      setBatches([{ ...DEFAULT_BATCH }]);
     }
     setIsEditing(true);
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const formattedBatches = batches.map((b) => ({
+      ...(b.id ? { id: b.id } : {}),
+      batch_name: b.batch_name,
+      start_time: b.start_time || "07:00 AM",
+      end_time: b.end_time || "10:00 AM",
+      capacity: Number(b.capacity),
+      remaining_seats: b.remaining_seats !== undefined ? Number(b.remaining_seats) : Number(b.capacity),
+      status: b.status || "Active",
+    }));
+
+    const totalCapacity = formattedBatches.reduce((sum, b) => sum + Number(b.capacity), 0);
+
     const payload = {
       title,
       slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
@@ -87,19 +172,10 @@ export default function AdminWorkshopsPage() {
       has_payment: hasPayment,
       payment_mode: hasPayment ? paymentMode : "FREE",
       custom_payment_link: hasPayment && paymentMode === "CUSTOM_LINK" ? customPaymentLink : null,
-      capacity: Number(capacity),
+      capacity: totalCapacity,
       status,
       featured: true,
-      batches: [
-        {
-          batch_name: batchName,
-          start_time: "07:00 AM",
-          end_time: "10:00 AM",
-          capacity: Number(batchCapacity),
-          remaining_seats: Number(batchCapacity),
-          status: "Active",
-        },
-      ],
+      batches: formattedBatches,
     };
 
     try {
@@ -162,6 +238,8 @@ export default function AdminWorkshopsPage() {
     setHasPayment(true);
     setPaymentMode("RAZORPAY");
     setCustomPaymentLink("");
+    setStatus("Published");
+    setBatches([{ ...DEFAULT_BATCH }]);
     setIsEditing(false);
   };
 
@@ -174,7 +252,7 @@ export default function AdminWorkshopsPage() {
             <span>Manage Workshops &amp; Batches</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Configure workshop dates, venue, pricing, batch capacities, seat remaining counters, and broadcast WhatsApp updates.
+            Configure workshop dates, venue, pricing, multiple batch capacities, direct image uploads, and broadcast WhatsApp updates.
           </p>
         </div>
         {!isEditing && (
@@ -219,24 +297,47 @@ export default function AdminWorkshopsPage() {
             </div>
           </div>
 
+          {/* Cover Image Field with Direct Device Upload & Media Library */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Cover Image URL</label>
-            <div className="flex gap-2">
+            <label className="block text-xs font-medium text-slate-700 mb-1">Cover Image</label>
+            <div className="flex flex-wrap sm:flex-nowrap gap-2 items-center">
               <input
                 type="text"
+                placeholder="Paste Image URL or upload directly..."
                 value={coverImage}
                 onChange={(e) => setCoverImage(e.target.value)}
                 className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
               />
+              <label className="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold rounded-xl border border-amber-300 flex items-center gap-1.5 shrink-0 cursor-pointer transition-colors shadow-xs">
+                <Upload className="w-4 h-4 text-amber-700" />
+                <span>Upload from Device</span>
+                <input type="file" accept="image/*" onChange={handleDeviceFileUpload} className="hidden" />
+              </label>
               <button
                 type="button"
                 onClick={() => setIsMediaModalOpen(true)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 shrink-0"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 shrink-0 transition-colors"
               >
                 <FolderOpen className="w-4 h-4 text-amber-700" />
                 <span>Media Library</span>
               </button>
             </div>
+            {coverImage && (
+              <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <img src={coverImage} alt="Cover Preview" className="w-16 h-12 object-cover rounded-lg border border-slate-200" />
+                <div className="flex-1 min-w-0 text-[11px] text-slate-500 truncate">
+                  <span className="font-semibold text-slate-700 block">Cover Image Active</span>
+                  <span className="truncate block">{coverImage.substring(0, 70)}...</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCoverImage("")}
+                  className="px-2.5 py-1 text-[11px] bg-red-50 text-red-700 hover:bg-red-100 rounded-lg border border-red-200 font-semibold"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
           </div>
 
           {/* SELF-SERVICE PAYMENT INTEGRATION OPTION */}
@@ -373,28 +474,103 @@ export default function AdminWorkshopsPage() {
             />
           </div>
 
-          {/* Batch Configuration */}
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-3">
-            <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider">Initial Batch Details</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Dynamic Batches Configuration Section */}
+          <div className="p-4 bg-amber-50/70 rounded-xl border border-amber-200 space-y-3">
+            <div className="flex items-center justify-between">
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">Batch Name</label>
-                <input
-                  type="text"
-                  value={batchName}
-                  onChange={(e) => setBatchName(e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"
-                />
+                <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-amber-700" />
+                  <span>Workshop Batches ({batches.length} Configured)</span>
+                </h3>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Configure multiple batches (e.g. Morning, Evening) with timings and seat limits.
+                </p>
               </div>
-              <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">Batch Capacity / Seats</label>
-                <input
-                  type="number"
-                  value={batchCapacity}
-                  onChange={(e) => setBatchCapacity(Number(e.target.value))}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"
-                />
-              </div>
+              <button
+                type="button"
+                onClick={addBatch}
+                className="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold rounded-lg flex items-center gap-1 shadow-xs transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Batch</span>
+              </button>
+            </div>
+
+            <div className="space-y-3 pt-1">
+              {batches.map((b, idx) => (
+                <div key={idx} className="p-3.5 bg-white border border-amber-200/90 rounded-xl shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                    <span className="text-xs font-bold text-slate-800">Batch #{idx + 1}</span>
+                    {batches.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeBatch(idx)}
+                        className="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1 hover:bg-red-50 px-2 py-0.5 rounded-md transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Batch</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-medium text-slate-700 mb-1">Batch Name *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Morning Batch (7:00 AM - 10:00 AM)"
+                        value={b.batch_name}
+                        onChange={(e) => updateBatch(idx, "batch_name", e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-700 mb-1">Start Time</label>
+                      <input
+                        type="text"
+                        placeholder="07:00 AM"
+                        value={b.start_time}
+                        onChange={(e) => updateBatch(idx, "start_time", e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-700 mb-1">End Time</label>
+                      <input
+                        type="text"
+                        placeholder="10:00 AM"
+                        value={b.end_time}
+                        onChange={(e) => updateBatch(idx, "end_time", e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-700 mb-1">Seat Capacity *</label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        value={b.capacity}
+                        onChange={(e) => updateBatch(idx, "capacity", Number(e.target.value))}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-700 mb-1">Batch Status</label>
+                      <select
+                        value={b.status || "Active"}
+                        onChange={(e) => updateBatch(idx, "status", e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-medium"
+                      >
+                        <option value="Active">Active (Open)</option>
+                        <option value="Full">Full (Seats Filled)</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -438,17 +614,29 @@ export default function AdminWorkshopsPage() {
             <tbody className="divide-y divide-slate-100">
               {workshops.map((ws) => {
                 const totalRemaining = (ws.batches || []).reduce((s, b) => s + b.remaining_seats, 0);
+                const batchCount = (ws.batches || []).length;
                 return (
                   <tr key={ws.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="p-4">
-                      <span className="font-bold text-slate-900 block">{ws.title}</span>
-                      <button
-                        onClick={() => setSelectedDetailWorkshop(ws)}
-                        className="text-[11px] font-semibold text-amber-800 hover:underline flex items-center gap-1 mt-0.5"
-                      >
-                        <Users className="w-3 h-3 text-amber-700" />
-                        <span>View Participants &amp; Broadcast</span>
-                      </button>
+                      <div className="flex items-center gap-3">
+                        {ws.cover_image ? (
+                          <img src={ws.cover_image} alt="" className="w-10 h-10 object-cover rounded-lg border border-slate-200 shrink-0" />
+                        ) : (
+                          <div className="w-10 h-10 bg-amber-50 rounded-lg border border-amber-200 flex items-center justify-center text-amber-700 font-bold shrink-0">
+                            <ImageIcon className="w-5 h-5" />
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-bold text-slate-900 block">{ws.title}</span>
+                          <button
+                            onClick={() => setSelectedDetailWorkshop(ws)}
+                            className="text-[11px] font-semibold text-amber-800 hover:underline flex items-center gap-1 mt-0.5"
+                          >
+                            <Users className="w-3 h-3 text-amber-700" />
+                            <span>View Participants &amp; Broadcast</span>
+                          </button>
+                        </div>
+                      </div>
                     </td>
                     <td className="p-4">
                       {ws.has_payment !== false ? (
@@ -467,7 +655,7 @@ export default function AdminWorkshopsPage() {
                     <td className="p-4 text-slate-600">{ws.venue || "N/A"}</td>
                     <td className="p-4">
                       <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-semibold text-[10px]">
-                        {(ws.batches || []).length} Batch ({totalRemaining} seats left)
+                        {batchCount} {batchCount === 1 ? "Batch" : "Batches"} ({totalRemaining} seats left)
                       </span>
                     </td>
                     <td className="p-4">
@@ -515,4 +703,3 @@ export default function AdminWorkshopsPage() {
     </div>
   );
 }
-

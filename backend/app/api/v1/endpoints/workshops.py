@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import delete, update
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from typing import List, Optional
 from app.db.session import get_db
-from app.models.models import Workshop, WorkshopBatch, WorkshopRegistration
+from app.models.models import Workshop, WorkshopBatch, WorkshopRegistration, Request
 from app.schemas.schemas import (
     WorkshopCreate, WorkshopResponse, WorkshopRegisterRequest,
     WorkshopRegisterResponse, MessageResponse, WorkshopRegistrationResponse,
@@ -195,12 +196,19 @@ async def create_workshop(
         workshop = existing
         for key, value in workshop_data.items():
             setattr(workshop, key, value)
+        if batches_data:
+            await db.execute(delete(WorkshopBatch).where(WorkshopBatch.workshop_id == workshop.id))
+            for b_data in batches_data:
+                b_data.pop("id", None)
+                batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
+                db.add(batch)
     else:
         workshop = Workshop(**workshop_data)
         db.add(workshop)
         await db.flush()
         
         for b_data in batches_data:
+            b_data.pop("id", None)
             batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
             db.add(batch)
         
@@ -230,11 +238,18 @@ async def update_workshop(
         db.add(workshop)
         await db.flush()
         for b_data in batches_data:
+            b_data.pop("id", None)
             batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
             db.add(batch)
     else:
         for key, value in workshop_data.items():
             setattr(workshop, key, value)
+        if batches_data:
+            await db.execute(delete(WorkshopBatch).where(WorkshopBatch.workshop_id == workshop.id))
+            for b_data in batches_data:
+                b_data.pop("id", None)
+                batch = WorkshopBatch(workshop_id=workshop.id, **b_data)
+                db.add(batch)
         
     await db.commit()
     res = await db.execute(select(Workshop).options(selectinload(Workshop.batches)).where(Workshop.id == workshop.id))
@@ -249,6 +264,15 @@ async def delete_workshop(
     workshop = await db.get(Workshop, id)
     if not workshop:
         raise HTTPException(status_code=404, detail="Workshop not found")
+    
+    # Clean up linked records prior to deleting workshop
+    await db.execute(delete(WorkshopRegistration).where(WorkshopRegistration.workshop_id == id))
+    await db.execute(delete(WorkshopBatch).where(WorkshopBatch.workshop_id == id))
+    await db.execute(
+        update(Request)
+        .where(Request.workshop_id == id)
+        .values(workshop_id=None, batch_id=None)
+    )
     
     await db.delete(workshop)
     await db.commit()
