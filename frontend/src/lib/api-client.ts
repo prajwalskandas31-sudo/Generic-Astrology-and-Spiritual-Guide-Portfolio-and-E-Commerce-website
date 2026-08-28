@@ -97,47 +97,24 @@ export async function getSettings() {
 }
 
 export async function getOfferings(type?: string, status_filter?: string) {
-  let offerings: import("../types").Offering[] = [];
   try {
     const params = new URLSearchParams();
     if (type) params.append("type", type);
     if (status_filter) params.append("status_filter", status_filter);
     const query = params.toString() ? `?${params.toString()}` : "";
-    offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
+    const offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
+    return offerings.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   } catch (error) {
     console.info("Using fallback data for getOfferings.");
-    offerings = FALLBACK_OFFERINGS;
+    let result = FALLBACK_OFFERINGS;
+    if (type && type.toLowerCase() !== "all") {
+      result = result.filter((o) => o.type === type);
+    }
+    if (status_filter && status_filter.toLowerCase() !== "all") {
+      result = result.filter((o) => o.status === status_filter);
+    }
+    return result.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   }
-
-  // Smart Merge: ensure all 20 homas, poojas, and consultations exist with high quality local images
-  const mapBySlug = new Map<string, import("../types").Offering>();
-  for (const fb of FALLBACK_OFFERINGS) {
-    mapBySlug.set(fb.slug, { ...fb });
-  }
-
-  for (const item of offerings) {
-    const fb = mapBySlug.get(item.slug);
-    const hasUnsplashImage = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
-    mapBySlug.set(item.slug, {
-      ...fb,
-      ...item,
-      images: hasUnsplashImage && fb?.images ? fb.images : (item.images?.length ? item.images : fb?.images || []),
-      who_benefits: item.who_benefits || fb?.who_benefits,
-      where_performed: item.where_performed || fb?.where_performed,
-      when_performed: item.when_performed || fb?.when_performed,
-      who_should_attend: item.who_should_attend || fb?.who_should_attend,
-      vidhi_details: item.vidhi_details || fb?.vidhi_details,
-    });
-  }
-
-  let result = Array.from(mapBySlug.values());
-  if (type && type.toLowerCase() !== "all") {
-    result = result.filter((o) => o.type === type);
-  }
-  if (status_filter && status_filter.toLowerCase() !== "all") {
-    result = result.filter((o) => o.status === status_filter);
-  }
-  return result.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 }
 
 export async function getOfferingBySlug(slug: string) {
@@ -162,36 +139,19 @@ export async function getOfferingBySlug(slug: string) {
 }
 
 export async function getWorkshops(status_filter?: string) {
-  let workshops: import("../types").Workshop[] = [];
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
-    workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
+    const workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
+    return workshops;
   } catch (error) {
     console.info("Using fallback data for getWorkshops.");
-    workshops = FALLBACK_WORKSHOPS;
+    let result = FALLBACK_WORKSHOPS;
+    if (status_filter && status_filter.toLowerCase() !== "all") {
+      result = result.filter((w) => w.status === status_filter);
+    }
+    return result;
   }
-
-  const mapBySlug = new Map<string, import("../types").Workshop>();
-  for (const fb of FALLBACK_WORKSHOPS) {
-    mapBySlug.set(fb.slug, { ...fb });
-  }
-
-  for (const item of workshops) {
-    const fb = mapBySlug.get(item.slug);
-    const hasUnsplash = !item.cover_image || item.cover_image.includes("unsplash.com");
-    mapBySlug.set(item.slug, {
-      ...fb,
-      ...item,
-      cover_image: hasUnsplash && fb?.cover_image ? fb.cover_image : item.cover_image || fb?.cover_image,
-    });
-  }
-
-  let result = Array.from(mapBySlug.values());
-  if (status_filter && status_filter.toLowerCase() !== "all") {
-    result = result.filter((w) => w.status === status_filter);
-  }
-  return result;
 }
 
 export async function getWorkshopBySlug(slug: string) {
