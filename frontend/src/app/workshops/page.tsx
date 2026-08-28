@@ -77,26 +77,38 @@ export default async function WorkshopsPage() {
                     key={ws.id}
                     className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
                   >
-                    {ws.cover_image && (
-                      <div className="h-52 overflow-hidden bg-slate-100 relative">
-                        <img
-                          src={ws.cover_image}
-                          alt={ws.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-3 right-3">
-                          <span
-                            className={`px-3 py-1 text-xs font-bold rounded-full shadow-md ${
-                              isFull
-                                ? "bg-red-600 text-white"
-                                : "bg-emerald-600 text-white"
-                            }`}
-                          >
-                            {isFull ? "Registration Closed" : `${totalRemaining} Seats Left`}
-                          </span>
+                    <div className="h-60 overflow-hidden bg-slate-950 relative flex items-center justify-center">
+                      {ws.cover_image ? (
+                        <>
+                          <img
+                            src={ws.cover_image}
+                            alt=""
+                            className="absolute inset-0 w-full h-full object-cover blur-md opacity-35 scale-110"
+                          />
+                          <img
+                            src={ws.cover_image}
+                            alt={ws.title}
+                            className="relative z-10 max-w-full max-h-full object-contain p-1 group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </>
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-orange-950 p-6 flex flex-col justify-between text-white">
+                          <span className="text-xs uppercase font-bold tracking-widest text-amber-200">Vedic Workshop</span>
+                          <h4 className="font-serif text-lg font-bold line-clamp-2">{ws.title}</h4>
                         </div>
+                      )}
+                      <div className="absolute top-3 right-3 z-20">
+                        <span
+                          className={`px-3 py-1 text-xs font-bold rounded-full shadow-md ${
+                            isFull
+                              ? "bg-red-600 text-white"
+                              : "bg-emerald-600 text-white"
+                          }`}
+                        >
+                          {isFull ? "Registration Closed" : `${totalRemaining} Seats Left`}
+                        </span>
                       </div>
-                    )}
+                    </div>
 
                     <div className="p-6 space-y-4 grow">
                       <div className="flex items-center justify-between text-xs text-amber-700 font-semibold">

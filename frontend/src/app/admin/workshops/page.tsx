@@ -359,16 +359,17 @@ export default function AdminWorkshopsPage() {
               </button>
             </div>
             {coverImage && (
-              <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-xl">
-                <img src={coverImage} alt="Cover Preview" className="w-16 h-12 object-cover rounded-lg border border-slate-200" />
-                <div className="flex-1 min-w-0 text-[11px] text-slate-500 truncate">
-                  <span className="font-semibold text-slate-700 block">Cover Image Active</span>
-                  <span className="truncate block">{coverImage.substring(0, 70)}...</span>
+              <div className="mt-2.5 flex items-center gap-3 p-3 bg-slate-900 border border-slate-800 rounded-xl relative overflow-hidden">
+                <img src={coverImage} alt="" className="absolute inset-0 w-full h-full object-cover blur-md opacity-30" />
+                <img src={coverImage} alt="Cover Preview" className="w-20 h-16 object-contain relative z-10 rounded-lg border border-slate-700 bg-black/40" />
+                <div className="flex-1 min-w-0 text-[11px] text-slate-300 relative z-10 truncate">
+                  <span className="font-semibold text-amber-400 block">Cover Image Active</span>
+                  <span className="truncate block opacity-80">{coverImage.substring(0, 70)}...</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCoverImage("")}
-                  className="px-2.5 py-1 text-[11px] bg-red-50 text-red-700 hover:bg-red-100 rounded-lg border border-red-200 font-semibold"
+                  className="px-3 py-1.5 text-[11px] bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-xs relative z-10 shrink-0"
                 >
                   Remove
                 </button>

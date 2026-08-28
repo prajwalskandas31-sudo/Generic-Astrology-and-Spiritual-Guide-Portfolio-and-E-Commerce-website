@@ -54,15 +54,26 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Left Column: Details */}
         <div className="lg:col-span-7 space-y-8">
-          {workshop.cover_image && (
-            <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100">
-              <img
-                src={workshop.cover_image}
-                alt={workshop.title}
-                className="w-full h-[400px] object-cover"
-              />
-            </div>
-          )}
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-950 relative min-h-[280px] max-h-[550px] flex items-center justify-center">
+            {workshop.cover_image ? (
+              <>
+                <img
+                  src={workshop.cover_image}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110"
+                />
+                <img
+                  src={workshop.cover_image}
+                  alt={workshop.title}
+                  className="relative z-10 max-w-full max-h-[520px] object-contain rounded-xl p-2"
+                />
+              </>
+            ) : (
+              <div className="w-full h-64 bg-gradient-to-br from-amber-900 via-amber-800 to-slate-950 flex items-center justify-center text-amber-200 font-serif font-bold text-2xl p-6 text-center">
+                {workshop.title}
+              </div>
+            )}
+          </div>
 
           <div className="space-y-4">
             <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900">
