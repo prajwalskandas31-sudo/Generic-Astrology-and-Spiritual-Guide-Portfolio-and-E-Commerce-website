@@ -91,6 +91,10 @@ async def migrate_db_schema():
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS has_payment BOOLEAN DEFAULT TRUE;"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS payment_mode VARCHAR(50) DEFAULT 'RAZORPAY';"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS custom_payment_link VARCHAR(500);"))
+            await conn.execute(text("ALTER TABLE workshops ALTER COLUMN cover_image TYPE TEXT;"))
+            await conn.execute(text("ALTER TABLE blogs ALTER COLUMN cover_image TYPE TEXT;"))
+            await conn.execute(text("ALTER TABLE gallery_items ALTER COLUMN media_url TYPE TEXT;"))
+            await conn.execute(text("ALTER TABLE media_library ALTER COLUMN file_url TYPE TEXT;"))
             
             # Purge internal developer test records
             await conn.execute(text("DELETE FROM workshop_registrations WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))

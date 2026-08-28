@@ -117,16 +117,52 @@ export default function WorkshopAdminDetailModal({
     }
   };
 
-  // Device File Upload (base64 data URL conversion)
+  // Device File Upload (base64 data URL conversion with canvas compression)
   const handleDeviceFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const img = new Image();
     const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setImageUrl(reader.result);
+
+    reader.onload = (event) => {
+      if (typeof event.target?.result === "string") {
+        img.src = event.target.result;
       }
     };
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const MAX_WIDTH = 1200;
+      const MAX_HEIGHT = 800;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = Math.round((height * MAX_WIDTH) / width);
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = Math.round((width * MAX_HEIGHT) / height);
+          height = MAX_HEIGHT;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        setImageUrl(compressedDataUrl);
+      } else {
+        setImageUrl(img.src);
+      }
+    };
+
     reader.readAsDataURL(file);
   };
 
