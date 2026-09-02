@@ -10,19 +10,35 @@ export default function NavigationProgress() {
   const [isNavigating, setIsNavigating] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // 1. Finish loading animation when route (pathname/searchParams) changes
+  // 1. Manage background blur effect on <main> content
+  useEffect(() => {
+    const mainEl = document.querySelector("main") || document.body;
+    if (isNavigating) {
+      mainEl.classList.add("page-navigating-blur");
+    } else {
+      mainEl.classList.remove("page-navigating-blur");
+    }
+
+    return () => {
+      mainEl.classList.remove("page-navigating-blur");
+    };
+  }, [isNavigating]);
+
+  // 2. Finish loading animation when route (pathname/searchParams) changes
   useEffect(() => {
     if (isNavigating) {
       setProgress(100);
       const timer = setTimeout(() => {
         setIsNavigating(false);
         setProgress(0);
+        const mainEl = document.querySelector("main") || document.body;
+        mainEl.classList.remove("page-navigating-blur");
       }, 300);
       return () => clearTimeout(timer);
     }
   }, [pathname, searchParams]);
 
-  // 2. Global listener for link clicks across the site
+  // 3. Global listener for link clicks across the site
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
@@ -62,7 +78,7 @@ export default function NavigationProgress() {
           return;
         }
 
-        // Activate navigation indicator immediately
+        // Activate navigation indicator & background blur immediately
         setIsNavigating(true);
         setProgress(25);
 
@@ -81,6 +97,8 @@ export default function NavigationProgress() {
         setTimeout(() => {
           anchor.classList.remove("pointer-events-none", "opacity-80");
           anchor.querySelector(".nav-click-spinner")?.remove();
+          const mainEl = document.querySelector("main") || document.body;
+          mainEl.classList.remove("page-navigating-blur");
         }, 5000);
       } catch (_) {}
     };
@@ -91,7 +109,7 @@ export default function NavigationProgress() {
     };
   }, []);
 
-  // 3. Smooth progress incrementing while waiting for page load
+  // 4. Smooth progress incrementing while waiting for page load
   useEffect(() => {
     if (!isNavigating) return;
 
@@ -107,7 +125,7 @@ export default function NavigationProgress() {
     return () => clearInterval(interval);
   }, [isNavigating]);
 
-  // Clean up residual click spinner styles on route completion
+  // Clean up residual click spinner styles & blur on route completion
   useEffect(() => {
     document.querySelectorAll(".nav-click-spinner").forEach((el) => el.remove());
     document.querySelectorAll(".pointer-events-none").forEach((el) => {
@@ -115,6 +133,8 @@ export default function NavigationProgress() {
         el.classList.remove("pointer-events-none", "opacity-80");
       }
     });
+    const mainEl = document.querySelector("main") || document.body;
+    mainEl.classList.remove("page-navigating-blur");
   }, [pathname, searchParams]);
 
   if (!isNavigating && progress === 0) return null;
@@ -122,18 +142,24 @@ export default function NavigationProgress() {
   return (
     <>
       {/* Sleek Top Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 z-[99999] h-1 bg-amber-100/40 overflow-hidden pointer-events-none">
+      <div className="fixed top-0 left-0 right-0 z-[99999] h-1.5 bg-amber-100/40 overflow-hidden pointer-events-none">
         <div
-          className="h-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-150 ease-out shadow-[0_0_12px_#d97706]"
+          className="h-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-150 ease-out shadow-[0_0_15px_#d97706]"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      {/* Floating Top-Right Loading Badge */}
-      <div className="fixed top-20 right-4 sm:right-6 z-[99999] pointer-events-none animate-in fade-in slide-in-from-top-2 duration-200">
-        <div className="bg-amber-950/90 text-amber-100 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-amber-500/30 flex items-center gap-2.5 text-xs font-semibold tracking-wide">
-          <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
-          <span>Opening page...</span>
+      {/* Glassmorphic Floating Center/Top Loading Badge */}
+      <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[99999] pointer-events-none animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-slate-900/90 text-amber-100 backdrop-blur-xl px-5 py-3 rounded-full shadow-2xl border border-amber-500/30 flex items-center gap-3 text-xs font-semibold tracking-wide ring-1 ring-black/10">
+          <div className="relative flex items-center justify-center">
+            <div className="w-5 h-5 rounded-full border-2 border-amber-500/30 border-t-amber-400 animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin absolute" />
+          </div>
+          <span>Loading requested page...</span>
+          <span className="text-[11px] font-mono text-amber-400/90 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/20">
+            {progress}%
+          </span>
         </div>
       </div>
     </>
