@@ -11,17 +11,13 @@ import {
 } from "./fallback-data";
 
 function getBaseUrl(): string {
-  if (typeof window === "undefined") {
-    if (process.env.INTERNAL_API_URL) {
-      return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
-    }
-    if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith("http")) {
-      return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
-    }
-    return "http://127.0.0.1:8000/api/v1";
+  if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith("http")) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
   }
-  const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-  return rawBaseUrl.replace(/\/+$/, "");
+  if (process.env.INTERNAL_API_URL && process.env.INTERNAL_API_URL.startsWith("http")) {
+    return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
+  }
+  return "https://pradeepnadig.in/api/v1";
 }
 
 export async function fetchAPI<T>(
@@ -73,7 +69,7 @@ export async function fetchAPI<T>(
 // --- Public Endpoints ---
 export async function getSettings() {
   try {
-    const data = await fetchAPI<Record<string, any>>("/settings", { timeoutMs: 5000 });
+    const data = await fetchAPI<Record<string, any>>("/settings", { timeoutMs: 15000 });
     const merged = { ...FALLBACK_SETTINGS, ...data };
     
     // Automatically sanitize old seed database placeholders
@@ -91,7 +87,7 @@ export async function getSettings() {
     }
     return merged;
   } catch (error) {
-    console.info("Using fallback data for getSettings.");
+    console.warn("API notice for getSettings:", error);
     return FALLBACK_SETTINGS;
   }
 }
@@ -102,7 +98,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
     if (type) params.append("type", type);
     if (status_filter) params.append("status_filter", status_filter);
     const query = params.toString() ? `?${params.toString()}` : "";
-    const offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
+    const offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 15000 });
     const sanitized = offerings.map((item) => {
       const fb = FALLBACK_OFFERINGS.find((f) => f.slug === item.slug);
       const hasUnsplash = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
@@ -114,7 +110,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
     });
     return sanitized.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   } catch (error) {
-    console.info("Using fallback data for getOfferings.");
+    console.warn("API notice for getOfferings:", error);
     let result = FALLBACK_OFFERINGS;
     if (type && type.toLowerCase() !== "all") {
       result = result.filter((o) => o.type === type);
@@ -129,7 +125,7 @@ export async function getOfferings(type?: string, status_filter?: string) {
 export async function getOfferingBySlug(slug: string) {
   const fb = FALLBACK_OFFERINGS.find((o) => o.slug === slug);
   try {
-    const item = await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const item = await fetchAPI<import("../types").Offering>(`/offerings/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
     const hasUnsplashImage = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
     return {
       ...fb,
@@ -151,7 +147,7 @@ export async function getWorkshops(status_filter?: string) {
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
-    const workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
+    const workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 15000 });
     return workshops.map((w) => {
       const fb = FALLBACK_WORKSHOPS.find((f) => f.slug === w.slug);
       const hasUnsplash = !w.cover_image || w.cover_image.includes("unsplash.com");
@@ -162,7 +158,7 @@ export async function getWorkshops(status_filter?: string) {
       };
     });
   } catch (error) {
-    console.info("Using fallback data for getWorkshops.");
+    console.warn("API notice for getWorkshops:", error);
     let result = FALLBACK_WORKSHOPS;
     if (status_filter && status_filter.toLowerCase() !== "all") {
       result = result.filter((w) => w.status === status_filter);
@@ -174,7 +170,7 @@ export async function getWorkshops(status_filter?: string) {
 export async function getWorkshopBySlug(slug: string) {
   const fb = FALLBACK_WORKSHOPS.find((w) => w.slug === slug);
   try {
-    const item = await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    const item = await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
     const hasUnsplash = !item.cover_image || item.cover_image.includes("unsplash.com");
     return {
       ...fb,
@@ -197,7 +193,7 @@ export async function registerWorkshop(workshopId: number, data: any) {
   }>(`/workshops/${workshopId}/register`, {
     method: "POST",
     body: JSON.stringify(data),
-    timeoutMs: 20000,
+    timeoutMs: 25000,
   });
 }
 
@@ -210,7 +206,7 @@ export async function verifyPayment(data: {
   return fetchAPI<{ message: string; success: boolean }>("/payments/verify", {
     method: "POST",
     body: JSON.stringify(data),
-    timeoutMs: 20000,
+    timeoutMs: 25000,
   });
 }
 
@@ -226,17 +222,17 @@ export async function submitEnquiry(data: {
   return fetchAPI<import("../types").Enquiry>("/enquiries", {
     method: "POST",
     body: JSON.stringify(data),
-    timeoutMs: 20000,
+    timeoutMs: 25000,
   });
 }
 
 export async function getClasses() {
   let base: import("../types").ClassItem[] = FALLBACK_CLASSES;
   try {
-    const data = await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 5000 });
+    const data = await fetchAPI<import("../types").ClassItem[]>("/classes", { timeoutMs: 15000 });
     if (Array.isArray(data) && data.length > 0) base = data;
   } catch (error) {
-    console.info("Using fallback data for getClasses.");
+    console.warn("API notice for getClasses:", error);
   }
   const overrides = getLocalClassesOverride();
   const mapById = new Map<number, import("../types").ClassItem>();
@@ -255,9 +251,9 @@ export async function getClasses() {
 export async function getBlogs(category?: string) {
   try {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
-    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 5000 });
+    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 15000 });
   } catch (error) {
-    console.info("Using fallback data for getBlogs.");
+    console.warn("API notice for getBlogs:", error);
     if (category) {
       return FALLBACK_BLOGS.filter((b) => b.category === category);
     }
@@ -267,9 +263,9 @@ export async function getBlogs(category?: string) {
 
 export async function getBlogBySlug(slug: string) {
   try {
-    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 5000 });
+    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
   } catch (error) {
-    console.info(`Using fallback data for getBlogBySlug(${slug}).`);
+    console.warn(`API notice for getBlogBySlug(${slug}):`, error);
     const item = FALLBACK_BLOGS.find((b) => b.slug === slug);
     if (!item) throw error;
     return item;
@@ -279,9 +275,9 @@ export async function getBlogBySlug(slug: string) {
 export async function getGallery() {
   let items: import("../types").GalleryItem[] = [];
   try {
-    items = await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 5000 });
+    items = await fetchAPI<import("../types").GalleryItem[]>("/gallery", { timeoutMs: 15000 });
   } catch (error) {
-    console.info("Using fallback data for getGallery.");
+    console.warn("API notice for getGallery:", error);
     return FALLBACK_GALLERY;
   }
 
@@ -302,9 +298,9 @@ export async function getGallery() {
 export async function getFAQ(category?: string) {
   try {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
-    return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`, { timeoutMs: 5000 });
+    return await fetchAPI<import("../types").FAQItem[]>(`/faq${query}`, { timeoutMs: 15000 });
   } catch (error) {
-    console.info("Using fallback data for getFAQ.");
+    console.warn("API notice for getFAQ:", error);
     if (category) {
       return FALLBACK_FAQS.filter((f) => f.category === category);
     }
@@ -314,9 +310,9 @@ export async function getFAQ(category?: string) {
 
 export async function getMediaLibrary() {
   try {
-    return await fetchAPI<import("../types").MediaItem[]>("/media", { timeoutMs: 5000 });
+    return await fetchAPI<import("../types").MediaItem[]>("/media", { timeoutMs: 15000 });
   } catch (error) {
-    console.warn("Backend API unavailable for getMediaLibrary, using fallback data.");
+    console.warn("API notice for getMediaLibrary:", error);
     return [];
   }
 }
