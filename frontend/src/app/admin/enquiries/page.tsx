@@ -42,6 +42,7 @@ export default function AdminRequestsPage() {
   const [timePickerRequest, setTimePickerRequest] = useState<RequestThread | null>(null);
   const [selectedTimeInput, setSelectedTimeInput] = useState("10:00 AM");
   const [isPerformingAction, setIsPerformingAction] = useState(false);
+  const [activeActionKey, setActiveActionKey] = useState<string | null>(null);
 
   const [selectedRequestIds, setSelectedRequestIds] = useState<string[]>([]);
   const [selectedRegistrationIds, setSelectedRegistrationIds] = useState<number[]>([]);
@@ -153,7 +154,9 @@ export default function AdminRequestsPage() {
   };
 
   const handleAction = async (requestId: string, actionName: string, extraPayload: any = {}) => {
+    const actionKey = `${requestId}-${actionName}`;
     setIsPerformingAction(true);
+    setActiveActionKey(actionKey);
     try {
       await executeRequestAction(requestId, actionName, extraPayload);
       setTimePickerRequest(null);
@@ -162,12 +165,15 @@ export default function AdminRequestsPage() {
       alert(`Action error: ${err.message || "Failed to execute action"}`);
     } finally {
       setIsPerformingAction(false);
+      setActiveActionKey(null);
     }
   };
 
   const handleDeleteRequest = async (requestId: string) => {
     if (!confirm(`Are you sure you want to permanently delete Request ${requestId}? This action cannot be undone.`)) return;
+    const actionKey = `${requestId}-DELETE`;
     setIsPerformingAction(true);
+    setActiveActionKey(actionKey);
     try {
       await deleteRequest(requestId);
       await loadRequests();
@@ -175,12 +181,15 @@ export default function AdminRequestsPage() {
       alert(`Failed to delete request: ${err.message}`);
     } finally {
       setIsPerformingAction(false);
+      setActiveActionKey(null);
     }
   };
 
   const handleDeleteRegistration = async (id: number, name: string) => {
     if (!confirm(`Are you sure you want to delete workshop registration for ${name}? This action cannot be undone.`)) return;
+    const actionKey = `REG-${id}-DELETE`;
     setIsPerformingAction(true);
+    setActiveActionKey(actionKey);
     try {
       await deleteWorkshopRegistration(id);
       await loadRegistrations();
@@ -188,6 +197,7 @@ export default function AdminRequestsPage() {
       alert(`Failed to delete registration: ${err.message}`);
     } finally {
       setIsPerformingAction(false);
+      setActiveActionKey(null);
     }
   };
 
@@ -745,8 +755,17 @@ export default function AdminRequestsPage() {
                     disabled={isPerformingAction}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>ACCEPT</span>
+                    {activeActionKey === `${req.request_id}-ACCEPT` ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>ACCEPTING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>ACCEPT</span>
+                      </>
+                    )}
                   </button>
                 )}
 
@@ -767,8 +786,17 @@ export default function AdminRequestsPage() {
                     disabled={isPerformingAction}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
                   >
-                    <XCircle className="w-3.5 h-3.5" />
-                    <span>REJECT</span>
+                    {activeActionKey === `${req.request_id}-REJECT` ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>REJECTING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="w-3.5 h-3.5" />
+                        <span>REJECT</span>
+                      </>
+                    )}
                   </button>
                 )}
 
@@ -778,8 +806,17 @@ export default function AdminRequestsPage() {
                     disabled={isPerformingAction}
                     className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
                   >
-                    <Check className="w-3.5 h-3.5" />
-                    <span>MARK COMPLETED</span>
+                    {activeActionKey === `${req.request_id}-MARK_COMPLETED` ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>SAVING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>MARK COMPLETED</span>
+                      </>
+                    )}
                   </button>
                 )}
 
@@ -789,8 +826,17 @@ export default function AdminRequestsPage() {
                     disabled={isPerformingAction}
                     className="px-4 py-2 bg-slate-600 hover:bg-slate-700 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
                   >
-                    <Archive className="w-3.5 h-3.5" />
-                    <span>ARCHIVE</span>
+                    {activeActionKey === `${req.request_id}-ARCHIVE` ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>ARCHIVING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Archive className="w-3.5 h-3.5" />
+                        <span>ARCHIVE</span>
+                      </>
+                    )}
                   </button>
                 )}
 
@@ -799,8 +845,17 @@ export default function AdminRequestsPage() {
                   disabled={isPerformingAction}
                   className="px-4 py-2 bg-rose-700 hover:bg-rose-800 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>DELETE</span>
+                  {activeActionKey === `${req.request_id}-DELETE` ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>DELETING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>DELETE</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

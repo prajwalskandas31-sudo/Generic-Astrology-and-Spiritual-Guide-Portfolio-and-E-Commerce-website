@@ -23,6 +23,8 @@ import {
 export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
@@ -115,6 +117,7 @@ export default function AdminCoursesPage() {
 
     saveLocalCourse(payload);
 
+    setIsSubmitting(true);
     try {
       if (editingId) {
         await fetchAPI(`/courses/${editingId}`, {
@@ -129,7 +132,10 @@ export default function AdminCoursesPage() {
           body: JSON.stringify(payload),
         }).catch(() => null);
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      setIsSubmitting(false);
+    }
 
     resetForm();
     await loadCourses();
@@ -139,12 +145,16 @@ export default function AdminCoursesPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this course?")) return;
     deleteLocalCourse(id);
+    setDeletingId(id);
     try {
       await fetchAPI(`/courses/${id}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer mock-admin-token" },
       }).catch(() => null);
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      setDeletingId(null);
+    }
     loadCourses();
   };
 
@@ -398,9 +408,17 @@ export default function AdminCoursesPage() {
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
             >
-              Save Course
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Saving Course...</span>
+                </>
+              ) : (
+                <span>Save Course</span>
+              )}
             </button>
           </div>
         </form>
@@ -469,8 +487,16 @@ export default function AdminCoursesPage() {
                     <button onClick={() => handleEdit(course)} className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDelete(course.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg">
-                      <Trash2 className="w-4 h-4" />
+                    <button
+                      onClick={() => handleDelete(course.id)}
+                      disabled={deletingId === course.id}
+                      className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                    >
+                      {deletingId === course.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
                     </button>
                   </td>
                 </tr>

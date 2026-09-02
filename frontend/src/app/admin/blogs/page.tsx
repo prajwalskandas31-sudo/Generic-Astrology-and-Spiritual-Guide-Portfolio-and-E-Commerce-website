@@ -9,6 +9,8 @@ import { FileText, Plus, Trash2, Edit3, Loader2, FolderOpen } from "lucide-react
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
@@ -50,6 +52,7 @@ export default function AdminBlogsPage() {
       seo_description: content.substring(0, 150),
     };
 
+    setIsSubmitting(true);
     try {
       if (editingId) {
         await fetchAPI(`/blogs/${editingId}`, {
@@ -68,6 +71,8 @@ export default function AdminBlogsPage() {
       loadBlogs();
     } catch (err: any) {
       alert("Error saving blog: " + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -84,6 +89,7 @@ export default function AdminBlogsPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this blog post?")) return;
+    setDeletingId(id);
     try {
       await fetchAPI(`/blogs/${id}`, {
         method: "DELETE",
@@ -92,6 +98,8 @@ export default function AdminBlogsPage() {
       loadBlogs();
     } catch (err: any) {
       alert("Error deleting blog: " + err.message);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -221,9 +229,17 @@ export default function AdminBlogsPage() {
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
             >
-              Save &amp; Publish Post
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Saving Article...</span>
+                </>
+              ) : (
+                <span>Save &amp; Publish Post</span>
+              )}
             </button>
           </div>
         </form>
@@ -257,8 +273,16 @@ export default function AdminBlogsPage() {
                     <button onClick={() => handleEdit(b)} className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDelete(b.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg">
-                      <Trash2 className="w-4 h-4" />
+                    <button
+                      onClick={() => handleDelete(b.id)}
+                      disabled={deletingId === b.id}
+                      className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                    >
+                      {deletingId === b.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
                     </button>
                   </td>
                 </tr>

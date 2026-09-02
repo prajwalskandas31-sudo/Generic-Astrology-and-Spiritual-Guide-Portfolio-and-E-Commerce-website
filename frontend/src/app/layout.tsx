@@ -179,6 +179,9 @@ const jsonLd = {
   ],
 };
 
+import { Suspense } from "react";
+import NavigationProgress from "@/components/NavigationProgress";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -196,8 +199,14 @@ export default function RootLayout({
         className={`${inter.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
+          {children}
+        </Providers>
       </body>
     </html>
   );
 }
+

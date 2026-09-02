@@ -48,6 +48,7 @@ export default function WorkshopAdminDetailModal({
   // Modals & Camera State
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | "bulk" | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -97,23 +98,29 @@ export default function WorkshopAdminDetailModal({
     if (selectedRegs.length === 0) return;
     if (!confirm(`Are you sure you want to delete ${selectedRegs.length} selected participant registration(s)?`)) return;
 
+    setDeletingId("bulk");
     try {
       const idsToDelete = selectedRegs.map((r) => r.id);
       await bulkDeleteWorkshopRegistrations(idsToDelete);
       loadRegistrations();
     } catch (err: any) {
       alert("Error deleting registrations: " + err.message);
+    } finally {
+      setDeletingId(null);
     }
   };
 
   const handleSingleDelete = async (regId: number, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this registration?")) return;
+    setDeletingId(regId);
     try {
       await deleteWorkshopRegistration(regId);
       loadRegistrations();
     } catch (err: any) {
       alert("Error deleting registration: " + err.message);
+    } finally {
+      setDeletingId(null);
     }
   };
 

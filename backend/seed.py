@@ -36,10 +36,9 @@ async def seed_database():
             db.add_all(settings_data)
 
         # 2. Seed Offerings
-        existing_offerings = await db.execute(select(Offering))
-        if not existing_offerings.scalars().all():
-            print("Seeding initial offerings...")
-            offerings = [
+        existing_slugs = set((await db.execute(select(Offering.slug))).scalars().all())
+        print("Ensuring all offerings exist in DB...")
+        offerings = [
                 Offering(
                     type="Service",
                     title="Mahaganapathi Homa",
@@ -450,11 +449,13 @@ async def seed_database():
                     seo_title="Durga Saptashati Parayana & Pooja | Shri Pradeep Nadig",
                     seo_description="Sacred Durga Saptashati Parayana for divine grace, victory, and protection.",
                     faq=[
-                        {"question": "Duration?", "answer": "Usually 3 to 4 hours."}
                     ]
                 )
             ]
-            db.add_all(offerings)
+        to_add = [o for o in offerings if o.slug not in existing_slugs]
+        if to_add:
+            print(f"Adding {len(to_add)} missing offerings...")
+            db.add_all(to_add)
 
         # 3. Seed Workshops
         existing_workshops = await db.execute(select(Workshop))

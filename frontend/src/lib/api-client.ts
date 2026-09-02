@@ -103,7 +103,16 @@ export async function getOfferings(type?: string, status_filter?: string) {
     if (status_filter) params.append("status_filter", status_filter);
     const query = params.toString() ? `?${params.toString()}` : "";
     const offerings = await fetchAPI<import("../types").Offering[]>(`/offerings${query}`, { timeoutMs: 5000 });
-    return offerings.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+    const sanitized = offerings.map((item) => {
+      const fb = FALLBACK_OFFERINGS.find((f) => f.slug === item.slug);
+      const hasUnsplash = !item.images || item.images.length === 0 || item.images[0].includes("unsplash.com");
+      return {
+        ...fb,
+        ...item,
+        images: hasUnsplash ? (fb?.images || [`/images/services/${item.slug}.jpg`]) : item.images,
+      };
+    });
+    return sanitized.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   } catch (error) {
     console.info("Using fallback data for getOfferings.");
     let result = FALLBACK_OFFERINGS;
@@ -125,7 +134,7 @@ export async function getOfferingBySlug(slug: string) {
     return {
       ...fb,
       ...item,
-      images: hasUnsplashImage && fb?.images ? fb.images : (item.images?.length ? item.images : fb?.images || []),
+      images: hasUnsplashImage ? (fb?.images || [`/images/services/${slug}.jpg`]) : (item.images?.length ? item.images : fb?.images || []),
       who_benefits: item.who_benefits || fb?.who_benefits,
       where_performed: item.where_performed || fb?.where_performed,
       when_performed: item.when_performed || fb?.when_performed,
@@ -143,7 +152,15 @@ export async function getWorkshops(status_filter?: string) {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
     const workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 5000 });
-    return workshops;
+    return workshops.map((w) => {
+      const fb = FALLBACK_WORKSHOPS.find((f) => f.slug === w.slug);
+      const hasUnsplash = !w.cover_image || w.cover_image.includes("unsplash.com");
+      return {
+        ...fb,
+        ...w,
+        cover_image: hasUnsplash ? (fb?.cover_image || "/images/services/sundarakanda-parayana-pooja.jpg") : w.cover_image,
+      };
+    });
   } catch (error) {
     console.info("Using fallback data for getWorkshops.");
     let result = FALLBACK_WORKSHOPS;
@@ -162,7 +179,7 @@ export async function getWorkshopBySlug(slug: string) {
     return {
       ...fb,
       ...item,
-      cover_image: hasUnsplash && fb?.cover_image ? fb.cover_image : item.cover_image || fb?.cover_image,
+      cover_image: hasUnsplash ? (fb?.cover_image || "/images/services/sundarakanda-parayana-pooja.jpg") : item.cover_image,
     };
   } catch (error) {
     if (fb) return fb;
