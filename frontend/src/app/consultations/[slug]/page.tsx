@@ -1,8 +1,16 @@
 import PublicLayout from "@/components/PublicLayout";
 import { getOfferingBySlug, getSettings } from "@/lib/api-client";
 import OfferingDetailClient from "@/components/OfferingDetailClient";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
+
+const LEGACY_CONSULTATION_SLUGS = [
+  "janma-kundali-birth-chart-reading",
+  "marriage-matching-kundali-milan",
+  "career-business-astrology",
+  "gemstone-rudraksha-recommendation",
+  "prashna-marga-horary-astrology",
+];
 
 export const revalidate = 60;
 
@@ -37,6 +45,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ConsultationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (LEGACY_CONSULTATION_SLUGS.includes(slug)) {
+    redirect("/consultations/vedic-astrology-consultation");
+  }
+
   let offering: any = null;
   let settings: Record<string, any> = {};
 

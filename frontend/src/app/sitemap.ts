@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { getOfferings, getWorkshops, getCourses, getLiveEvents, getBlogs } from "@/lib/api-client";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://pradeepnadig.in";
@@ -102,84 +103,85 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const serviceSlugs = [
-    "ganapathi-homa",
-    "navagraha-homa",
-    "mrityunjaya-homa",
-    "naga-shanthi",
-    "vastu-homa",
-    "durga-homa",
-    "chandika-homa",
-    "ayushya-homa",
-    "aghorastra-homa",
-    "sudarshana-pooja",
-    "satyanarayana-pooja",
-    "saraswati-pooja",
-    "mahalakshmi-kanakadhara-pooja",
-    "lakshmi-narayana-hrudaya-homa",
-    "sundarakanda-parayana-pooja",
-    "swayamvara-parvathi-pooja",
-    "durga-saptashati-pooja",
-    "rudrabhishekam-pooja",
-    "subrahmanya-homa",
-  ];
+  let offeringsList: any[] = [];
+  let workshopsList: any[] = [];
+  let coursesList: any[] = [];
+  let liveEventsList: any[] = [];
+  let blogsList: any[] = [];
 
-  const consultationSlugs = [
-    "vedic-astrology-consultation",
-    "janma-kundali-birth-chart-reading",
-    "marriage-matching-kundali-milan",
-    "career-business-astrology",
-    "gemstone-rudraksha-recommendation",
-    "prashna-marga-horary-astrology",
-  ];
+  try {
+    offeringsList = await getOfferings();
+  } catch (_) {}
 
-  const liveEventSlugs = [
-    "mahashivaratri-grand-night-2026",
-    "navratri-chandi-homa-live",
-    "solar-eclipse-shanti-pooja",
-    "monthly-pradosham-rudrabhishekam",
-  ];
+  try {
+    workshopsList = await getWorkshops();
+  } catch (_) {}
 
-  const courseSlugs = [
-    "sacred-vedic-chanting-mastery",
-    "vedic-astrology-foundation",
-    "prashna-marga-horary-astrology",
-    "vastu-shastra-energy-healing",
-  ];
+  try {
+    coursesList = await getCourses();
+  } catch (_) {}
 
-  const serviceRoutes: MetadataRoute.Sitemap = serviceSlugs.map((slug) => ({
-    url: `${baseUrl}/services/${slug}`,
+  try {
+    liveEventsList = await getLiveEvents();
+  } catch (_) {}
+
+  try {
+    blogsList = await getBlogs();
+  } catch (_) {}
+
+  const serviceRoutes: MetadataRoute.Sitemap = offeringsList
+    .filter((item) => item.type === "Service" || item.type === "Pooja")
+    .map((item) => ({
+      url: `${baseUrl}/services/${item.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }));
+
+  const consultationRoutes: MetadataRoute.Sitemap = offeringsList
+    .filter((item) => item.type === "Consultation")
+    .map((item) => ({
+      url: `${baseUrl}/consultations/${item.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }));
+
+  const workshopRoutes: MetadataRoute.Sitemap = workshopsList.map((item) => ({
+    url: `${baseUrl}/workshops/${item.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  const courseRoutes: MetadataRoute.Sitemap = coursesList.map((item) => ({
+    url: `${baseUrl}/courses/${item.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.8,
   }));
 
-  const consultationRoutes: MetadataRoute.Sitemap = consultationSlugs.map((slug) => ({
-    url: `${baseUrl}/consultations/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
-
-  const liveEventRoutes: MetadataRoute.Sitemap = liveEventSlugs.map((slug) => ({
-    url: `${baseUrl}/live-events/${slug}`,
+  const liveEventRoutes: MetadataRoute.Sitemap = liveEventsList.map((item) => ({
+    url: `${baseUrl}/live-events/${item.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.9,
   }));
 
-  const courseRoutes: MetadataRoute.Sitemap = courseSlugs.map((slug) => ({
-    url: `${baseUrl}/courses/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: 0.8,
+  const blogRoutes: MetadataRoute.Sitemap = blogsList.map((item) => ({
+    url: `${baseUrl}/blogs/${item.slug}`,
+    lastModified: new Date(item.publish_date || Date.now()),
+    changeFrequency: "weekly",
+    priority: 0.7,
   }));
 
   return [
     ...staticRoutes,
     ...serviceRoutes,
     ...consultationRoutes,
-    ...liveEventRoutes,
+    ...workshopRoutes,
     ...courseRoutes,
+    ...liveEventRoutes,
+    ...blogRoutes,
   ];
 }
