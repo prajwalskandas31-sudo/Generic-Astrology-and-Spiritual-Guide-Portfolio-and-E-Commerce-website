@@ -39,7 +39,8 @@ export default async function HomePage() {
     featuredWorkshops = await getWorkshops();
   } catch (_) {}
 
-  const heroTitle = settings.hero_title || "Veda Brahma Shri Pradeep Nadig";
+  const rawHeroTitle = settings.hero_title || "G Pradeep Nadig";
+  const heroTitle = rawHeroTitle.replace(/Veda Brahma Shri/gi, "G").trim();
   const heroSubtitle =
     settings.hero_subtitle ||
     "Vedic Scholar, Astrologer & Spiritual Guide committed to authentic traditions and sacred wisdom.";

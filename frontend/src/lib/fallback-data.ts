@@ -2,7 +2,7 @@ import { Offering, Workshop, ClassItem, Blog, FAQItem, GalleryItem } from "@/typ
 
 export const FALLBACK_SETTINGS: Record<string, any> = {
   site_name: "Veda Brahma Shri Pradeep Nadig",
-  hero_title: "Veda Brahma Shri Pradeep Nadig",
+  hero_title: "G Pradeep Nadig",
   hero_subtitle: "Vedic Scholar, Astrologer & Spiritual Guide committed to authentic traditions and sacred wisdom.",
   contact_mobile: "+91 98440 42068",
   whatsapp_number: "919844042068",

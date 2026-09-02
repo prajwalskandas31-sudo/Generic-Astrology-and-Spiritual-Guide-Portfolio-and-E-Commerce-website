@@ -420,7 +420,7 @@ OFFERINGS_DATA = [
 
 SETTINGS_DATA = {
     "site_name": "Veda Brahma Shri Pradeep Nadig",
-    "hero_title": "Veda Brahma Shri Pradeep Nadig",
+    "hero_title": "G Pradeep Nadig",
     "hero_subtitle": "Vedic Scholar, Astrologer & Spiritual Guide",
     "contact_mobile": "+91 98440 42068",
     "whatsapp_number": "919844042068",

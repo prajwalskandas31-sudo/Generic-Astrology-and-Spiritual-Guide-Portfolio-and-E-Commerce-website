@@ -15,7 +15,7 @@ async def seed_database():
             print("Seeding initial settings...")
             settings_data = [
                 Setting(key="site_name", value="Veda Brahma Shri Pradeep Nadig"),
-                Setting(key="hero_title", value="Veda Brahma Shri Pradeep Nadig"),
+                Setting(key="hero_title", value="G Pradeep Nadig"),
                 Setting(key="hero_subtitle", value="Vedic Scholar, Astrologer & Spiritual Guide"),
                 Setting(key="contact_mobile", value="+91 98440 42068"),
                 Setting(key="whatsapp_number", value="919844042068"),
