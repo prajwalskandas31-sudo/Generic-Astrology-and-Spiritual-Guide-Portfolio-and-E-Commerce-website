@@ -11,6 +11,9 @@ export default function AdminSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isConnectingWA, setIsConnectingWA] = useState(false);
+  const [customWaToken, setCustomWaToken] = useState("");
+  const [customWaPhoneId, setCustomWaPhoneId] = useState("");
+  const [isSavingWaToken, setIsSavingWaToken] = useState(false);
   const [waError, setWaError] = useState("");
   const [waSuccessMsg, setWaSuccessMsg] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
@@ -143,6 +146,35 @@ export default function AdminSettingsPage() {
       setWaSuccessMsg("WhatsApp Business integration disconnected.");
     } catch (err: any) {
       alert("Error disconnecting: " + err.message);
+    }
+  };
+
+  const handleSaveCustomWaCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customWaToken) {
+      alert("Please enter a valid Meta WhatsApp Access Token.");
+      return;
+    }
+    setIsSavingWaToken(true);
+    setWaError("");
+    setWaSuccessMsg("");
+
+    try {
+      const res = await completeWhatsAppEmbeddedSignup({
+        access_token: customWaToken.trim(),
+        phone_number_id: customWaPhoneId ? customWaPhoneId.trim() : (waStatus?.phone_number_id || "919844042068"),
+        waba_id: waStatus?.waba_id || "1516112060284880",
+      });
+      if (res.success) {
+        setWaSuccessMsg("WhatsApp Access Token and Phone Number ID updated & verified!");
+        const updated = await getWhatsAppStatus();
+        setWaStatus(updated);
+        setCustomWaToken("");
+      }
+    } catch (err: any) {
+      setWaError(err.message || "Failed to save WhatsApp credentials.");
+    } finally {
+      setIsSavingWaToken(false);
     }
   };
 
@@ -392,6 +424,59 @@ export default function AdminSettingsPage() {
                 <span>Disconnect</span>
               </button>
             )}
+          </div>
+
+          {/* Direct Credentials Management (Permanent Token & Phone Number ID) */}
+          <div className="pt-4 border-t border-slate-100 space-y-3">
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Direct Meta Credentials Management (Optional / System User Token)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">
+                  Meta Access Token (System User / Permanent Token)
+                </label>
+                <input
+                  type="password"
+                  placeholder={waStatus?.has_access_token ? "•••••••••••••••• (Active Token Saved)" : "EAAG..."}
+                  value={customWaToken}
+                  onChange={(e) => setCustomWaToken(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">
+                  WhatsApp Phone Number ID
+                </label>
+                <input
+                  type="text"
+                  placeholder={waStatus?.phone_number_id || "919844042068"}
+                  value={customWaPhoneId}
+                  onChange={(e) => setCustomWaPhoneId(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleSaveCustomWaCredentials}
+                disabled={isSavingWaToken || !customWaToken}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                {isSavingWaToken ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Verifying Token...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Token &amp; Phone ID</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

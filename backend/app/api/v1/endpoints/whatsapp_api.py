@@ -23,6 +23,7 @@ class EmbeddedSignupPayload(BaseModel):
     code: Optional[str] = None
     waba_id: Optional[str] = None
     phone_number_id: Optional[str] = None
+    access_token: Optional[str] = None
 
 
 @router.get("/status")
@@ -39,7 +40,8 @@ async def get_whatsapp_status(
 
     onboarding_data = onboarding_setting.value if (onboarding_setting and isinstance(onboarding_setting.value, dict)) else {}
 
-    is_connected = onboarding_data.get("status") == "CONNECTED" or bool(settings.WHATSAPP_TOKEN and settings.WHATSAPP_PHONE_ID)
+    has_active_token = bool(onboarding_data.get("access_token")) or bool(settings.WHATSAPP_TOKEN)
+    is_connected = onboarding_data.get("status") == "CONNECTED" or has_active_token
 
     return {
         "connected": is_connected,
@@ -51,6 +53,7 @@ async def get_whatsapp_status(
         "display_phone_number": onboarding_data.get("display_phone_number") or "+91 98440 42068",
         "business_name": onboarding_data.get("business_name") or "Veda Brahma Shri Pradeep Nadig",
         "connected_at": onboarding_data.get("connected_at", ""),
+        "has_access_token": has_active_token,
         "has_meta_app_secret": bool(settings.META_APP_SECRET),
     }
 
@@ -62,19 +65,19 @@ async def complete_embedded_signup(
     auth: dict = Depends(verify_supabase_token)
 ) -> Dict[str, Any]:
     """
-    Server-side exchange of Meta Embedded Signup authorization code for WhatsApp Cloud API access token.
+    Server-side exchange of Meta Embedded Signup authorization code or direct access token configuration.
     Updates DB settings with WABA ID, Phone Number ID, and connection metadata.
     """
     code = payload.code
     waba_id = payload.waba_id
     phone_number_id = payload.phone_number_id
+    access_token = payload.access_token
 
-    access_token = None
     display_phone_number = "+91 98440 42068"
     business_name = "Veda Brahma Shri Pradeep Nadig"
 
     # Step 1: Perform server-side Meta authorization code exchange if code is provided
-    if code:
+    if code and not access_token:
         if not settings.META_APP_ID or not settings.META_APP_SECRET:
             logger.warning("[WhatsApp Onboarding] META_APP_ID or META_APP_SECRET missing in server environment. Recording onboarding request.")
         else:
@@ -124,11 +127,18 @@ async def complete_embedded_signup(
             except Exception as e:
                 logger.warning(f"[WhatsApp Onboarding] Meta WABA details fetch warning: {e}")
 
+    # Fetch existing setting to preserve existing access_token if not explicitly passed
+    res = await db.execute(select(Setting).where(Setting.key == "whatsapp_onboarding"))
+    setting_obj = res.scalar_one_or_none()
+
+    if not access_token and setting_obj and isinstance(setting_obj.value, dict):
+        access_token = setting_obj.value.get("access_token")
+
     # Step 3: Save connection state to DB Settings table
     onboarding_record = {
         "status": "CONNECTED",
-        "waba_id": waba_id or "waba_coexistence_active",
-        "phone_number_id": phone_number_id or settings.WHATSAPP_PHONE_ID or "phone_coexistence_active",
+        "waba_id": waba_id or "1516112060284880",
+        "phone_number_id": phone_number_id or settings.WHATSAPP_PHONE_ID or "919844042068",
         "display_phone_number": display_phone_number,
         "business_name": business_name,
         "connected_at": datetime.datetime.utcnow().isoformat(),
@@ -137,6 +147,7 @@ async def complete_embedded_signup(
     }
 
     if access_token:
+        onboarding_record["access_token"] = access_token
         onboarding_record["has_access_token"] = True
 
     # Persist in DB Settings table

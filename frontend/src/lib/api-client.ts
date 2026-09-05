@@ -512,6 +512,7 @@ export async function completeWhatsAppEmbeddedSignup(payload: {
   code?: string;
   waba_id?: string;
   phone_number_id?: string;
+  access_token?: string;
 }) {
   return fetchAPI<{
     success: boolean;
