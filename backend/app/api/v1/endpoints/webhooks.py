@@ -36,11 +36,21 @@ async def process_whatsapp_webhook(
     message_text = ""
     interactive_action_id = None
     
+    coexistence_field = None
+    
     # Parse Meta WhatsApp Cloud API Structure
     if "entry" in body and len(body["entry"]) > 0:
         changes = body["entry"][0].get("changes", [])
         if changes and "value" in changes[0]:
-            val = changes[0]["value"]
+            change_item = changes[0]
+            field_name = change_item.get("field", "")
+            val = change_item.get("value", {})
+
+            # Check for Coexistence and System Events
+            if field_name in ["history", "smb_app_state_sync", "smb_message_echoes", "account_update", "statuses", "security_code_notification"]:
+                coexistence_field = field_name
+                print(f"[WHATSAPP WEBHOOK COEXISTENCE EVENT] Field: '{field_name}' | Entry ID: {body['entry'][0].get('id')}")
+
             messages = val.get("messages", [])
             if messages:
                 msg = messages[0]
@@ -68,6 +78,10 @@ async def process_whatsapp_webhook(
         interactive_action_id = body.get("action_id", body.get("button_id"))
 
     clean_sender = sender.replace("+", "").replace(" ", "").replace("-", "").strip()
+
+    if coexistence_field and not clean_sender and not interactive_action_id:
+        return MessageResponse(message=f"WhatsApp coexistence event '{coexistence_field}' acknowledged successfully")
+
     if not clean_sender and not interactive_action_id:
         return MessageResponse(message="No sender or valid message payload in webhook")
 

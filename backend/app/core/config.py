@@ -17,10 +17,12 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_ID: Optional[str] = None
     RAZORPAY_SECRET: Optional[str] = None
     
-    # WhatsApp Cloud API
+    # WhatsApp Cloud API & Meta Embedded Signup
     WHATSAPP_TOKEN: Optional[str] = None
     WHATSAPP_PHONE_ID: Optional[str] = None
     WHATSAPP_VERIFY_TOKEN: Optional[str] = None
+    META_APP_ID: Optional[str] = None
+    META_APP_SECRET: Optional[str] = None
     
     # Google Calendar
     GOOGLE_CLIENT_ID: Optional[str] = None

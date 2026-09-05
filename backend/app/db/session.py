@@ -63,12 +63,22 @@ sqlite_engine = create_async_engine(sqlite_url, echo=False, future=True)
 SQLiteSessionLocal = async_sessionmaker(sqlite_engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db():
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
+    try:
+        async with AsyncSessionLocal() as session:
+            # Test connection
+            await session.execute(text("SELECT 1"))
+            try:
+                yield session
+            except Exception:
+                await session.rollback()
+                raise
+    except Exception:
+        async with SQLiteSessionLocal() as session:
+            try:
+                yield session
+            except Exception:
+                await session.rollback()
+                raise
 
 async def migrate_db_schema():
     """

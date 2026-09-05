@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkles, MapPin, Phone, Mail } from "lucide-react";
+import { Sparkles, MapPin, Phone, Mail, Crown } from "lucide-react";
 
 export interface FooterProps {
   siteName?: string;
@@ -150,11 +150,26 @@ export default function Footer({
           </p>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
-          <p>&copy; {currentYear} {siteName}. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/login" className="text-slate-700 hover:text-amber-900 transition-colors">
+        {/* Bottom Bar & Royal Creator Tagmark */}
+        <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-600">
+          <p className="order-2 md:order-1 text-center md:text-left">
+            &copy; {currentYear} {siteName}. All rights reserved.
+          </p>
+
+          {/* Royal Creator Tagmark */}
+          <div className="order-1 md:order-2 flex items-center gap-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-amber-950 via-slate-900 to-amber-950 text-amber-100 border border-amber-500/40 shadow-lg shadow-amber-950/10 hover:border-amber-400 hover:shadow-amber-500/20 transition-all duration-300 group">
+            <Crown className="w-4 h-4 text-amber-400 group-hover:rotate-12 transition-transform duration-300 shrink-0" />
+            <span className="font-serif tracking-wider text-[11.5px] whitespace-nowrap">
+              Designed &amp; Crafted by{" "}
+              <span className="font-bold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 bg-clip-text text-transparent uppercase tracking-widest drop-shadow-sm">
+                Prajwal Skanda S
+              </span>
+            </span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-300/80 animate-pulse shrink-0" />
+          </div>
+
+          <div className="order-3 flex items-center gap-4">
+            <Link href="/admin/login" className="text-slate-600 hover:text-amber-900 transition-colors font-medium">
               Admin Portal
             </Link>
           </div>
