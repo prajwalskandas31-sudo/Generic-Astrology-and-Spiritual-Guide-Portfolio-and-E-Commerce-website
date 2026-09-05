@@ -21,6 +21,45 @@ def format_whatsapp_phone(phone: str) -> str:
         clean = "91" + clean
     return clean
 
+from sqlalchemy.future import select
+from app.db.session import AsyncSessionLocal, SQLiteSessionLocal
+from app.models.models import Setting
+
+async def get_whatsapp_credentials() -> tuple[Optional[str], Optional[str]]:
+    token = settings.WHATSAPP_TOKEN
+    phone_id = settings.WHATSAPP_PHONE_ID
+    if token and phone_id:
+        return token, phone_id
+
+    try:
+        async with AsyncSessionLocal() as session:
+            res = await session.execute(select(Setting).where(Setting.key == "whatsapp_onboarding"))
+            setting_obj = res.scalar_one_or_none()
+            if setting_obj and isinstance(setting_obj.value, dict):
+                val = setting_obj.value
+                db_token = val.get("access_token") or token
+                db_phone_id = val.get("phone_number_id") or phone_id
+                if db_token and db_phone_id:
+                    return db_token, db_phone_id
+    except Exception:
+        pass
+
+    try:
+        async with SQLiteSessionLocal() as session:
+            res = await session.execute(select(Setting).where(Setting.key == "whatsapp_onboarding"))
+            setting_obj = res.scalar_one_or_none()
+            if setting_obj and isinstance(setting_obj.value, dict):
+                val = setting_obj.value
+                db_token = val.get("access_token") or token
+                db_phone_id = val.get("phone_number_id") or phone_id
+                if db_token and db_phone_id:
+                    return db_token, db_phone_id
+    except Exception:
+        pass
+
+    return token, phone_id
+
+
 async def send_whatsapp_message(to_phone: str, text: str):
     """
     Sends a text WhatsApp message via WhatsApp Cloud API.
@@ -29,10 +68,12 @@ async def send_whatsapp_message(to_phone: str, text: str):
     clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND TEXT] To: +{clean_phone} | Message:\n{text}\n")
 
-    if settings.WHATSAPP_TOKEN:
-        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
+    wa_token, wa_phone_id = await get_whatsapp_credentials()
+
+    if wa_token and wa_phone_id:
+        url = f"https://graph.facebook.com/v20.0/{wa_phone_id}/messages"
         headers = {
-            "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
+            "Authorization": f"Bearer {wa_token}",
             "Content-Type": "application/json"
         }
         payload = {
@@ -68,10 +109,12 @@ async def send_whatsapp_buttons(
     button_titles = ", ".join([f"[{b['title']}]" for b in buttons])
     safe_print(f"[WHATSAPP OUTBOUND BUTTONS] To: +{clean_phone} | Body: {body_text} | Buttons: {button_titles}")
 
-    if settings.WHATSAPP_TOKEN:
-        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
+    wa_token, wa_phone_id = await get_whatsapp_credentials()
+
+    if wa_token and wa_phone_id:
+        url = f"https://graph.facebook.com/v20.0/{wa_phone_id}/messages"
         headers = {
-            "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
+            "Authorization": f"Bearer {wa_token}",
             "Content-Type": "application/json"
         }
 
@@ -136,10 +179,12 @@ async def send_whatsapp_list(
     clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND LIST] To: +{clean_phone} | Body: {body_text} | Button: {button_title}")
 
-    if settings.WHATSAPP_TOKEN:
-        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
+    wa_token, wa_phone_id = await get_whatsapp_credentials()
+
+    if wa_token and wa_phone_id:
+        url = f"https://graph.facebook.com/v20.0/{wa_phone_id}/messages"
         headers = {
-            "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
+            "Authorization": f"Bearer {wa_token}",
             "Content-Type": "application/json"
         }
 
@@ -189,10 +234,12 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
     clean_phone = format_whatsapp_phone(to_phone)
     safe_print(f"[WHATSAPP OUTBOUND IMAGE] To: +{clean_phone} | Image: {image_url} | Caption: {caption}")
 
-    if settings.WHATSAPP_TOKEN:
-        url = f"https://graph.facebook.com/v20.0/{settings.WHATSAPP_PHONE_ID}/messages"
+    wa_token, wa_phone_id = await get_whatsapp_credentials()
+
+    if wa_token and wa_phone_id:
+        url = f"https://graph.facebook.com/v20.0/{wa_phone_id}/messages"
         headers = {
-            "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
+            "Authorization": f"Bearer {wa_token}",
             "Content-Type": "application/json"
         }
         image_obj: Dict = {"link": image_url}
