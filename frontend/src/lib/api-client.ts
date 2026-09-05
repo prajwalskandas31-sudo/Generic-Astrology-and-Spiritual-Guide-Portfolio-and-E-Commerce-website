@@ -537,6 +537,15 @@ export async function disconnectWhatsApp() {
   });
 }
 
+export async function sendWhatsAppTestMessage(phone: string, message?: string) {
+  return fetchAPI<{ success: boolean; phone: string; meta_response: any }>("/whatsapp/send-test", {
+    method: "POST",
+    headers: { Authorization: "Bearer mock-admin-token" },
+    body: JSON.stringify({ phone, message }),
+    timeoutMs: 15000,
+  });
+}
+
 export async function syncRequestToCalendar(requestId: string) {
   return fetchAPI<{
     status: string;

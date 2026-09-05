@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp } from "@/lib/api-client";
-import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle, CreditCard, Key, MessageSquare, Smartphone, ExternalLink, ShieldCheck, RefreshCw, Unlink } from "lucide-react";
+import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp, sendWhatsAppTestMessage } from "@/lib/api-client";
+import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle, CreditCard, Key, MessageSquare, Smartphone, ExternalLink, ShieldCheck, RefreshCw, Unlink, Send } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, any>>({});
@@ -14,6 +14,8 @@ export default function AdminSettingsPage() {
   const [customWaToken, setCustomWaToken] = useState("");
   const [customWaPhoneId, setCustomWaPhoneId] = useState("");
   const [isSavingWaToken, setIsSavingWaToken] = useState(false);
+  const [testPhone, setTestPhone] = useState("6362612641");
+  const [isSendingTestMsg, setIsSendingTestMsg] = useState(false);
   const [waError, setWaError] = useState("");
   const [waSuccessMsg, setWaSuccessMsg] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
@@ -175,6 +177,29 @@ export default function AdminSettingsPage() {
       setWaError(err.message || "Failed to save WhatsApp credentials.");
     } finally {
       setIsSavingWaToken(false);
+    }
+  };
+
+  const handleSendTestTrialMessage = async () => {
+    if (!testPhone) return;
+    setIsSendingTestMsg(true);
+    setWaError("");
+    setWaSuccessMsg("");
+
+    try {
+      const res = await sendWhatsAppTestMessage(testPhone);
+      const metaRes = res?.meta_response;
+      if (metaRes && metaRes.messages && metaRes.messages.length > 0) {
+        setWaSuccessMsg(`Trial test message dispatched via Meta Cloud API! Message ID: ${metaRes.messages[0].id}`);
+      } else if (metaRes && metaRes.status === "mock_sent") {
+        setWaError("Server is in Mock Mode. Please save a valid Meta Access Token and Phone Number ID below.");
+      } else {
+        setWaSuccessMsg(`Test message dispatched. Meta response: ${JSON.stringify(metaRes)}`);
+      }
+    } catch (err: any) {
+      setWaError("Test dispatch failed: " + err.message);
+    } finally {
+      setIsSendingTestMsg(false);
     }
   };
 
@@ -473,6 +498,41 @@ export default function AdminSettingsPage() {
                   <>
                     <Save className="w-3.5 h-3.5" />
                     <span>Save Token &amp; Phone ID</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Send Instant Trial Test Message */}
+          <div className="pt-4 border-t border-slate-100 space-y-3">
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Send Instant Trial Test Message</span>
+            </h3>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input
+                type="text"
+                placeholder="6362612641"
+                value={testPhone}
+                onChange={(e) => setTestPhone(e.target.value)}
+                className="px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono w-full sm:w-48"
+              />
+              <button
+                type="button"
+                onClick={handleSendTestTrialMessage}
+                disabled={isSendingTestMsg || !testPhone}
+                className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                {isSendingTestMsg ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Dispatching Test...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Send Trial Message to +91 {testPhone}</span>
                   </>
                 )}
               </button>

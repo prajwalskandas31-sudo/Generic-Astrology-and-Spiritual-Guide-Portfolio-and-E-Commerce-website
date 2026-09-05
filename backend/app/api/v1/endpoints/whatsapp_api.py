@@ -199,3 +199,26 @@ async def disconnect_whatsapp(
         await db.commit()
 
     return {"success": True, "message": "WhatsApp Business integration disconnected."}
+
+
+class TestMessagePayload(BaseModel):
+    phone: str
+    message: Optional[str] = "🙏 Hari Om! This is a trial test message from Veda Brahma Shri Pradeep Nadig platform."
+
+
+@router.post("/send-test")
+async def send_test_whatsapp_message(
+    payload: TestMessagePayload,
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
+) -> Dict[str, Any]:
+    """
+    Admin endpoint to trigger a trial WhatsApp message to test Meta Cloud API configuration.
+    """
+    from app.services.whatsapp import send_whatsapp_message
+    res = await send_whatsapp_message(to_phone=payload.phone, text=payload.message)
+    return {
+        "success": True,
+        "phone": payload.phone,
+        "meta_response": res
+    }
