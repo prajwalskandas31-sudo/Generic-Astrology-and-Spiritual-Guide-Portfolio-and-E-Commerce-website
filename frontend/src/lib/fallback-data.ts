@@ -470,6 +470,28 @@ export const FALLBACK_OFFERINGS: Offering[] = [
     faq: [
       { question: "How long does Durga Saptashati Parayana take?", answer: "Around 3 to 4 hours." }
     ]
+  },
+  {
+    id: 21,
+    type: "Service",
+    title: "Vastu Balancing for Homes & Spaces",
+    slug: "vastu-balancing-homes-spaces",
+    who_benefits: "Harmonizes five natural elements (Pancha Bhootas), rectifies structural energy imbalances, and neutralizes negative spatial vibrations without demolition.",
+    where_performed: "Conducted at residences, apartments, commercial offices, retail outlets, and plots across Bengaluru.",
+    when_performed: "Before moving into a home, after renovations, or when experiencing stagnant energy, health concerns, or financial blockages.",
+    who_should_attend: "Homeowners, commercial space managers, business founders, and family members.",
+    vidhi_details: "Detailed 16-zone compass diagnostic, Pancha Bhoota alignment, crystal & copper pyramid energy grid placement, Vastu Purusha Shanthi, and Kalasa Samprokshana.",
+    short_description: "Harmonize spatial energy, balance five elements, and remove negative architectural doshas for homes and offices.",
+    full_description: "Vastu Balancing is a non-demolition energy correction service for residential and commercial properties. By aligning the 16 Vastu zones and balancing the five elements (Earth, Water, Fire, Air, Space), positive energy flow is restored, fostering health, prosperity, and harmony.",
+    images: ["/images/services/vastu-balancing.jpg"],
+    display_order: 21,
+    status: "Published",
+    seo_title: "Vastu Balancing for Homes & Spaces | Shri Pradeep Nadig",
+    seo_description: "Non-demolition Vastu balancing, 16-zone directional alignment, and Pancha Bhoota energy harmonization by Shri Pradeep Nadig.",
+    faq: [
+      { question: "Can Vastu Balancing be done without structural demolition?", answer: "Yes, by utilizing non-demolition remedies including copper pyramid grids, elemental color corrections, crystal placements, and Vastu Purusha Shanthi, negative energy is effectively neutralized." },
+      { question: "Is Vastu Balancing suitable for modern apartments?", answer: "Absolutely. Modern apartments benefit immensely from directional balancing and room-wise energy harmonization." }
+    ]
   }
 ];
 
@@ -582,6 +604,33 @@ export const FALLBACK_LIVE_EVENTS = [
     faq: [
       { question: "What is Pradosham Kala?", answer: "The 1.5-hour period before sunset on Trayodashi tithi, considered most potent for Lord Shiva's worship." }
     ]
+  },
+  {
+    id: 5,
+    title: "Interactive Live Thread Art Event",
+    slug: "thread-art-live-event",
+    status: "Upcoming",
+    venue_type: "Hybrid",
+    event_date: "2026-10-05",
+    event_time: "10:00 AM - 05:00 PM IST",
+    pandits_count: 3,
+    price: 2500,
+    has_payment: true,
+    stream_url: "https://youtube.com/live/placeholder",
+    short_description: "An interactive live string art experience for birthdays, marriages, and celebrations where guests move threads across pegs guided by expert instructors to create custom portrait art.",
+    full_description: "Thread Art is an extraordinary interactive live event designed for birthdays, weddings, anniversaries, and grand celebrations. Under the guidance of an expert instructor, guests themselves weave vibrant threads across precision-placed pins on a wooden canvas, collectively crafting a stunning custom string-art portrait of the birthday child, wedding couple, or honored host.",
+    venue_address: "Shaankari Sacred Event Mandap & On-Location Event Venues, Bengaluru",
+    cover_image: "/images/live-events/thread-art-live.jpg",
+    images: ["/images/live-events/thread-art-live.jpg"],
+    agenda: [
+      { time: "10:00 AM", title: "Canvas & Pin Matrix Preparation", description: "Setting up the custom wooden base with precision pin matrix." },
+      { time: "11:00 AM", title: "Guided Guest Thread Weaving", description: "Instructor guides guests step-by-step to weave colored threads across designated pin paths." },
+      { time: "04:00 PM", title: "Final Detailing & Portrait Unveiling", description: "Master artisan completes final contouring and presents the collective masterpiece." }
+    ],
+    faq: [
+      { question: "Can Thread Art live events be conducted at private birthday or marriage venues?", answer: "Yes, our guided instructor and setup team travel to your event venue across Bengaluru to facilitate the interactive thread art experience for your guests." },
+      { question: "Who creates the portrait during the live event?", answer: "Your guests participate actively by moving the threads along guided paths, creating a memorable collaborative gift for the hosts." }
+    ]
   }
 ];
 
@@ -607,6 +656,138 @@ export const FALLBACK_WORKSHOPS: Workshop[] = [
     faq: [
       { question: "Are prior Sanskrit skills required?", answer: "No, the workshop teaches basic phonetics, mouth positions, and accent marks step by step." },
       { question: "Will practice audio recordings be provided?", answer: "Yes, all participants receive downloadable high-definition audio tracks and Sanskrit text PDFs." }
+    ]
+  },
+  {
+    id: 2,
+    title: "Rangoli Design & Sacred Floor Geometry Workshop",
+    slug: "rangoli-art-design-workshop",
+    mode: "Hybrid",
+    start_date: "2026-10-02",
+    end_date: "2026-10-04",
+    timings: "10:00 AM - 01:00 PM IST",
+    location: "Shaankari Art Center Bengaluru & Live Stream",
+    price: 2200,
+    seats_limit: 25,
+    status: "Published",
+    seo_title: "Rangoli Design & Sacred Floor Art Workshop | Pradeep Nadig",
+    seo_description: "Master traditional dots grid, vibrant powders, mandala symmetry, and festival floor artwork in intensive 3-day workshop.",
+    description: "Immerse yourself in traditional Rangoli art and floor geometry. Learn intricate dot grids, vibrant natural powder blending, mandala symmetry, and spiritual symbolism for auspicious occasions.",
+    short_description: "3-day hands-on workshop mastering traditional Rangoli grids, color powder blending, and sacred festival floor art.",
+    images: ["/images/courses/rangoli-art-workshop.jpg"],
+    cover_image: "/images/courses/rangoli-art-workshop.jpg",
+    faq: [
+      { question: "Are Rangoli art materials provided?", answer: "Yes, complete Rangoli starter kits with eco-friendly powders, stencils, and dot templates are provided to all physical attendees." }
+    ]
+  },
+  {
+    id: 3,
+    title: "Simple Meditation & Mindfulness Workshop",
+    slug: "simple-meditation-mindfulness-workshop",
+    mode: "Online Live",
+    start_date: "2026-10-10",
+    end_date: "2026-10-11",
+    timings: "06:30 AM - 08:30 AM IST",
+    location: "HD Zoom Video Live Stream",
+    price: 1500,
+    seats_limit: 50,
+    status: "Published",
+    seo_title: "Simple Meditation & Mindfulness Workshop | Pradeep Nadig",
+    seo_description: "Learn gentle Pranayama, guided Dhyana, stress relief, and daily meditation routines for inner calm.",
+    description: "Discover simple yet powerful meditation and Pranayama techniques designed for daily life. Clear mental clutter, relieve stress, build emotional resilience, and achieve deep tranquility.",
+    short_description: "2-day experiential workshop on gentle breathwork, guided mindfulness, and daily meditation routines.",
+    images: ["/images/courses/simple-meditation-classes.jpg"],
+    cover_image: "/images/courses/simple-meditation-classes.jpg",
+    faq: [
+      { question: "Is this suitable for absolute beginners?", answer: "Yes, the meditation practices are designed specifically for beginners and busy individuals seeking mental peace." }
+    ]
+  },
+  {
+    id: 4,
+    title: "Chakra & Aura Healing Masterclass",
+    slug: "chakra-aura-healing-workshop",
+    mode: "Hybrid",
+    start_date: "2026-10-16",
+    end_date: "2026-10-18",
+    timings: "02:00 PM - 05:00 PM IST",
+    location: "Shaankari Healing Hall Bengaluru & HD Zoom",
+    price: 4500,
+    seats_limit: 20,
+    status: "Published",
+    seo_title: "Chakra & Aura Healing Workshop | Pradeep Nadig",
+    seo_description: "Learn 7 chakras energy balancing, aura cleansing, subtle body rejuvenation, and self-healing techniques.",
+    description: "Explore the subtle energy anatomy of the human body. Master 7 main chakras diagnostic assessment, aura sensing, cleansing, crystal alignment, and self-rejuvenation methods.",
+    short_description: "3-day intensive workshop on 7 chakras balancing, aura cleansing, and subtle energy rejuvenation.",
+    images: ["/images/courses/chakra-aura-healing-workshop.jpg"],
+    cover_image: "/images/courses/chakra-aura-healing-workshop.jpg",
+    faq: [
+      { question: "Will I receive practical aura sensing training?", answer: "Yes, guided energy sensing exercises, chakra pendulum testing, and aura scanning methods are practiced interactively." }
+    ]
+  },
+  {
+    id: 5,
+    title: "Hypnotherapy, Reiki & Spirit Release Master Workshop",
+    slug: "hypnotherapy-reiki-spirit-release-workshop",
+    mode: "Hybrid",
+    start_date: "2026-10-24",
+    end_date: "2026-10-26",
+    timings: "09:30 AM - 04:30 PM IST",
+    location: "Shaankari Holistic Center Bengaluru & Online",
+    price: 6500,
+    seats_limit: 15,
+    status: "Published",
+    seo_title: "Hypnotherapy, Reiki & Spirit Release Workshop | Pradeep Nadig",
+    seo_description: "Master Reiki energy healing, Self-Hypnosis, Clinical Hypnotherapy, Advanced Hypnosis, and Spirit Release therapy.",
+    description: "A comprehensive holistic healing retreat combining Reiki Energy Channeling, Self-Hypnosis techniques, Clinical & Advanced Hypnotherapy protocols, and compassionate Spirit Release therapy for deep karmic and emotional freedom.",
+    short_description: "3-day deep transformation workshop combining Reiki energy healing, advanced hypnosis, self-hypnotism, and spirit release therapy.",
+    images: ["/images/courses/hypnotherapy-reiki-spirit-release.jpg"],
+    cover_image: "/images/courses/hypnotherapy-reiki-spirit-release.jpg",
+    faq: [
+      { question: "What modules are included in this master workshop?", answer: "Covers Reiki Level I & II attunements, Self-Hypnosis induction, Advanced Hypnotherapy protocols, and Spirit Release clearing." }
+    ]
+  },
+  {
+    id: 6,
+    title: "Pendulum Dowsing & Energy Diagnostics Workshop",
+    slug: "pendulum-dowsing-energy-diagnostics",
+    mode: "Online Live",
+    start_date: "2026-11-01",
+    end_date: "2026-11-02",
+    timings: "10:00 AM - 01:00 PM IST",
+    location: "Online Zoom Workshop",
+    price: 2800,
+    seats_limit: 30,
+    status: "Published",
+    seo_title: "Pendulum Dowsing Workshop | Pradeep Nadig",
+    seo_description: "Learn pendulum dowsing for chakra testing, home energy sensing, clearing negative vibrations, and decision clarity.",
+    description: "Learn how to use crystal and brass pendulums for energy diagnostics, chakra testing, detecting environmental stress (geopathic stress), and gaining intuitive decision-making clarity.",
+    short_description: "2-day practical workshop mastering pendulum dowsing, radiesthesia charts, and spatial energy sensing.",
+    images: ["/images/courses/pendulum-dowsing-workshop.jpg"],
+    cover_image: "/images/courses/pendulum-dowsing-workshop.jpg",
+    faq: [
+      { question: "Is a pendulum required to attend?", answer: "A natural crystal or metal pendulum is recommended. Detailed printable dowsing charts are provided in PDF format." }
+    ]
+  },
+  {
+    id: 7,
+    title: "Vastu Energy Balancing & Space Cleansing Workshop",
+    slug: "vastu-energy-balancing-workshop",
+    mode: "Hybrid",
+    start_date: "2026-11-07",
+    end_date: "2026-11-08",
+    timings: "10:00 AM - 04:00 PM IST",
+    location: "Shaankari Vastu Hall Bengaluru & Zoom",
+    price: 4200,
+    seats_limit: 25,
+    status: "Published",
+    seo_title: "Vastu Energy Balancing Workshop | Pradeep Nadig",
+    seo_description: "Master non-demolition Vastu remedies, 16 directional zones, floor plan balancing, and home space cleansing.",
+    description: "Discover practical non-demolition Vastu balancing methods. Learn how to analyze floor plans, identify elemental blockages, apply crystal & copper pyramid remedies, and cleanse spatial energy.",
+    short_description: "2-day intensive workshop on non-demolition Vastu remedies, 16 directional zones, and home energy cleansing.",
+    images: ["/images/services/vastu-balancing.jpg"],
+    cover_image: "/images/services/vastu-balancing.jpg",
+    faq: [
+      { question: "Will I learn how to evaluate my own home floor plan?", answer: "Yes! Attendees analyze their own residential floor plan under the instructor's direct guidance." }
     ]
   }
 ];
@@ -730,6 +911,149 @@ export const FALLBACK_COURSES: ClassItem[] = [
     ],
     faq: [
       { question: "Can I apply Vastu principles to apartments?", answer: "Yes, the course covers modern apartment Vastu remedies specifically designed for built structures." }
+    ]
+  },
+  {
+    id: 5,
+    title: "Rangoli Art & Sacred Floor Geometry",
+    slug: "rangoli-art-sacred-geometry",
+    category: "Sacred Arts",
+    level: "All Levels",
+    duration: "1 Month (8 Sessions)",
+    schedule: "Every Saturday & Sunday 11:00 AM - 12:30 PM IST",
+    mode: "Online Live & Hands-on Practice",
+    status: "Published",
+    instructor: "Shaankari Art Faculty & Guest Masters",
+    price: 2500,
+    has_payment: true,
+    payment_mode: "RAZORPAY",
+    short_description: "Learn traditional Indian Rangoli art, dot grids, vibrant powder work, and auspicious festival floor geometry.",
+    full_description: "Master the ancient art of Rangoli. Learn traditional Pulli (dot) patterns, freehand floral designs, vibrant color shading, and sacred geometric mandalas for daily home altars and festivals.",
+    cover_image: "/images/courses/rangoli-art-workshop.jpg",
+    images: ["/images/courses/rangoli-art-workshop.jpg"],
+    seo_title: "Rangoli Art & Sacred Floor Geometry Course | Pradeep Nadig",
+    seo_description: "Structured course on traditional Rangoli patterns, dot grids, powder blending, and festival floor art.",
+    syllabus_modules: [
+      { title: "Module 1: Dot Grids & Foundational Strokes", duration: "1 Week", topics: ["Basic dot matrices", "Symmetrical line flow", "Powder grip technique"] },
+      { title: "Module 2: Festival Mandalas & Color Blending", duration: "2 Weeks", topics: ["Deepavali & Navaratri Rangolis", "Natural dye powders", "Floral embellishments"] },
+      { title: "Module 3: Advanced Sacred Geometry Floor Art", duration: "1 Week", topics: ["Ashta Padma & Yantra floor art", "Consecration of entryways"] }
+    ],
+    faq: [
+      { question: "Will class assignments be reviewed?", answer: "Yes, students submit photos of weekly floor art assignments for personalized feedback." }
+    ]
+  },
+  {
+    id: 6,
+    title: "Simple Meditation & Mindfulness Practice",
+    slug: "simple-meditation-mindfulness-practice",
+    category: "Meditation",
+    level: "Beginner",
+    duration: "1 Month (12 Sessions)",
+    schedule: "Monday, Wednesday, Friday 06:30 AM - 07:15 AM IST",
+    mode: "Online Live",
+    status: "Published",
+    instructor: "Shaankari Meditation Guide",
+    price: 2000,
+    has_payment: true,
+    payment_mode: "RAZORPAY",
+    short_description: "Daily guided meditation, Pranayama breath control, and stress release for mental clarity and peace.",
+    full_description: "Develop a consistent daily meditation habit. Includes guided mindfulness, Nadi Shodhana breathwork, So-Ham mantra focus, and stress release techniques for a balanced mind.",
+    cover_image: "/images/courses/simple-meditation-classes.jpg",
+    images: ["/images/courses/simple-meditation-classes.jpg"],
+    seo_title: "Simple Meditation & Mindfulness Practice | Pradeep Nadig",
+    seo_description: "Guided daily meditation, Pranayama breathwork, and mental clarity classes.",
+    syllabus_modules: [
+      { title: "Module 1: Breath Awareness & Pranayama Basics", duration: "2 Weeks", topics: ["Diaphragmatic breathing", "Anulom-Vilom", "Calming the nervous system"] },
+      { title: "Module 2: Guided Meditation & Mantric Focus", duration: "2 Weeks", topics: ["So-Ham Dhyana", "Inner silence (Antar Mouna)", "Daily morning routine integration"] }
+    ],
+    faq: [
+      { question: "Is seating on the floor required?", answer: "No, you can meditate comfortably on a chair, cushion, or yoga mat." }
+    ]
+  },
+  {
+    id: 7,
+    title: "Chakra Healing & Aura Balancing Certification",
+    slug: "chakra-aura-healing-certification",
+    category: "Energy Healing",
+    level: "Intermediate",
+    duration: "2 Months (16 Sessions)",
+    schedule: "Every Sunday 10:00 AM - 12:00 PM IST",
+    mode: "Online Live & Practical Workshops",
+    status: "Published",
+    instructor: "Veda Brahma Shri Pradeep Nadig",
+    price: 5200,
+    has_payment: true,
+    payment_mode: "RAZORPAY",
+    short_description: "In-depth training on 7 chakras energy dynamics, aura scanning, crystal alignment, and energy body rejuvenation.",
+    full_description: "Become a certified energy healing practitioner. Master 7 chakras diagnostic testing, aura cleansing, removal of subtle energy blockages, and balancing elemental energy centers.",
+    cover_image: "/images/courses/chakra-aura-healing-workshop.jpg",
+    images: ["/images/courses/chakra-aura-healing-workshop.jpg"],
+    seo_title: "Chakra Healing & Aura Balancing Certification | Pradeep Nadig",
+    seo_description: "Certification course on 7 chakras alignment, aura scanning, and subtle body energy healing.",
+    syllabus_modules: [
+      { title: "Module 1: Subtle Body Anatomy & 7 Chakras", duration: "3 Weeks", topics: ["Root to Crown Chakra significations", "Bija Mantras", "Energy blockages diagnosis"] },
+      { title: "Module 2: Aura Scanning & Cleansing Techniques", duration: "3 Weeks", topics: ["Aura layers", "Pranic cleansing", "Salt & crystal purification"] },
+      { title: "Module 3: Self-Healing & Client Session Protocols", duration: "2 Weeks", topics: ["Dowsing verification", "Shielding techniques", "Certification assessment"] }
+    ],
+    faq: [
+      { question: "Is certification provided upon completion?", answer: "Yes, a practitioner certificate is awarded after fulfilling practical case study requirements." }
+    ]
+  },
+  {
+    id: 8,
+    title: "Reiki, Self-Hypnosis & Spirit Release Training",
+    slug: "reiki-hypnosis-spirit-release-training",
+    category: "Energy Healing",
+    level: "Intermediate to Advanced",
+    duration: "2 Months (16 Sessions)",
+    schedule: "Every Saturday 02:00 PM - 04:00 PM IST",
+    mode: "Online Live & Practical Sessions",
+    status: "Published",
+    instructor: "Shaankari Holistic Healing Team",
+    price: 6800,
+    has_payment: true,
+    payment_mode: "RAZORPAY",
+    short_description: "Master Reiki energy healing, Self-Hypnosis, Clinical & Advanced Hypnotherapy, and Spirit Release therapy.",
+    full_description: "An advanced transformational course integrating Reiki Energy Healing (Level 1 & 2 attunements), Self-Hypnotism induction, Clinical & Advanced Hypnotherapy protocols, and Spirit Release clearing techniques.",
+    cover_image: "/images/courses/hypnotherapy-reiki-spirit-release.jpg",
+    images: ["/images/courses/hypnotherapy-reiki-spirit-release.jpg"],
+    seo_title: "Reiki, Self-Hypnosis & Spirit Release Training | Pradeep Nadig",
+    seo_description: "Comprehensive training in Reiki, Self-Hypnosis, Advanced Hypnotherapy, and Spirit Release therapy.",
+    syllabus_modules: [
+      { title: "Module 1: Reiki Energy Channeling & Attunement", duration: "3 Weeks", topics: ["Reiki symbols", "Self-healing & distance healing", "Attunement ceremony"] },
+      { title: "Module 2: Self-Hypnosis & Advanced Hypnotherapy", duration: "3 Weeks", topics: ["Subconscious re-patterning", "Regression techniques", "Anxiety & phobia release"] },
+      { title: "Module 3: Spirit Release Therapy & Spiritual Protection", duration: "2 Weeks", topics: ["Attachment clearing", "Compassionate release", "Protection shields"] }
+    ],
+    faq: [
+      { question: "Are Reiki attunements conducted live?", answer: "Yes, attunements are conducted during live interactive sessions by accredited Reiki masters." }
+    ]
+  },
+  {
+    id: 9,
+    title: "Pendulum Dowsing & Radiesthesia Masterclass",
+    slug: "pendulum-dowsing-radiesthesia-masterclass",
+    category: "Energy Healing",
+    level: "All Levels",
+    duration: "1 Month (8 Sessions)",
+    schedule: "Every Sunday 03:00 PM - 05:00 PM IST",
+    mode: "Online Live",
+    status: "Published",
+    instructor: "Shaankari Radiesthesia Specialist",
+    price: 3200,
+    has_payment: true,
+    payment_mode: "RAZORPAY",
+    short_description: "Learn pendulum dowsing, chakra diagnostic testing, environmental energy sensing, and chart reading.",
+    full_description: "Master radiesthesia and pendulum dowsing. Learn how to calibrate crystal & brass pendulums, test chakra energy flow, scan spatial vibrations, and utilize diagnostic dowsing charts.",
+    cover_image: "/images/courses/pendulum-dowsing-workshop.jpg",
+    images: ["/images/courses/pendulum-dowsing-workshop.jpg"],
+    seo_title: "Pendulum Dowsing & Radiesthesia Masterclass | Pradeep Nadig",
+    seo_description: "Masterclass on pendulum dowsing, chakra energy diagnostics, and spatial energy sensing.",
+    syllabus_modules: [
+      { title: "Module 1: Pendulum Calibration & Programming", duration: "2 Weeks", topics: ["Yes/No swing patterns", "Neutralizing personal bias", "Diagnostic charts"] },
+      { title: "Module 2: Energy Diagnostics & Spatial Sensing", duration: "2 Weeks", topics: ["Chakra energy scoring", "Food & gemstone testing", "Space energy scanning"] }
+    ],
+    faq: [
+      { question: "Will dowsing charts be provided?", answer: "Yes, high-resolution printable dowsing charts are provided for all participants." }
     ]
   }
 ];
