@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-FTZ1SWVN52";
+
 const inter = Inter({ subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://pradeepnadig.in"),
@@ -199,6 +203,19 @@ export default function RootLayout({
         className={`${inter.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col`}
         suppressHydrationWarning
       >
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         <Providers>
           <Suspense fallback={null}>
             <NavigationProgress />
