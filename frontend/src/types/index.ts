@@ -335,13 +335,14 @@ export interface LiveEventRegistration {
 
 export interface Review {
   id: number;
-  client_name: string;
-  client_email?: string | null;
-  client_location?: string | null;
-  service_taken?: string | null;
+  name: string;
+  email?: string | null;
+  city?: string | null;
+  service_type?: string | null;
   rating: number;
-  review_text: string;
+  comment: string;
   status: "Pending" | "Approved" | "Rejected";
+  display_order?: number;
   created_at?: string;
   updated_at?: string;
 }

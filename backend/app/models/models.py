@@ -290,6 +290,7 @@ class Review(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=True)
     city = Column(String(100), nullable=True)
     rating = Column(Integer, default=5)  # 1 to 5 stars
     service_type = Column(String(255), nullable=True)
@@ -298,5 +299,6 @@ class Review(Base):
     display_order = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
 
 

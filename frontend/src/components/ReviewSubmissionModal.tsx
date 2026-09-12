@@ -57,12 +57,12 @@ export default function ReviewSubmissionModal({
 
     try {
       await submitReview({
-        client_name: clientName.trim(),
-        client_email: clientEmail.trim() || undefined,
-        client_location: clientLocation.trim() || undefined,
-        service_taken: selectedService || undefined,
+        name: clientName.trim(),
+        email: clientEmail.trim() || undefined,
+        city: clientLocation.trim() || undefined,
+        service_type: selectedService || undefined,
         rating,
-        review_text: reviewText.trim(),
+        comment: reviewText.trim(),
       });
       setIsSuccess(true);
     } catch (err: any) {

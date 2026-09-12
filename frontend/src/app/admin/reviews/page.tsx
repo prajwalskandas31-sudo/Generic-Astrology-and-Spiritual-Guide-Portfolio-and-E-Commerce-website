@@ -96,10 +96,10 @@ export default function AdminReviewsPage() {
     const matchesTab = activeTab === "All" || r.status === activeTab;
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
-      r.client_name.toLowerCase().includes(searchLower) ||
-      (r.review_text && r.review_text.toLowerCase().includes(searchLower)) ||
-      (r.service_taken && r.service_taken.toLowerCase().includes(searchLower)) ||
-      (r.client_location && r.client_location.toLowerCase().includes(searchLower));
+      (r.name && r.name.toLowerCase().includes(searchLower)) ||
+      (r.comment && r.comment.toLowerCase().includes(searchLower)) ||
+      (r.service_type && r.service_type.toLowerCase().includes(searchLower)) ||
+      (r.city && r.city.toLowerCase().includes(searchLower));
 
     return matchesTab && matchesSearch;
   });
@@ -278,29 +278,29 @@ export default function AdminReviewsPage() {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-amber-800 shrink-0" />
                     <h3 className="font-serif font-bold text-base text-slate-900">
-                      {review.client_name}
+                      {review.name}
                     </h3>
                   </div>
 
                   <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                    {review.service_taken && (
+                    {review.service_type && (
                       <span className="flex items-center gap-1 text-slate-700 font-medium bg-slate-100 px-2 py-0.5 rounded-md">
                         <Briefcase className="w-3 h-3 text-amber-700" />
-                        {review.service_taken}
+                        {review.service_type}
                       </span>
                     )}
 
-                    {review.client_location && (
+                    {review.city && (
                       <span className="flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-slate-400" />
-                        {review.client_location}
+                        {review.city}
                       </span>
                     )}
 
-                    {review.client_email && (
+                    {review.email && (
                       <span className="flex items-center gap-1">
                         <Mail className="w-3 h-3 text-slate-400" />
-                        {review.client_email}
+                        {review.email}
                       </span>
                     )}
                   </div>
@@ -308,7 +308,7 @@ export default function AdminReviewsPage() {
 
                 {/* Review Text */}
                 <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/70 text-xs text-slate-700 leading-relaxed font-sans italic">
-                  "{review.review_text}"
+                  "{review.comment}"
                 </div>
 
                 {review.created_at && (

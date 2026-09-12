@@ -10,6 +10,7 @@ class MessageResponse(BaseModel):
 # --- Review Schemas ---
 class ReviewCreate(BaseModel):
     name: str
+    email: Optional[str] = None
     city: Optional[str] = None
     rating: int = 5
     service_type: Optional[str] = None
@@ -21,6 +22,7 @@ class ReviewStatusUpdate(BaseModel):
 class ReviewResponse(BaseModel):
     id: int
     name: str
+    email: Optional[str] = None
     city: Optional[str] = None
     rating: int = 5
     service_type: Optional[str] = None

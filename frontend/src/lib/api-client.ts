@@ -909,14 +909,14 @@ export async function registerLiveEvent(eventId: number, data: any) {
 // ------------------------------
 
 export async function submitReview(data: {
-  client_name: string;
-  client_email?: string;
-  client_location?: string;
-  service_taken?: string;
+  name: string;
+  email?: string;
+  city?: string;
+  service_type?: string;
   rating: number;
-  review_text: string;
+  comment: string;
 }) {
-  return fetchAPI<{ message: string; review_id: number }>("/reviews", {
+  return fetchAPI<any>("/reviews", {
     method: "POST",
     body: JSON.stringify(data),
   });

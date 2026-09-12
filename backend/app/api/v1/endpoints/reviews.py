@@ -28,6 +28,7 @@ async def submit_review(
 ):
     review = Review(
         name=data.name,
+        email=data.email,
         city=data.city,
         rating=max(1, min(5, data.rating)),
         service_type=data.service_type,
