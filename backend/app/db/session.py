@@ -82,11 +82,36 @@ async def get_db():
 
 async def migrate_db_schema():
     """
-    Ensures newly added table columns exist in PostgreSQL/Supabase database.
-    Runs idempotently with IF NOT EXISTS and purges test entries.
+    Ensures newly added tables (like reviews) and columns exist in PostgreSQL/Supabase & SQLite fallback databases.
+    Runs idempotently with IF NOT EXISTS.
     """
     try:
+        import app.models.models  # noqa
+    except Exception as import_err:
+        print(f"[DB Auto-Migration Import Warning]: {import_err}")
+
+    # Create & migrate PostgreSQL tables
+    try:
         async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            await conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS reviews (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    email VARCHAR(255),
+                    city VARCHAR(100),
+                    rating INTEGER DEFAULT 5,
+                    service_type VARCHAR(255),
+                    comment TEXT NOT NULL,
+                    status VARCHAR(50) DEFAULT 'Pending',
+                    display_order INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """))
+            await conn.execute(text("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS email VARCHAR(255);"))
+            await conn.execute(text("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS city VARCHAR(100);"))
+            await conn.execute(text("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS service_type VARCHAR(255);"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS has_payment BOOLEAN DEFAULT TRUE;"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS payment_mode VARCHAR(50) DEFAULT 'RAZORPAY';"))
             await conn.execute(text("ALTER TABLE workshops ADD COLUMN IF NOT EXISTS custom_payment_link VARCHAR(500);"))
@@ -94,12 +119,15 @@ async def migrate_db_schema():
             await conn.execute(text("ALTER TABLE blogs ALTER COLUMN cover_image TYPE TEXT;"))
             await conn.execute(text("ALTER TABLE gallery_items ALTER COLUMN media_url TYPE TEXT;"))
             await conn.execute(text("ALTER TABLE media_library ALTER COLUMN file_url TYPE TEXT;"))
-            
-            # Purge internal developer test records
-            await conn.execute(text("DELETE FROM workshop_registrations WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
-            await conn.execute(text("DELETE FROM enquiries WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
-            await conn.execute(text("DELETE FROM requests WHERE customer_id IN (SELECT id FROM customers WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%');"))
-            await conn.execute(text("DELETE FROM customers WHERE name ILIKE '%prajwal%' OR name ILIKE '%test%' OR name ILIKE '%demo%';"))
-            print("[DB Auto-Migration]: Verified workshops columns & purged test data.")
+            print("[DB Auto-Migration]: Verified PostgreSQL tables including reviews.")
     except Exception as e:
-        print(f"[DB Auto-Migration Warning]: {e}")
+        print(f"[DB Auto-Migration Warning - PostgreSQL]: {e}")
+
+    # Create & migrate SQLite fallback tables
+    try:
+        async with sqlite_engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            print("[DB Auto-Migration]: Verified SQLite fallback tables including reviews.")
+    except Exception as e:
+        print(f"[DB Auto-Migration Warning - SQLite]: {e}")
+
