@@ -57,7 +57,13 @@ export async function fetchAPI<T>(
     try {
       const errJson = await response.json();
       if (errJson.detail) {
-        errorMsg = typeof errJson.detail === "string" ? errJson.detail : JSON.stringify(errJson.detail);
+        if (Array.isArray(errJson.detail)) {
+          errorMsg = errJson.detail.map((e: any) => (e.loc ? `${e.loc.join('.')}: ${e.msg}` : e.msg || JSON.stringify(e))).join("; ");
+        } else if (typeof errJson.detail === "string") {
+          errorMsg = errJson.detail;
+        } else {
+          errorMsg = JSON.stringify(errJson.detail);
+        }
       }
     } catch (_) {}
     throw new Error(errorMsg);
@@ -916,9 +922,22 @@ export async function submitReview(data: {
   rating: number;
   comment: string;
 }) {
+  const payload = {
+    name: data.name,
+    client_name: data.name,
+    email: data.email,
+    client_email: data.email,
+    city: data.city,
+    client_location: data.city,
+    service_type: data.service_type,
+    service_taken: data.service_type,
+    rating: data.rating,
+    comment: data.comment,
+    review_text: data.comment,
+  };
   return fetchAPI<any>("/reviews", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 
