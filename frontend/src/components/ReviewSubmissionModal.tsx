@@ -1,24 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Star, Send, CheckCircle2, Loader2, HeartHandshake } from "lucide-react";
-import { submitReview } from "@/lib/api-client";
+import { submitReview, getOfferings, getWorkshops, getCourses, getClasses, getLiveEvents } from "@/lib/api-client";
 
 export interface ReviewSubmissionModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SERVICE_OPTIONS = [
-  "Griha Pravesha Pooja",
-  "Ganapathi Homa / Navagraha Homa",
-  "Vastu Homa & Consultation",
-  "Astrology & Horoscope Reading",
-  "Vedic Chanting Class / Workshop",
-  "Satyanarayana Pooja",
-  "Naga Shanthi & Special Homa",
-  "General Vedic Service & Consultation",
-];
+const FALLBACK_CATEGORIES: Record<string, string[]> = {
+  "Sacred Pooja & Homa Rituals": [
+    "Griha Pravesha Pooja",
+    "Ganapathi Homa",
+    "Navagraha Homa",
+    "Vastu Homa & Shanthi",
+    "Maha Mrityunjaya Homa",
+    "Naga Shanthi Pooja",
+    "Satyanarayana Pooja",
+    "Sudarshana Pooja & Homa",
+    "Rudrabhishekam Pooja",
+    "Durga Saptashati & Chandika Homa",
+    "Aghorastra Homa",
+    "Ayushya Homa",
+    "Lakshmi Narayana Hrudaya Homa",
+    "Mahalakshmi Kanakadhara Pooja",
+    "Subrahmanya Homa",
+    "Saraswati Pooja",
+    "Swayamvara Parvathi Pooja",
+    "Sundarakanda Parayana Pooja",
+  ],
+  "Astrology & Spiritual Consultations": [
+    "Vedic Astrology & Horoscope Reading",
+    "Prashna Marga Horary Astrology",
+    "Vastu Shastra Energy Healing & Consultation",
+    "Marriage Matching & Muhurtham",
+    "General Spiritual Guidance",
+  ],
+  "Vedic Courses & Certifications": [
+    "Sacred Vedic Chanting Mastery Course",
+    "Vedic Astrology Foundation Course",
+    "Prashna Marga Horary Astrology Course",
+    "Vastu Shastra & Energy Healing Course",
+  ],
+  "Chanting Workshops & Classes": [
+    "Vedic Chanting & Sukta Recitation Workshop",
+    "Vedic Chanting Classes (Veda Adhyayana)",
+    "Simple Meditation & Mindfulness Workshop",
+    "Rangoli Art & Sacred Geometry Workshop",
+  ],
+  "Sacred Live Events": [
+    "Mahashivaratri Grand Night Event",
+    "Monthly Pradosham Rudrabhishekam",
+    "Navratri Chandi Homa Live",
+    "Solar Eclipse Shanti Pooja",
+  ],
+  "General & Custom Services": [
+    "General Vedic Service",
+    "Other Custom Service",
+  ],
+};
 
 export default function ReviewSubmissionModal({
   isOpen,
@@ -29,13 +70,88 @@ export default function ReviewSubmissionModal({
   const [clientName, setClientName] = useState<string>("");
   const [clientEmail, setClientEmail] = useState<string>("");
   const [clientLocation, setClientLocation] = useState<string>("");
-  const [serviceTaken, setServiceTaken] = useState<string>(SERVICE_OPTIONS[0]);
+  const [serviceTaken, setServiceTaken] = useState<string>("Griha Pravesha Pooja");
   const [customService, setCustomService] = useState<string>("");
   const [reviewText, setReviewText] = useState<string>("");
+
+  const [categories, setCategories] = useState<Record<string, string[]>>(FALLBACK_CATEGORIES);
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+
+    async function loadAllCategories() {
+      try {
+        const [offs, wrks, crs, cls, evts] = await Promise.all([
+          getOfferings().catch(() => []),
+          getWorkshops().catch(() => []),
+          getCourses().catch(() => []),
+          getClasses().catch(() => []),
+          getLiveEvents().catch(() => []),
+        ]);
+
+        if (!isMounted) return;
+
+        const updatedCategories: Record<string, string[]> = { ...FALLBACK_CATEGORIES };
+
+        if (offs && offs.length > 0) {
+          const poojas = offs.filter((o: any) => o.type === "Service" || o.type === "Pooja").map((o: any) => o.title);
+          const consults = offs.filter((o: any) => o.type === "Consultation").map((o: any) => o.title);
+
+          if (poojas.length > 0) {
+            updatedCategories["Sacred Pooja & Homa Rituals"] = Array.from(
+              new Set([...poojas, ...FALLBACK_CATEGORIES["Sacred Pooja & Homa Rituals"]])
+            );
+          }
+          if (consults.length > 0) {
+            updatedCategories["Astrology & Spiritual Consultations"] = Array.from(
+              new Set([...consults, ...FALLBACK_CATEGORIES["Astrology & Spiritual Consultations"]])
+            );
+          }
+        }
+
+        if (crs && crs.length > 0) {
+          const courseTitles = crs.map((c: any) => c.title);
+          updatedCategories["Vedic Courses & Certifications"] = Array.from(
+            new Set([...courseTitles, ...FALLBACK_CATEGORIES["Vedic Courses & Certifications"]])
+          );
+        }
+
+        if (wrks && wrks.length > 0) {
+          const wrkTitles = wrks.map((w: any) => w.title);
+          updatedCategories["Chanting Workshops & Classes"] = Array.from(
+            new Set([...wrkTitles, ...FALLBACK_CATEGORIES["Chanting Workshops & Classes"]])
+          );
+        }
+
+        if (cls && cls.length > 0) {
+          const classTitles = cls.map((c: any) => c.name || c.title).filter(Boolean);
+          updatedCategories["Chanting Workshops & Classes"] = Array.from(
+            new Set([...updatedCategories["Chanting Workshops & Classes"], ...classTitles])
+          );
+        }
+
+        if (evts && evts.length > 0) {
+          const evtTitles = evts.map((e: any) => e.title);
+          updatedCategories["Sacred Live Events"] = Array.from(
+            new Set([...evtTitles, ...FALLBACK_CATEGORIES["Sacred Live Events"]])
+          );
+        }
+
+        setCategories(updatedCategories);
+      } catch (_) {}
+    }
+
+    loadAllCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -53,7 +169,7 @@ export default function ReviewSubmissionModal({
     setIsSubmitting(true);
     setErrorMessage("");
 
-    const selectedService = serviceTaken === "Other" ? customService : serviceTaken;
+    const selectedService = serviceTaken === "Other Custom Service" ? customService : serviceTaken;
 
     try {
       await submitReview({
@@ -78,7 +194,7 @@ export default function ReviewSubmissionModal({
     setClientName("");
     setClientEmail("");
     setClientLocation("");
-    setServiceTaken(SERVICE_OPTIONS[0]);
+    setServiceTaken("Griha Pravesha Pooja");
     setCustomService("");
     setReviewText("");
     setIsSuccess(false);
@@ -190,19 +306,22 @@ export default function ReviewSubmissionModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Service / Pooja Experienced
+                    Service / Pooja / Event
                   </label>
                   <select
                     value={serviceTaken}
                     onChange={(e) => setServiceTaken(e.target.value)}
                     className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-hidden bg-white"
                   >
-                    {SERVICE_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
+                    {Object.entries(categories).map(([groupLabel, optionsList]) => (
+                      <optgroup key={groupLabel} label={`── ${groupLabel} ──`}>
+                        {optionsList.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
-                    <option value="Other">Other Custom Service</option>
                   </select>
                 </div>
 
@@ -220,10 +339,10 @@ export default function ReviewSubmissionModal({
                 </div>
               </div>
 
-              {serviceTaken === "Other" && (
+              {serviceTaken === "Other Custom Service" && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Specify Service Name
+                    Specify Custom Service Name
                   </label>
                   <input
                     type="text"

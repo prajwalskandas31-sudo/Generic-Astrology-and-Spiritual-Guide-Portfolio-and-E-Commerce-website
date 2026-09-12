@@ -186,15 +186,7 @@ export default function Footer({
             </div>
 
             <div className="order-3 flex items-center gap-4">
-              <button
-                onClick={() => setIsReviewModalOpen(true)}
-                className="text-slate-600 hover:text-amber-900 transition-colors font-medium text-xs flex items-center gap-1"
-              >
-                <Star className="w-3 h-3 fill-amber-500 text-amber-600" />
-                Review
-              </button>
-              <span className="text-slate-300">|</span>
-              <Link href="/admin/login" className="text-slate-600 hover:text-amber-900 transition-colors font-medium">
+              <Link href="/admin/login" className="text-slate-600 hover:text-amber-900 transition-colors font-medium text-xs">
                 Admin Portal
               </Link>
             </div>
