@@ -104,6 +104,7 @@ export interface Blog {
   title: string;
   slug: string;
   cover_image?: string;
+  images?: string[];
   author: string;
   publish_date: string;
   category?: string;
@@ -112,6 +113,10 @@ export interface Blog {
   seo_title?: string;
   seo_description?: string;
   status?: string;
+  related_offering_slug?: string;
+  related_offering_type?: "Service" | "Consultation" | "Pooja" | "Workshop" | "Course" | "Live Event";
+  related_offering_title?: string;
+  faq?: { question: string; answer: string }[];
 }
 
 export interface GalleryAlbum {

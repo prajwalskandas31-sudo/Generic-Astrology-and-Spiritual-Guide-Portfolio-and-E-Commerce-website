@@ -174,8 +174,8 @@ export default function Footer({
             </p>
           </div>
 
-          {/* Bottom Bar & Ultra-Elitist Creator Tagmark */}
-          <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-600">
+          {/* Bottom Bar & AI Disclaimer */}
+          <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600">
             <p className="order-2 md:order-1 text-center md:text-left">
               &copy; {currentYear} {siteName}. All rights reserved.
             </p>
@@ -185,7 +185,11 @@ export default function Footer({
               Created by Prajwal Skanda S
             </div>
 
-            <div className="order-3 flex items-center gap-4">
+            <div className="order-3 flex flex-wrap items-center justify-center md:justify-end gap-3 text-xs text-slate-500">
+              <span className="text-[11px] text-slate-500 bg-amber-200/50 px-2.5 py-0.5 rounded-md border border-amber-300/60 font-medium">
+                Disclaimer: Information curated by AI &amp; images are AI-generated.
+              </span>
+              <span className="text-slate-300 hidden sm:inline">•</span>
               <Link href="/admin/login" className="text-slate-600 hover:text-amber-900 transition-colors font-medium text-xs">
                 Admin Portal
               </Link>

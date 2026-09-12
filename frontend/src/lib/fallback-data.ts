@@ -1061,17 +1061,614 @@ export const FALLBACK_COURSES: ClassItem[] = [
 export const FALLBACK_BLOGS: Blog[] = [
   {
     id: 1,
-    title: "The Importance of Mahaganapathi Homa Before Major Beginnings",
-    slug: "importance-of-mahaganapathi-homa",
+    title: "What is Vastu Homa? The Ultimate Guide to Purifying Your Home and Removing Spatial Doshas",
+    slug: "what-is-vastu-homa-home-purification-guide",
+    category: "Vastu & Housewarming",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-01-05",
+    cover_image: "/images/blogs/vastu-homa-vedic-fire-ritual.jpg",
+    images: ["/images/blogs/vastu-homa-vedic-fire-ritual.jpg", "/images/services/vastu-homa.jpg", "/images/services/vastu-balancing.jpg"],
+    related_offering_slug: "vastu-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Vastu Homa & Griha Pravesha Rituals",
+    status: "Published",
+    tags: ["VastuHoma", "GrihaPravesha", "VastuShastra", "HomePurification", "PradeepNadig"],
+    seo_title: "What is Vastu Homa? Home Purification & Vastu Dosha Remedies | Pradeep Nadig",
+    seo_description: "Discover what Vastu Homa is, why it is performed before Griha Pravesha, non-demolition energy balancing, Digpalaka Bali, and Pancha Bhootas harmonization by Veda Brahma Shri Pradeep Nadig.",
+    faq: [
+      { question: "What is Vastu Homa and why is it performed?", answer: "Vastu Homa is an ancient Vedic fire ritual performed to purify a physical dwelling or commercial office space. It honors Vastu Purusha (the deity of architectural spaces), balances the five natural elements (Pancha Bhootas), and neutralizes negative energy caused by structural defects." },
+      { question: "Why is Vastu Homa mandatory before Griha Pravesha (Housewarming)?", answer: "During construction, land disturbance and structural work create subtle energy imbalances. Vastu Homa purifies the property, invites divine protection, and ensures that the residents enjoy health, prosperity, and peace." },
+      { question: "Can Vastu Homa fix structural Vastu defects without demolition?", answer: "Yes! Modern homes and apartments often cannot undergo physical demolition. By performing Digpalaka Bali, Vastu Purusha Sthapana, copper pyramid grid activation, and room-by-room Kalasa Samprokshana, adverse directional energy is spiritually neutralized." },
+      { question: "What materials and samagri are used during Vastu Homa?", answer: "Veda Brahma Shri Pradeep Nadig uses sacred Veda samithu wood, pure desi cow ghee, Navadhanya (nine sacred grains), Vastu Purusha Yantra, and consecration herbs. All ritual samagri is arranged by the Purohit." }
+    ],
+    content: `## Introduction: What is Vastu Homa?
+
+When building or moving into a new residence, apartment, or commercial office, one of the most critical questions homeowners ask is: **What is Vastu Homa, and why is it essential before living in a space?**
+
+Vastu Homa is an ancient Vedic fire ritual dedicated to **Vastu Purusha**—the divine cosmic spirit who presides over architecture, geometry, and spatial directions. According to the *Vastu Shastra* scriptures, every plot of land and constructed building possesses a subtle energy field governed by the five fundamental elements (*Pancha Bhootas*): Earth (*Prithvi*), Water (*Jala*), Fire (*Agni*), Air (*Vayu*), and Space (*Akasha*).
+
+When a house is built, excavation, masonry, and architectural variations alter this natural energetic equilibrium. Vastu Homa acts as a divine cleansing ritual that aligns the physical structure with universal magnetic forces, invoking peace, vitality, and abundance for everyone dwelling within.
+
+## Why Perform Vastu Homa Before Griha Pravesha?
+
+Performing Vastu Homa before **Griha Pravesha** (housewarming) or launching a commercial office serves three crucial spiritual purposes:
+
+- **Cleansing Construction Impediments:** Neutralizes negative subtle vibrations accumulated during digging, construction labor, and raw material movement.
+- **Invoking Digpalakas & Vastu Purusha:** Seeking permission and blessings from the ten directional guardians (*Digpalakas*) and Vastu Purusha to ensure longevity and safety.
+- **Harmonizing 16 Directional Zones:** Aligning the North-East (*Ishaanya*) for spiritual clarity, South-East (*Agneya*) for financial liquidity, and South-West (*Nairrutya*) for domestic stability.
+
+## Step-by-Step Viddhi & Procedure of Vastu Homa
+
+Veda Brahma Shri Pradeep Nadig conducts Vastu Homa strictly according to authentic Vedic Agama Shastra:
+
+### 1. Vastu Purusha Mandala Sthapana & Avahana
+A sacred 81-square (*Eka-Sheeti*) or 64-square (*Chatush-Shashti*) Vastu Mandala is drawn using natural Rangoli powders. Lord Vastu Purusha along with 45 presiding deities (*Padavinyasa Devatas*) are reverently invoked into a copper Kalasa filled with sacred water, mango leaves, and coconut.
+
+### 2. Digpalaka Bali & Rakshoghna Homa
+Sacred oblations (*Bali*) are offered to the guardians of the eight cardinal directions (Indra, Agni, Yama, Nirrti, Varuna, Vayu, Kubera, and Ishana) to prevent external negative influences from entering the premises.
+
+### 3. Vastu Samidha & Navadhanya Oblations
+Special sacred woods—including Audumbara, Ficus, and Kusha grass—are offered into the holy fire along with pure desi cow ghee, honey, and nine sacred grains (*Navadhanya*) while reciting specific Vastu Sukta and Vedic mantras.
+
+### 4. Room-by-Room Kalasa Samprokshana & Raksha Bandhana
+After the Mahapoornahuti, consecrated holy water from the Vastu Kalasa is sprinkled across all rooms, entrances, and corners of the home. Consecrated Raksha thread and holy ash (*Vibhuthi*) are presented to the homeowners.
+
+> "A home built according to Vastu alignment and sanctified through authentic Vastu Homa becomes a fortress of tranquility, health, and endless growth." — Veda Brahma Shri Pradeep Nadig`
+  },
+  {
+    id: 2,
+    title: "Understanding Mahaganapathi Homa: Procedures, Sacred Ahuti, and Obstacle Removal Benefits",
+    slug: "understanding-mahaganapathi-homa-procedure-benefits",
     category: "Vedic Rituals",
     author: "Veda Brahma Shri Pradeep Nadig",
     publish_date: "2026-01-10",
-    content: "Lord Ganesha is worshipped as Vighnaharta—the destroyer of obstacles. Performing Mahaganapathi Homa before embarking on new business ventures, moving into a new home, or celebrating a wedding ensures divine protection and clarity of purpose...",
     cover_image: "/images/services/ganapathi-homa.jpg",
+    images: ["/images/services/ganapathi-homa.jpg", "/images/services/satyanarayana-pooja.jpg"],
+    related_offering_slug: "ganapathi-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Mahaganapathi Homa Fire Ritual",
     status: "Published",
-    tags: ["GanapathiHoma", "VedicRituals", "GrihaPravesha", "PradeepNadig"],
-    seo_title: "Why Perform Mahaganapathi Homa? | Pradeep Nadig",
-    seo_description: "Discover the spiritual benefits, Atharvashirsha vidhi, and obstacle-removal powers of Mahaganapathi Homa."
+    tags: ["GanapathiHoma", "VedicRituals", "ObstacleRemoval", "PradeepNadig"],
+    seo_title: "Mahaganapathi Homa Procedure & Benefits | Shri Pradeep Nadig",
+    seo_description: "Learn how Mahaganapathi Homa removes life obstacles, grants business prosperity, and bestows peace. Detailed Atharvashirsha vidhi guide by Veda Brahma Shri Pradeep Nadig.",
+    faq: [
+      { question: "When is the best time to perform Mahaganapathi Homa?", answer: "Ideal times include Sankashti Chaturthi, Vinayaka Chaturthi, early morning hours during Griha Pravesha, prior to launching a business, or before a wedding." },
+      { question: "What is the significance of 108 Modaka & Ashta Dravya oblations?", answer: "Offering 108 Modakas and Ashta Dravya (eight sacred herbs & fruits) into the Havan fire with Atharvashirsha Trishati recitations clears mental fog, eliminates financial debt, and attracts prosperity." },
+      { question: "How long does a complete Mahaganapathi Homa take?", answer: "The full ritual including Avahana, Sankalpa, 108 Ahutis, Poornahuti, and Aarti takes approximately 2 to 2.5 hours." }
+    ],
+    content: `## The Supreme Obstacle Remover: Lord Mahaganapathi
+
+In Sanatana Dharma, no ritual, venture, or sacred endeavor begins without first invoking **Lord Ganesha**—the ultimate *Vighnaharta* (Destroyer of Obstacles) and *Siddhi Vinayaka* (Bestower of Divine Success). **Mahaganapathi Homa** is the quintessential Vedic fire ritual designed to eliminate physical, financial, mental, and karmic impediments before major life milestones.
+
+Whether you are launching a new enterprise, purchasing a vehicle, celebrating a wedding, or seeking academic success for your children, Mahaganapathi Homa ensures that divine clarity and smooth execution accompany your efforts.
+
+## Key Benefits of Performing Mahaganapathi Homa
+
+- **Elimination of Unseen Obstacles:** Dissolves hidden friction, bureaucratic delays, and unexplained setbacks in personal and professional pursuits.
+- **Mental Clarity & Intellect:** Enhances focus, decision-making wisdom, and memory power for students and entrepreneurs.
+- **Peace & Financial Growth:** Invokes Goddess Lakshmi's presence alongside Lord Ganesha, bringing steady cash flow and domestic harmony.
+
+## Ritual Vidhi & Sacred Ahuti Ingredients
+
+Shri Pradeep Nadig performs Mahaganapathi Homa following rigorous scriptural protocol:
+
+1. **Mahaganapathi Avahana:** Chanting Ganapati Atharvashirsha Upanishad to invoke Lord Ganesha into the holy Havan Kund.
+2. **Ashta Dravya Offering:** Oblations of eight sacred ingredients—Sugarcane, Coconut, Modaka, Puffed Rice, Jaggery, Sesame, Honey, and Pure Desi Ghee.
+3. **108 Modaka Homa:** Offering 108 freshly prepared sweet modakas while reciting Ganapathi Moola Mantra and Atharvashirsha Trishati.
+4. **Mahapoornahuti & Prasadam:** Concluding fire offering with silk cloth, dry coconut, and distribution of sanctified Modaka Prasadam.`
+  },
+  {
+    id: 3,
+    title: "Navagraha Homa Explained: How to Pacify Adverse Planetary Transits, Sade Sati & Rahu-Ketu Doshas",
+    slug: "navagraha-homa-planetary-remedies-guide",
+    category: "Astrology & Remedies",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-01-15",
+    cover_image: "/images/blogs/vedic-astrology-horoscope-reading.jpg",
+    images: ["/images/blogs/vedic-astrology-horoscope-reading.jpg", "/images/services/navagraha-homa.jpg"],
+    related_offering_slug: "navagraha-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Navagraha Homa & Planetary Pacification",
+    status: "Published",
+    tags: ["NavagrahaHoma", "SadeSati", "RahuKetuDosha", "AstrologyRemedies", "PradeepNadig"],
+    seo_title: "Navagraha Homa Explained: Sade Sati & Planetary Remedies | Pradeep Nadig",
+    seo_description: "Discover how Navagraha Homa harmonizes the nine planetary deities, mitigates Sade Sati, Rahu-Ketu doshas, and restores career stability with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Why perform Navagraha Homa during Rahu-Ketu or Sade Sati transits?", answer: "Navagraha Homa pacifies malefic planetary transits (such as Saturn Sade Sati, Rahu-Ketu Mahadasha, or Manglik afflictions) and strengthens beneficiary planetary powers in your natal birth chart." },
+      { question: "Which specific wood samithu and grains (Navadhanya) are used?", answer: "Nine distinct Veda samithus are used (Arka for Sun, Palasa for Moon, Khadira for Mars, Apamarga for Mercury, Pippala for Jupiter, Audumbara for Venus, Shami for Saturn, Durva for Rahu, Kusha for Ketu) along with nine sacred grains." },
+      { question: "Is birth chart (Janma Kundali) analysis done before Navagraha Homa?", answer: "Yes, Shri Pradeep Nadig analyzes your horoscope Dasha-Bhukti beforehand to customize specific planetary sankalpa mantras for your ruling stars." }
+    ],
+    content: `## The Cosmic Influence of the Nine Planetary Deities
+
+In Vedic Astrology (*Jyotish Shastra*), our personal destiny, mental state, health, and professional milestones are deeply influenced by the nine cosmic grahas: **Surya (Sun), Chandra (Moon), Mangala (Mars), Budha (Mercury), Guru (Jupiter), Shukra (Venus), Shani (Saturn), Rahu, and Ketu**.
+
+When any planet is detrimentally placed in your natal chart (*Janma Kundali*) or undergoing unfavorable transits (*Gochara*)—such as Saturn's **Sade Sati**, **Kanti Shani**, or **Rahu-Ketu Dasha**—life can feel like an uphill battle filled with sudden delays, relationship friction, and financial volatility.
+
+**Navagraha Homa** is the ultimate Vedic remedy designed to balance these planetary energies and convert cosmic hostility into divine favor.
+
+## Nine Sacred Samithu Woods and Grains
+
+A hallmark of authentic Navagraha Homa conducted by Shri Pradeep Nadig is the meticulous use of nine specific sacred tree woods (*Samithus*) and grains (*Navadhanya*) corresponding to each planet:
+
+- **Surya (Sun):** Arka wood & Wheat (*Godhuma*)
+- **Chandra (Moon):** Palasa wood & Paddy (*Vrihi*)
+- **Mangala (Mars):** Khadira wood & Red Gram (*Adhaka*)
+- **Budha (Mercury):** Apamarga wood & Green Gram (*Mudga*)
+- **Guru (Jupiter):** Pippala wood & Bengal Gram (*Chana*)
+- **Shukra (Venus):** Audumbara wood & White Beans (*Rajamasha*)
+- **Shani (Saturn):** Shami wood & Black Sesame (*Tila*)
+- **Rahu:** Durva grass & Black Gram (*Masha*)
+- **Ketu:** Kusha grass & Horse Gram (*Kulittha*)
+
+> "When we honor the Navagrahas through sacred fire oblations, we align our individual micro-karma with the macro-cosmic rhythm of the universe." — Shri Pradeep Nadig`
+  },
+  {
+    id: 4,
+    title: "Maha Mrityunjaya & Ayushya Homa: Sacred Vedic Fire Rituals for Health Restoration, Longevity & Protection",
+    slug: "maha-mrityunjaya-ayushya-homa-health-longevity",
+    category: "Health & Protection",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-01-20",
+    cover_image: "/images/services/mrityunjaya-homa.jpg",
+    images: ["/images/services/mrityunjaya-homa.jpg", "/images/services/ayushya-homa.jpg"],
+    related_offering_slug: "mrityunjaya-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Maha Mrityunjaya Homa for Health & Longevity",
+    status: "Published",
+    tags: ["MrityunjayaHoma", "AyushyaHoma", "ShivaMantra", "HealthHealing", "PradeepNadig"],
+    seo_title: "Maha Mrityunjaya & Ayushya Homa for Health | Pradeep Nadig",
+    seo_description: "Discover how Maha Mrityunjaya Homa and Ayushya Homa invoke Lord Shiva and Ayur Devatas for recovery from chronic illness, protection, and long life.",
+    faq: [
+      { question: "What is the spiritual significance of Maha Mrityunjaya Homa?", answer: "Dedicated to Lord Shiva as Tryambaka (the Three-Eyed Lord), Maha Mrityunjaya Homa invokes divine protection against untimely hazards, chronic ailments, and bestows physical vitality." },
+      { question: "Is Mrityunjaya Homa recommended for 60th & 70th milestone birthdays?", answer: "Yes! Performing Mrityunjaya Homa during milestone birthdays (60th Ugraratha Shanthi, 70th, 80th) grants longevity, bodily vigor, and peace." },
+      { question: "What is the difference between Mrityunjaya Homa and Ayushya Homa?", answer: "Mrityunjaya Homa focuses on overcoming severe illnesses, physical hazards, and chronic ailments, whereas Ayushya Homa invokes Ayur Devatas on birthdays for growth, immunity, and long life." }
+    ],
+    content: `## Shielding Life Force: The Power of Maha Mrityunjaya Mantra
+
+Among all Vedic mantras, the **Maha Mrityunjaya Mantra** (*"Om Tryambakam Yajamahe Sugandhim Pushti-Vardhanam..."*) from the Rigveda is revered as the ultimate life-restoring mantra. Dedicated to Lord Shiva, this sacred chant rejuvenates physical body cells, calms panicked nervous systems, and shields individuals against untimely illness and accidental dangers.
+
+**Maha Mrityunjaya Homa** combines 108 or 1008 recitations of this potent mantra with sacred oblations of **Durva grass**, **pure cow milk**, **sesame seeds**, and **desi ghee** into the consecrated fire.
+
+## When Should You Perform Mrityunjaya & Ayushya Homa?
+
+- **During Severe Medical Recovery:** Performed for family members suffering from chronic health issues or before major surgical procedures.
+- **Milestone Birthdays:** Mandatory ritual for 60th (*Ugraratha Shanthi*), 70th (*Saptati Poorthi*), and 80th (*Sahasra Chandra Darshana*) celebrations.
+- **First Birthdays of Children:** Ayushya Homa is performed on a child's 1st birthday to bestow robust immunity, sharp intellect, and long life.
+
+## Consecrated Ayur Kalasabhishekam & Ayur Raksha
+
+Following the fire oblations, sacred water from the **Amrita Kalasa** is ritually poured (*Abhisheka*) over the devotee. Consecrated **Ayur Raksha threads** are bound around the wrist, infusing the body's energy aura with Shiva's protective vibration.`
+  },
+  {
+    id: 5,
+    title: "The Supreme Power of Maha Chandi Homa: Durga Saptashati Vidhi for Victory Over Severe Life Hardships",
+    slug: "supreme-power-of-chandi-homa-durga-saptashati",
+    category: "Divine Protection",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-01-25",
+    cover_image: "/images/services/chandika-homa.jpg",
+    images: ["/images/services/chandika-homa.jpg", "/images/services/durga-homa.jpg", "/images/live-events/navratri-chandi-homa-live.jpg"],
+    related_offering_slug: "chandika-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Maha Chandika Homa (Chandi Yajna)",
+    status: "Published",
+    tags: ["ChandiHoma", "DurgaSaptashati", "DeviMahatmyam", "ProtectionRitual", "PradeepNadig"],
+    seo_title: "Maha Chandi Homa & Durga Saptashati | Shri Pradeep Nadig",
+    seo_description: "Experience the supreme transformative power of Maha Chandi Homa. 700 Durga Saptashati mantras, Suvasini pooja, and victory over severe obstacles by Shri Pradeep Nadig.",
+    faq: [
+      { question: "What is Durga Saptashati Parayana during Chandi Homa?", answer: "All 700 mantras of Devi Mahatmyam across 13 chapters are chanted by learned Vedic Pandits, with each verse accompanied by sacred oblations into the Chandi Homa fire." },
+      { question: "How long does a 5-Priest Maha Chandi Homa take?", answer: "A full Chandi Homa takes approximately 4 to 5 hours, including Durga Saptashati chanting, Suvasini Pooja, Dampati Pooja, Kanya Pooja, and Mahapoornahuti with silk saree and coconut." },
+      { question: "Who should perform Chandi Homa?", answer: "Ideal for individuals or families facing chronic legal disputes, severe business blockages, black magic/drishti doshas, or persistent life hardship." }
+    ],
+    content: `## The Crown Jewel of Vedic Fire Rituals: Maha Chandi Homa
+
+In the Tantric and Vedic traditions of Devi worship, **Maha Chandi Homa** (or *Chandika Yajna*) stands as the most powerful ritual for invoking the supreme primordial energy—**Goddess Chandika Parameshwari**. 
+
+Described in the sacred *Markandeya Purana*, Goddess Chandi represents the unified fierce and compassionate force of Mahakali, Mahalakshmi, and Mahasaraswati. Performing Chandi Homa annihilates dark energies, dissolves deep karmic blockages, terminates prolonged court litigations, and bestows absolute fearlessness.
+
+## The 700 Mantras of Durga Saptashati (Devi Mahatmyam)
+
+The backbone of Chandi Homa is the recitation of **Durga Saptashati**—700 secret mantras structured across 13 chapters detailing the Divine Mother's triumphs over demon forces (Madhu-Kaitabha, Mahishasura, Chanda-Munda, and Shumbha-Nishumbha).
+
+During the Homa:
+- Each of the 700 verses is offered into the holy fire with lotus flowers, red kumkum, pure ghee, payasam, and rare dry fruits.
+- **Navakshari Mantra** (*"Om Aing Hring Kleeng Chamundaye Vichhe"*) is recited 1008 times to establish spiritual insulation.
+
+## Sacred Ancillary Poojas: Kanya, Suvasini & Dampati Worship
+
+A true Chandi Homa is incomplete without honoring the living embodiments of the Goddess:
+- **Kanya Pooja:** Honoring 9 young maidens representing the Navadurgas.
+- **Suvasini Pooja:** Honoring married women with sarees, turmeric, kumkum, and traditional offerings.
+- **Dampati Pooja:** Honoring elderly married couples for ancestral harmony.`
+  },
+  {
+    id: 6,
+    title: "How Vedic Astrology & Prashna Marga Can Guide Your Career, Marriage, and Important Life Decisions",
+    slug: "vedic-astrology-prashna-marga-guidance-guide",
+    category: "Astrology & Guidance",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-01",
+    cover_image: "/images/blogs/vedic-astrology-horoscope-reading.jpg",
+    images: ["/images/blogs/vedic-astrology-horoscope-reading.jpg", "/images/services/vedic-astrology-consultation.jpg"],
+    related_offering_slug: "vedic-astrology-consultation",
+    related_offering_type: "Consultation",
+    related_offering_title: "Personalized Vedic Astrology Consultation",
+    status: "Published",
+    tags: ["VedicAstrology", "PrashnaMarga", "HoroscopeReading", "BirthChart", "PradeepNadig"],
+    seo_title: "Vedic Astrology & Prashna Marga Consultation | Pradeep Nadig",
+    seo_description: "Book an authentic birth chart reading and Prashna Marga consultation with Veda Brahma Shri Pradeep Nadig. Clear answers on career, marriage, health, and Dasha remedies.",
+    faq: [
+      { question: "What birth details are required for an accurate birth chart reading?", answer: "You need to provide your Date of Birth, exact Time of Birth, and Place of Birth." },
+      { question: "What is Prashna Marga Astrology and when is it used?", answer: "Prashna Marga is an ancient Vedic horary astrology technique used when the exact birth time is unknown or when immediate, specific clarity is needed for urgent decisions." },
+      { question: "Are remedial solutions (Parihara) included in the consultation session?", answer: "Yes! Practical remedies including specific mantra recitations, gemstone choices, rudraksha suggestions, and targeted pooja recommendations are provided." }
+    ],
+    content: `## Unlocking Cosmic Blueprints: Vedic Astrology (Jyotish)
+
+Vedic Astrology—known as **Jyotish** ("The Light of Divine Knowledge")—is not merely about predicting future events; it is a sacred self-discovery tool that reveals your soul's karmic blueprint (*Janma Kundali*). 
+
+By analyzing the planetary positions at the exact moment of your birth, a master astrologer like **Veda Brahma Shri Pradeep Nadig** can decode:
+- **Dasha-Bhukti Timelines:** Understanding why certain years bring immense financial growth while others test your endurance.
+- **Navamsha D9 Chart:** Deep insight into marital compatibility, soul purpose, and spiritual evolution.
+- **Career & Wealth Yogas:** Identifying optimal business domains, job shifts, and financial investment periods.
+
+## What is Prashna Marga (Horary Astrology)?
+
+For individuals who do not know their exact birth time, or who need urgent clarity on pressing issues (such as medical decisions, missing items, land purchase, or court cases), **Prashna Marga** provides profound guidance. 
+
+By calculating planetary positions at the precise instant a question is asked, Prashna Marga cuts through uncertainty and delivers crystal-clear answers.
+
+## In-Person & Online Video Consultations
+
+Shri Pradeep Nadig conducts both **in-person consultations at Shaankari Kendra Bengaluru** and **HD Zoom video consultations** for global clients, providing compassionate, actionable guidance rooted in ancient Veda Shastras.`
+  },
+  {
+    id: 7,
+    title: "Sri Satyanarayana Vratha & Pooja: Ritual Steps, Auspicious Dates, and Blessings for Family Prosperity",
+    slug: "satyanarayana-pooja-procedure-family-blessings",
+    category: "Family & Traditions",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-05",
+    cover_image: "/images/services/satyanarayana-pooja.jpg",
+    images: ["/images/services/satyanarayana-pooja.jpg"],
+    related_offering_slug: "satyanarayana-pooja",
+    related_offering_type: "Pooja",
+    related_offering_title: "Sri Satyanarayana Vratha & Pooja",
+    status: "Published",
+    tags: ["SatyanarayanaPooja", "FamilyBlessings", "PurnimaVratha", "VishnuPooja", "PradeepNadig"],
+    seo_title: "Sri Satyanarayana Vratha & Pooja Guide | Shri Pradeep Nadig",
+    seo_description: "Learn the ritual steps, auspicious Purnima dates, 5 Katha stories meaning, and family prosperity blessings of Sri Satyanarayana Vratha by Shri Pradeep Nadig.",
+    faq: [
+      { question: "When is the ideal time to perform Satyanarayana Pooja?", answer: "Full Moon (Purnima) days, Ekadashi, housewarmings, wedding anniversaries, or after achieving major milestones." },
+      { question: "How long does Satyanarayana Pooja take?", answer: "Approximately 2 to 2.5 hours including 5 Katha chapters and Aarti." },
+      { question: "What is the special Prasadam offered in Satyanarayana Pooja?", answer: "Sapada Bhakshya (wheat rava sheera cooked with ghee, banana, sugar, and cardamom) is offered as divine Prasadam." }
+    ],
+    content: `## Invoking Lord Vishnu: Sri Satyanarayana Vratha
+
+Among all domestic householder rituals in India, **Sri Satyanarayana Vratha & Pooja** holds a cherished place. Dedicated to Lord Satyanarayana—the embodiment of Supreme Truth (*Satya*) and cosmic preserver Lord Vishnu—this sacred pooja invites peace, family unity, and financial abundance into the home.
+
+Whether performed on **Purnima (Full Moon)**, after purchasing a new house, on wedding anniversaries, or during family gatherings, Satyanarayana Pooja creates a joyful atmosphere filled with divine grace.
+
+## The 5 Sacred Katha Adhyayas (Stories)
+
+The core of Satyanarayana Pooja is the narration of five inspiring stories from the *Reva Khanda* of *Skanda Purana*:
+1. **Chapter 1:** The origin of the Vratha and its revelation by Lord Vishnu to Maharishi Narada.
+2. **Chapter 2:** The story of the poor Brahmin Sanatan and the woodcutter who gained wealth through truthfulness.
+3. **Chapter 3 & 4:** The merchant Ulkamukha and Sadhutha, demonstrating the perils of breaking vows and the power of divine redemption.
+4. **Chapter 5:** King Tungadhwaja learning humility and the importance of revering divine Prasadam.
+
+## Ritual Highlights with Shri Pradeep Nadig
+
+Shri Pradeep Nadig conducts Satyanarayana Pooja with full Vedic rituals:
+- **Mandala & Kalasa Sthapana:** Setting up Navagraha and Ashtadikpalaka mandalas.
+- **Panchamrutha Abhishekam:** Ritual bathing of Lord Satyanarayana idol with milk, curd, honey, ghee, and sugar.
+- **Distribution of Sheera Prasadam:** Offering sacred *Sapada Bhakshya* prasadam to all family members.`
+  },
+  {
+    id: 8,
+    title: "Sri Rudrabhishekam: The Sacred Bathing of Shiva Linga and the Healing Power of Sri Rudram Prashna",
+    slug: "sri-rudrabhishekam-pooja-shiva-mantra-healing",
+    category: "Sacred Poojas",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-10",
+    cover_image: "/images/services/rudrabhishekam-pooja.jpg",
+    images: ["/images/services/rudrabhishekam-pooja.jpg", "/images/live-events/monthly-pradosham-rudrabhishekam.jpg"],
+    related_offering_slug: "rudrabhishekam-pooja",
+    related_offering_type: "Pooja",
+    related_offering_title: "Sri Rudrabhishekam Pooja",
+    status: "Published",
+    tags: ["Rudrabhishekam", "ShivaPooja", "SriRudram", "Pradosham", "PradeepNadig"],
+    seo_title: "Sri Rudrabhishekam Pooja & Sri Rudram Chanting | Pradeep Nadig",
+    seo_description: "Discover the deep healing powers of Sri Rudrabhishekam Pooja. Ekadasa Dravya sacred bathings, Sri Rudram Namaka-Chamaka chanting, and Shiva blessings by Shri Pradeep Nadig.",
+    faq: [
+      { question: "What materials are used for Ekadasa Dravya Abhisheka?", answer: "Pure cow milk, curd, honey, ghee, sugar, tender coconut water, sugarcane juice, sandalwood paste, panchamrutha, fruit juices, and sacred Bilva leaves." },
+      { question: "When is Rudrabhishekam Pooja most effective?", answer: "Mondays, Pradosham kala (1.5 hours before sunset), Masa Shivaratri, Shravana month, or during personal health recovery." }
+    ],
+    content: `## The Cosmic Vibration of Sri Rudram
+
+In the Yajurveda, **Sri Rudram Prashna** (comprising *Namaka* and *Chamaka*) is hailed as one of the most powerful hymns ever revealed. It recognizes the Supreme Divine in every aspect of nature—in majestic mountains, rushing rivers, roaring thunder, gentle trees, and inside the heart of every living being.
+
+**Sri Rudrabhishekam** is the sacred ritual of continuously bathing the Shiva Linga with eleven holy substances (*Ekadasa Dravya*) while learned Vedic scholars chant Sri Rudram in unison.
+
+## The 11 Sacred Abhisheka Liquid Offerings
+
+Each substance poured over the Shiva Linga channels specific spiritual and physical blessings:
+1. **Milk:** Grants health and purity of mind.
+2. **Curd:** Bestows family happiness and progeny.
+3. **Honey:** Removes speech defects and brings sweetness in relationships.
+4. **Ghee:** Grants liberation (*Moksha*) and bodily vigor.
+5. **Sugarcane Juice:** Removes poverty and attracts sweet fortune.
+6. **Tender Coconut Water:** Brings peace, cooling relief, and emotional stability.
+7. **Sandalwood Paste:** Enhances focus, dignity, and spiritual aura.
+8. **Bilva Patra Archana:** Offering sacred three-leaf Bilva leaves to wash away three births of negative karma.`
+  },
+  {
+    id: 9,
+    title: "Understanding Sarpa Dosha and Naga Shanthi: Vedic Remedies for Delay in Marriage & Family Peace",
+    slug: "sarpa-dosha-naga-shanthi-pooja-remedies",
+    category: "Dosha Parihara",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-15",
+    cover_image: "/images/services/naga-shanthi.jpg",
+    images: ["/images/services/naga-shanthi.jpg", "/images/services/subrahmanya-homa.jpg"],
+    related_offering_slug: "naga-shanthi",
+    related_offering_type: "Service",
+    related_offering_title: "Naga Shanthi & Sarpa Dosha Parihara",
+    status: "Published",
+    tags: ["NagaShanthi", "SarpaDosha", "RahuKetuRemedies", "MarriageDelay", "PradeepNadig"],
+    seo_title: "Naga Shanthi & Sarpa Dosha Parihara Remedies | Pradeep Nadig",
+    seo_description: "Learn how Naga Shanthi and Subrahmanya Homa mitigate Sarpa Dosha, resolve marriage delays, fertility challenges, and ancestral karma with Shri Pradeep Nadig.",
+    faq: [
+      { question: "How does Naga Shanthi relieve Sarpa Dosha?", answer: "Naga Shanthi pacifies ancestral snake afflictions, Rahu-Ketu karmic blockages, marriage delays, and health issues through authentic Sarpa Sukta recitations and Ashta Naga Mandalarchana." },
+      { question: "What is the best tithi to perform Naga Shanthi?", answer: "Panchami tithis (especially Nagapanchami), Shravana month, Kiruthigai, or specific nakshatra days advised after horoscope reading." }
+    ],
+    content: `## What is Sarpa Dosha in Vedic Astrology?
+
+In Vedic astrology, **Sarpa Dosha** (or *Naga Dosha*) occurs when Rahu or Ketu afflict key houses in a person's birth chart (especially the 1st, 5th, 7th, or 8th house). Scripturally, it represents ancestral karmic obligations towards nature and divine serpent beings (*Naga Devatas*).
+
+Common symptoms of Sarpa Dosha include:
+- Unexplained delays and obstacles in finalizing marriage proposals.
+- Conception hurdles and child health concerns.
+- Recurring dreams of serpents or sudden skin ailments.
+
+## The Ritual Vidhi of Naga Shanthi & Subrahmanya Homa
+
+To pacify these karmic knots, **Veda Brahma Shri Pradeep Nadig** conducts authentic **Naga Shanthi Pooja**:
+1. **Ashta Naga Mandalarchana:** Drawing the sacred eight serpent guardians (Ananta, Vasuki, Shesha, Padmanabha, Kambala, Shankhapala, Dhritarashtra, and Takshaka).
+2. **Ksheerabhisheka & Sandalwood Pooja:** Ritual milk and chandan bathing of silver or stone Naga Prathima.
+3. **Sarpa Sukta & Subrahmanya Mantra Japa:** Chanting Sarpa Sukta and Lord Subrahmanya (Kartikeya) mantras to invoke courage, health, and family prosperity.`
+  },
+  {
+    id: 10,
+    title: "Attracting Abundance: The Spiritual Science of Lakshmi Narayana Hrudaya Homa & Kanakadhara Stotram",
+    slug: "attracting-abundance-lakshmi-narayana-kanakadhara",
+    category: "Wealth & Prosperity",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-20",
+    cover_image: "/images/services/lakshmi-narayana-hrudaya-homa.jpg",
+    images: ["/images/services/lakshmi-narayana-hrudaya-homa.jpg"],
+    related_offering_slug: "lakshmi-narayana-hrudaya-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Lakshmi Narayana Hrudaya Homa",
+    status: "Published",
+    tags: ["LakshmiNarayanaHoma", "KanakadharaPooja", "WealthProsperity", "BusinessGrowth", "PradeepNadig"],
+    seo_title: "Lakshmi Narayana Hrudaya & Kanakadhara Pooja | Pradeep Nadig",
+    seo_description: "Attract sustainable wealth, business growth, and family abundance through Lakshmi Narayana Hrudaya Homa and Kanakadhara Stotram Pooja by Shri Pradeep Nadig.",
+    faq: [
+      { question: "When is Lakshmi Narayana Hrudaya Homa recommended?", answer: "Ideal for business owners, entrepreneurs, before launching new ventures, on Fridays, Purnima, or Varalakshmi Vratha." },
+      { question: "What is the significance of Kanakadhara Stotram?", answer: "Composed by Adi Shankaracharya, Kanakadhara Stotram invokes Goddess Lakshmi to rain down golden abundance and dissolve financial distress." }
+    ],
+    content: `## The Union of Wealth and Preservation
+
+In Sanatana Dharma, wealth (*Lakshmi*) without righteous preservation (*Narayana*) is short-lived. **Lakshmi Narayana Hrudaya Homa** is a rare and majestic Vedic ritual that combines the **Narayana Hrudaya Stotram** and **Lakshmi Hrudaya Stotram** in a interlocked (*Samputita*) fire offering.
+
+This ritual ensures that financial abundance is accompanied by wisdom, ethical prosperity, and long-term security for family generations and commercial enterprises.
+
+## Kanakadhara Stotram: Shankaracharya's Hymn of Golden Rain
+
+When the great sage Adi Shankaracharya recited the **Kanakadhara Stotram** for a poor woman who offered him her last withered Amla fruit, Goddess Mahalakshmi rained down golden Amlas in reward for her pure devotion.
+
+During **Mahalakshmi Kanakadhara Pooja**, 108 recitations of this hymn accompanied by pink lotus flower offerings and Kumkumarchana invoke divine financial breakthroughs for business owners and working professionals.`
+  },
+  {
+    id: 11,
+    title: "Divine Blessings for Marriage & Education: Swayamvara Parvathi Pooja and Saraswati Vidya Rituals",
+    slug: "swayamvara-parvathi-saraswati-pooja-marriage-education",
+    category: "Family & Knowledge",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-02-25",
+    cover_image: "/images/services/swayamvara-parvathi-pooja.jpg",
+    images: ["/images/services/swayamvara-parvathi-pooja.jpg", "/images/services/saraswati-pooja.jpg"],
+    related_offering_slug: "swayamvara-parvathi-pooja",
+    related_offering_type: "Pooja",
+    related_offering_title: "Swayamvara Parvathi Pooja",
+    status: "Published",
+    tags: ["SwayamvaraParvathi", "SaraswatiPooja", "MarriageRemedies", "StudentExcellence", "PradeepNadig"],
+    seo_title: "Swayamvara Parvathi & Saraswati Vidya Pooja | Pradeep Nadig",
+    seo_description: "Discover how Swayamvara Parvathi Pooja resolves marriage delays and Saraswati Vidya Pooja enhances student memory and exam success with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Can Swayamvara Parvathi Pooja be performed on behalf of someone?", answer: "Yes, parents or close relatives can perform the Sankalpa in the name of the bride/groom-to-be." },
+      { question: "When is Saraswati Pooja recommended for students?", answer: "Before major competitive exams, initiation of learning (Vidyarambha), Vasant Panchami, or during Navaratri." }
+    ],
+    content: `## Removing Obstacles in Marriage: Swayamvara Parvathi Pooja
+
+Goddess Parvathi performed intense penance (*Tapas*) to gain Lord Shiva as her divine consort. The **Swayamvara Parvathi Mantra** was revealed by Sage Durvasa to bestow ideal life partners, eliminate delay in marriage proposals, and harmonize relationship dynamics between couples.
+
+Conducted with turmeric archana, lotus flowers, and Mangalya Sankalpa, this pooja purifies negative planetary afflictions (such as Kuja/Manglik dosha) affecting marriage prospects.
+
+## Enhancing Memory & Focus: Sri Saraswati Vidya Pooja
+
+For students, competitive exam aspirants, musicians, and artists, **Sri Saraswati Vidya Pooja** invokes the Goddess of Knowledge (*Vidya*) and Speech (*Vak*). 
+
+Featuring **Medha Sukta recitations**, book/instrument blessings, and 108 white flower archana, this ritual clears mental distractions, enhances retentive memory, and bestows exam victory.`
+  },
+  {
+    id: 12,
+    title: "Overcoming Adversity: Sundarakanda Parayana & Sri Sudarshana Pooja for Courage and Protection",
+    slug: "sundarakanda-parayana-sudarshana-pooja-protection",
+    category: "Protection & Valor",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-01",
+    cover_image: "/images/services/sundarakanda-parayana-pooja.jpg",
+    images: ["/images/services/sundarakanda-parayana-pooja.jpg", "/images/services/sudarshana-homa.jpg", "/images/services/aghorastra-homa.jpg"],
+    related_offering_slug: "sundarakanda-parayana-pooja",
+    related_offering_type: "Pooja",
+    related_offering_title: "Sundarakanda Parayana & Pooja",
+    status: "Published",
+    tags: ["SundarakandaParayana", "SudarshanaPooja", "AghorastraHoma", "CourageProtection", "PradeepNadig"],
+    seo_title: "Sundarakanda Parayana & Sudarshana Pooja | Pradeep Nadig",
+    seo_description: "Experience the strength of Sundarakanda Parayana and divine protection of Sri Sudarshana Pooja guided by Shri Pradeep Nadig.",
+    faq: [
+      { question: "Why is Sundarakanda chapter in Ramayana considered so powerful?", answer: "Sundarakanda depicts Lord Hanuman crossing the ocean, finding Mother Sita, and overcoming impossible odds through faith and valor. Chanting it removes fear, litigation worries, and despair." },
+      { question: "How does Sri Sudarshana Pooja protect against evil eye (Drishti)?", answer: "Lord Sudarshana (Vishnu's cosmic Chakra) cuts through negative psychic energy, jealousy, competitor malice, and unexplained fear." }
+    ],
+    content: `## Lord Hanuman's Triumph: Sundarakanda Parayana
+
+The *Sundarakanda* is the fifth book of the epic *Ramayana*, named 'Sundara' (Beautiful) because it celebrates the heroic acts, wisdom, and unyielding devotion of **Lord Hanuman**. 
+
+Reading or listening to **Sundarakanda Parayana** conducted by Shri Pradeep Nadig instills immense inner courage, resolves seemingly impossible life crises, and grants victory over opponents and self-doubt.
+
+## The Flaming Wheel of Vishnu: Sri Sudarshana Pooja
+
+**Sri Sudarshana Pooja** invokes Lord Vishnu's divine Chakra—a weapon of infinite light that destroys evil, neutralizes black eye (*Drishti dosha*), and grants absolute protection. Combined with **Aghorastra Shiva Homa**, it creates a spiritual shield around your family and business.`
+  },
+  {
+    id: 13,
+    title: "The Sacred Art of Vedic Chanting: How Correct Swara Pronunciation Activates Subtle Energy Channels",
+    slug: "sacred-art-of-vedic-chanting-swara-mastery",
+    category: "Classes & Workshops",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-05",
+    cover_image: "/images/courses/sacred-vedic-chanting-mastery.jpg",
+    images: ["/images/courses/sacred-vedic-chanting-mastery.jpg"],
+    related_offering_slug: "sacred-vedic-chanting-mastery",
+    related_offering_type: "Course",
+    related_offering_title: "Sacred Vedic Chanting Mastery Course",
+    status: "Published",
+    tags: ["VedicChanting", "SwaraMastery", "PurushaSukta", "SanskritPhonetics", "PradeepNadig"],
+    seo_title: "Sacred Vedic Chanting & Swara Mastery | Pradeep Nadig",
+    seo_description: "Learn authentic Sanskrit Swara pronunciation (Udatta, Anudatta, Svarita) and master Sukta chanting under Veda Brahma Shri Pradeep Nadig.",
+    faq: [
+      { question: "Are prerequisites required to join the Vedic Chanting Course?", answer: "No prior knowledge of Sanskrit is necessary. The foundation course starts from basic mouth positions, accent marks, and step-by-step recitation of Suktas." },
+      { question: "What Suktas are taught in the course?", answer: "Covers Purusha Sukta, Sri Sukta, Durga Sukta, Mantra Pushpam, and Ganapati Atharvashirsha." }
+    ],
+    content: `## The Science of Sound (Shabda Brahma)
+
+In the Vedic tradition, Sanskrit mantras are not simple linguistic phrases; they are precise sound frequencies capable of altering human physiology and environment. 
+
+The effectiveness of any Vedic chant relies on **Swara Shuddhi**—the precise accentuation of three fundamental tones:
+- **Udatta (High Pitch):** Upward energy flow activating upper nerve plexuses.
+- **Anudatta (Low Pitch):** Grounding energy bringing emotional stability.
+- **Svarita (Circumflex/Medium Pitch):** Harmonic balance connecting mind and body.
+
+Under the personal guidance of **Veda Brahma Shri Pradeep Nadig**, students master **Purusha Sukta, Sri Sukta, and Durga Sukta** with pristine phonetics (*Varna Chintane*).`
+  },
+  {
+    id: 14,
+    title: "Holistic Energy Healing: Exploring 7 Chakras, Aura Cleansing, Reiki Channeling, and Hypnotherapy",
+    slug: "holistic-energy-healing-chakras-aura-reiki-hypnotherapy",
+    category: "Holistic Healing",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-10",
+    cover_image: "/images/courses/chakra-aura-healing-workshop.jpg",
+    images: ["/images/courses/chakra-aura-healing-workshop.jpg", "/images/courses/hypnotherapy-reiki-spirit-release.jpg", "/images/courses/pendulum-dowsing-workshop.jpg"],
+    related_offering_slug: "chakra-aura-healing-workshop",
+    related_offering_type: "Workshop",
+    related_offering_title: "Chakra & Aura Healing Masterclass",
+    status: "Published",
+    tags: ["ChakraHealing", "AuraCleansing", "ReikiMastery", "Hypnotherapy", "SpiritRelease", "PradeepNadig"],
+    seo_title: "Chakra, Aura, Reiki & Hypnotherapy Masterclass | Pradeep Nadig",
+    seo_description: "Master 7 chakras energy balancing, aura cleansing, pendulum dowsing, Reiki attunements, and spirit release therapy with Shri Pradeep Nadig.",
+    faq: [
+      { question: "What will I learn in the Chakra & Aura Masterclass?", answer: "Learn 7 main chakras diagnostic scanning, pendulum testing, aura cleansing techniques, crystal alignment, and self-energy rejuvenation." },
+      { question: "What is Spirit Release Therapy?", answer: "Spirit Release is a compassionate holistic protocol used in hypnosis to clear persistent uninvited subtle energies, emotional attachments, and ancestral blockages." }
+    ],
+    content: `## Navigating the Subtle Energy Anatomy
+
+Beyond the physical body lies an intricate subtle network comprising **7 Main Chakras** (Energy Centers), thousands of *Nadis* (Energy Channels), and the **Aura** (Human Electromagnetic Field). 
+
+When stress, suppressed trauma, or negative environmental influences cause blockages in these centers, physical fatigue and mental anxiety occur.
+
+## Integrative Modalities Taught by Shri Pradeep Nadig
+
+1. **Chakra Diagnostic & Pendulum Dowsing:** Using radiesthesia pendulums to measure chakra spin and identify specific emotional blockages.
+2. **Reiki Energy Channeling:** Level I & II attunements to channel universal bio-field energy for self-healing and client rejuvenation.
+3. **Clinical Hypnotherapy & Spirit Release:** Accessing the subconscious mind to release past-life trauma, phobias, and persistent subtle energy attachments.`
+  },
+  {
+    id: 15,
+    title: "Sacred Floor Geometry: The Ancient Tradition, Symmetry, and Spiritual Benefits of Rangoli Art",
+    slug: "sacred-floor-geometry-rangoli-art-tradition",
+    category: "Arts & Heritage",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-15",
+    cover_image: "/images/courses/rangoli-art-workshop.jpg",
+    images: ["/images/courses/rangoli-art-workshop.jpg"],
+    related_offering_slug: "rangoli-art-design-workshop",
+    related_offering_type: "Workshop",
+    related_offering_title: "Rangoli Art & Sacred Floor Geometry Workshop",
+    status: "Published",
+    tags: ["RangoliArt", "FloorGeometry", "SacredMandala", "IndianTraditions", "PradeepNadig"],
+    seo_title: "Rangoli Art & Sacred Floor Geometry Workshop | Pradeep Nadig",
+    seo_description: "Discover the spiritual symbolism, dot grids, vibrant powder blending, and sacred geometry of Rangoli art in intensive 3-day workshop with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Are Rangoli art materials provided during the workshop?", answer: "Yes, complete Rangoli starter kits with eco-friendly powders, stencils, and dot templates are provided to all physical attendees." }
+    ],
+    content: `## Inviting Goddess Lakshmi into the Household
+
+In Indian culture, drawing **Rangoli** (or *Kolam*) at the entrance of a house every morning is far more than a decorative visual art. It is a sacred ritual of **sacred geometry** designed to harmonize spatial vibrations and welcome Goddess Mahalakshmi into the home.
+
+The symmetrical dot grids (*Pulli*) and flowing curves absorb chaotic environmental noise, generating a peaceful, meditative atmosphere for anyone crossing the threshold. Learn intricate dot grids, natural powder blending, and mandala art in our intensive 3-day hands-on workshop!`
+  },
+  {
+    id: 16,
+    title: "Vedic Rituals During Celestial Events: Solar Eclipse Shanti Pooja and Mahashivaratri Vigil Explained",
+    slug: "vedic-rituals-celestial-events-surya-grahan-mahashivaratri",
+    category: "Live Events & Rituals",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-20",
+    cover_image: "/images/live-events/solar-eclipse-shanti-pooja.jpg",
+    images: ["/images/live-events/solar-eclipse-shanti-pooja.jpg", "/images/live-events/mahashivaratri-grand-night-2026.jpg"],
+    related_offering_slug: "solar-eclipse-shanti-pooja",
+    related_offering_type: "Live Event",
+    related_offering_title: "Surya Grahan (Solar Eclipse) Shanti Pooja",
+    status: "Published",
+    tags: ["SolarEclipsePooja", "Mahashivaratri", "CelestialEvents", "RemoteSankalpa", "PradeepNadig"],
+    seo_title: "Surya Grahan & Mahashivaratri Live Rituals | Pradeep Nadig",
+    seo_description: "Learn why celestial events like Surya Grahan and Mahashivaratri possess high spiritual potency and how remote Sankalpa works with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Why perform Shanti Pooja during Solar Eclipse (Surya Grahan)?", answer: "Eclipse hours generate intense subtle karmic shifts. Performing Shanti Homa during grahan kala neutralizes planetary afflictions for affected birth stars." },
+      { question: "How does remote Sankalpa work for live events?", answer: "Your Name, Gothra, and Nakshatra are solemnly uttered during ritual initiation by Shri Pradeep Nadig, and HD live stream link is provided." }
+    ],
+    content: `## Amplified Spiritual Potency During Eclipse & Shivaratri
+
+In the Vedic astronomical calendar, celestial events like **Surya Grahan (Solar Eclipse)** and **Mahashivaratri** represent periods where the veil between the physical world and subtle energy realms is thinnest.
+
+Any mantra recited or homa performed during these celestial windows yields **1000-fold results** compared to ordinary days. Participate in live remote Sankalpa and experience transformative blessings from anywhere in the world!`
+  },
+  {
+    id: 17,
+    title: "Bringing Sacred Art to Life: Interactive Live Thread Art Events for Birthdays & Weddings",
+    slug: "interactive-live-thread-art-events-celebrations",
+    category: "Events & Celebrations",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-25",
+    cover_image: "/images/live-events/thread-art-live.jpg",
+    images: ["/images/live-events/thread-art-live.jpg"],
+    related_offering_slug: "thread-art-live-event",
+    related_offering_type: "Live Event",
+    related_offering_title: "Interactive Live Thread Art Experience",
+    status: "Published",
+    tags: ["ThreadArt", "LiveEvent", "WeddingCelebrations", "BirthdayEvent", "PradeepNadig"],
+    seo_title: "Interactive Live Thread Art Events | Pradeep Nadig",
+    seo_description: "Discover live interactive string art events for weddings, birthdays, and celebrations guided by expert instructors across Bengaluru with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Can Thread Art live events be conducted at private event venues?", answer: "Yes! Our guided instructor and setup team travel to your event venue across Bengaluru to facilitate the interactive thread art experience for your guests." }
+    ],
+    content: `## Collaborative Masterpieces Created by Your Guests
+
+**Thread Art** is an extraordinary live event experience designed for weddings, milestone birthdays, and grand celebrations. 
+
+Under the guidance of expert instructors, your guests themselves weave vibrant colored threads across a custom wooden pin matrix, collectively crafting a stunning string-art portrait of the birthday child, wedding couple, or host. Book this memorable interactive experience for your upcoming celebration!`
   }
 ];
 

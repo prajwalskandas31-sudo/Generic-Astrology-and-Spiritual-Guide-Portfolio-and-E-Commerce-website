@@ -531,19 +531,213 @@ async def seed_database():
         existing_blogs = await db.execute(select(Blog))
         if not existing_blogs.scalars().all():
             print("Seeding initial blogs...")
-            blog1 = Blog(
-                title="Understanding the Significance of Sandhyavandana",
-                slug="significance-of-sandhyavandana",
-                cover_image="/images/services/satyanarayana-pooja.jpg",
-                author="Veda Brahma Shri Pradeep Nadig",
-                publish_date="2026-07-20",
-                category="Vedic Traditions",
-                tags=["Sandhyavandana", "Daily Rituals", "Veda"],
-                content="Sandhyavandana is one of the most sacred daily practices prescribed in Vedic tradition...",
-                seo_title="Significance of Sandhyavandana by Shri Pradeep Nadig",
-                seo_description="Discover why Sandhyavandana is essential for spiritual discipline and mental peace."
-            )
-            db.add(blog1)
+            blogs = [
+                Blog(
+                    title="What is Vastu Homa? The Ultimate Guide to Purifying Your Home and Removing Spatial Doshas",
+                    slug="what-is-vastu-homa-home-purification-guide",
+                    category="Vastu & Housewarming",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-01-05",
+                    cover_image="/images/blogs/vastu-homa-vedic-fire-ritual.jpg",
+                    tags=["VastuHoma", "GrihaPravesha", "VastuShastra", "HomePurification"],
+                    content="Vastu Homa is an ancient Vedic fire ritual dedicated to Vastu Purusha—the divine cosmic spirit presiding over architecture. It purifies domestic dwellings, balances Pancha Bhootas, and neutralizes structural Vastu doshas.",
+                    seo_title="What is Vastu Homa? Home Purification & Vastu Dosha Remedies | Pradeep Nadig",
+                    seo_description="Discover what Vastu Homa is, why it is performed before Griha Pravesha, non-demolition energy balancing, and Pancha Bhootas harmonization."
+                ),
+                Blog(
+                    title="Understanding Mahaganapathi Homa: Procedures, Sacred Ahuti, and Obstacle Removal Benefits",
+                    slug="understanding-mahaganapathi-homa-procedure-benefits",
+                    category="Vedic Rituals",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-01-10",
+                    cover_image="/images/services/ganapathi-homa.jpg",
+                    tags=["GanapathiHoma", "VedicRituals", "ObstacleRemoval"],
+                    content="Lord Ganesha is worshipped as Vighnaharta—the destroyer of obstacles. Performing Mahaganapathi Homa before embarking on new business ventures, Griha Pravesha, or weddings ensures divine clarity and success.",
+                    seo_title="Mahaganapathi Homa Procedure & Benefits | Shri Pradeep Nadig",
+                    seo_description="Learn how Mahaganapathi Homa removes life obstacles, grants business prosperity, and bestows peace."
+                ),
+                Blog(
+                    title="Navagraha Homa Explained: How to Pacify Adverse Planetary Transits, Sade Sati & Rahu-Ketu Doshas",
+                    slug="navagraha-homa-planetary-remedies-guide",
+                    category="Astrology & Remedies",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-01-15",
+                    cover_image="/images/blogs/vedic-astrology-horoscope-reading.jpg",
+                    tags=["NavagrahaHoma", "SadeSati", "RahuKetuDosha"],
+                    content="Navagraha Homa is performed to seek the blessings of the nine planetary deities, reduce adverse planetary transit effects (Sade Sati, Rahu Dasha), and bring stability into career and health.",
+                    seo_title="Navagraha Homa Explained: Sade Sati & Planetary Remedies | Pradeep Nadig",
+                    seo_description="Discover how Navagraha Homa harmonizes nine planetary deities, mitigates Sade Sati, and restores stability."
+                ),
+                Blog(
+                    title="Maha Mrityunjaya & Ayushya Homa: Sacred Vedic Fire Rituals for Health Restoration, Longevity & Protection",
+                    slug="maha-mrityunjaya-ayushya-homa-health-longevity",
+                    category="Health & Protection",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-01-20",
+                    cover_image="/images/services/mrityunjaya-homa.jpg",
+                    tags=["MrityunjayaHoma", "AyushyaHoma", "ShivaMantra"],
+                    content="Maha Mrityunjaya Homa invokes Lord Shiva for recovery from severe illness, protection against accidents, and bodily longevity, while Ayushya Homa is performed on birthdays for immunity and vitality.",
+                    seo_title="Maha Mrityunjaya & Ayushya Homa for Health | Pradeep Nadig",
+                    seo_description="Discover how Maha Mrityunjaya Homa and Ayushya Homa invoke Shiva for health recovery and long life."
+                ),
+                Blog(
+                    title="The Supreme Power of Maha Chandi Homa: Durga Saptashati Vidhi for Victory Over Severe Life Hardships",
+                    slug="supreme-power-of-chandi-homa-durga-saptashati",
+                    category="Divine Protection",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-01-25",
+                    cover_image="/images/services/chandika-homa.jpg",
+                    tags=["ChandiHoma", "DurgaSaptashati", "DeviMahatmyam"],
+                    content="Maha Chandi Homa features 700 mantras of Durga Saptashati recited with sacred fire oblations, Suvasini pooja, and Kanya pooja for victory over chronic hardships and legal obstacles.",
+                    seo_title="Maha Chandi Homa & Durga Saptashati | Shri Pradeep Nadig",
+                    seo_description="Experience the supreme power of Maha Chandi Homa with 700 Durga Saptashati mantras and Suvasini pooja."
+                ),
+                Blog(
+                    title="How Vedic Astrology & Prashna Marga Can Guide Your Career, Marriage, and Important Life Decisions",
+                    slug="vedic-astrology-prashna-marga-guidance-guide",
+                    category="Astrology & Guidance",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-01",
+                    cover_image="/images/blogs/vedic-astrology-horoscope-reading.jpg",
+                    tags=["VedicAstrology", "PrashnaMarga", "BirthChart"],
+                    content="Personalized birth chart reading (Janma Kundali) and Prashna Marga horary astrology offer deep insights into Dasha timelines, marriage timing, career yogas, and Parihara solutions.",
+                    seo_title="Vedic Astrology & Prashna Marga Consultation | Pradeep Nadig",
+                    seo_description="Book authentic birth chart reading and Prashna Marga consultation with Shri Pradeep Nadig."
+                ),
+                Blog(
+                    title="Sri Satyanarayana Vratha & Pooja: Ritual Steps, Auspicious Dates, and Blessings for Family Prosperity",
+                    slug="satyanarayana-pooja-procedure-family-blessings",
+                    category="Family & Traditions",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-05",
+                    cover_image="/images/services/satyanarayana-pooja.jpg",
+                    tags=["SatyanarayanaPooja", "FamilyBlessings", "PurnimaVratha"],
+                    content="Sri Satyanarayana Vratha & Pooja is performed on Purnima or family milestones to invite peace, unity, wealth, and Lord Vishnu's grace through 5 sacred Katha narrations.",
+                    seo_title="Sri Satyanarayana Vratha & Pooja Guide | Shri Pradeep Nadig",
+                    seo_description="Learn the ritual steps, Purnima dates, 5 Katha stories, and family blessings of Sri Satyanarayana Vratha."
+                ),
+                Blog(
+                    title="Sri Rudrabhishekam: The Sacred Bathing of Shiva Linga and the Healing Power of Sri Rudram Prashna",
+                    slug="sri-rudrabhishekam-pooja-shiva-mantra-healing",
+                    category="Sacred Poojas",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-10",
+                    cover_image="/images/services/rudrabhishekam-pooja.jpg",
+                    tags=["Rudrabhishekam", "ShivaPooja", "SriRudram"],
+                    content="Sri Rudrabhishekam involves ritualistic bathing (Abhisheka) of Shiva Linga with 11 holy liquids (Ekadasa Dravya) accompanied by continuous Sri Rudram Prashna recitations.",
+                    seo_title="Sri Rudrabhishekam Pooja & Sri Rudram Chanting | Pradeep Nadig",
+                    seo_description="Discover the deep healing powers of Sri Rudrabhishekam Pooja and Sri Rudram Namaka-Chamaka chanting."
+                ),
+                Blog(
+                    title="Understanding Sarpa Dosha and Naga Shanthi: Vedic Remedies for Delay in Marriage & Family Peace",
+                    slug="sarpa-dosha-naga-shanthi-pooja-remedies",
+                    category="Dosha Parihara",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-15",
+                    cover_image="/images/services/naga-shanthi.jpg",
+                    tags=["NagaShanthi", "SarpaDosha", "MarriageDelay"],
+                    content="Naga Shanthi and Subrahmanya Homa pacify ancestral Sarpa Dosha, Rahu-Ketu karmic blockages, marriage delays, and fertility hurdles through Sarpa Sukta recitations.",
+                    seo_title="Naga Shanthi & Sarpa Dosha Parihara Remedies | Pradeep Nadig",
+                    seo_description="Learn how Naga Shanthi mitigates Sarpa Dosha, resolves marriage delays, and grants family peace."
+                ),
+                Blog(
+                    title="Attracting Abundance: The Spiritual Science of Lakshmi Narayana Hrudaya Homa & Kanakadhara Stotram",
+                    slug="attracting-abundance-lakshmi-narayana-kanakadhara",
+                    category="Wealth & Prosperity",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-20",
+                    cover_image="/images/services/lakshmi-narayana-hrudaya-homa.jpg",
+                    tags=["LakshmiNarayanaHoma", "KanakadharaPooja", "WealthProsperity"],
+                    content="Lakshmi Narayana Hrudaya Homa and Kanakadhara Stotram Pooja invoke Goddess Lakshmi and Lord Vishnu for ethical wealth growth, business prosperity, and freedom from debts.",
+                    seo_title="Lakshmi Narayana Hrudaya & Kanakadhara Pooja | Pradeep Nadig",
+                    seo_description="Attract wealth, business growth, and family abundance through Lakshmi Narayana Hrudaya Homa."
+                ),
+                Blog(
+                    title="Divine Blessings for Marriage & Education: Swayamvara Parvathi Pooja and Saraswati Vidya Rituals",
+                    slug="swayamvara-parvathi-saraswati-pooja-marriage-education",
+                    category="Family & Knowledge",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-02-25",
+                    cover_image="/images/services/swayamvara-parvathi-pooja.jpg",
+                    tags=["SwayamvaraParvathi", "SaraswatiPooja", "StudentExcellence"],
+                    content="Swayamvara Parvathi Pooja removes marriage delays while Sri Saraswati Vidya Pooja enhances student memory, retentive focus, and exam success through Medha Sukta recitations.",
+                    seo_title="Swayamvara Parvathi & Saraswati Vidya Pooja | Pradeep Nadig",
+                    seo_description="Discover Swayamvara Parvathi Pooja for marriage and Saraswati Vidya Pooja for student memory and exam success."
+                ),
+                Blog(
+                    title="Overcoming Adversity: Sundarakanda Parayana & Sri Sudarshana Pooja for Courage and Protection",
+                    slug="sundarakanda-parayana-sudarshana-pooja-protection",
+                    category="Protection & Valor",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-01",
+                    cover_image="/images/services/sundarakanda-parayana-pooja.jpg",
+                    tags=["SundarakandaParayana", "SudarshanaPooja", "CourageProtection"],
+                    content="Sundarakanda Parayana invokes Lord Hanuman for courage and crisis resolution, while Sri Sudarshana Pooja cuts through negative vibrations and black eye (Drishti dosha).",
+                    seo_title="Sundarakanda Parayana & Sudarshana Pooja | Pradeep Nadig",
+                    seo_description="Experience the courage of Sundarakanda Parayana and protection of Sri Sudarshana Pooja with Shri Pradeep Nadig."
+                ),
+                Blog(
+                    title="The Sacred Art of Vedic Chanting: How Correct Swara Pronunciation Activates Subtle Energy Channels",
+                    slug="sacred-art-of-vedic-chanting-swara-mastery",
+                    category="Classes & Workshops",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-05",
+                    cover_image="/images/courses/sacred-vedic-chanting-mastery.jpg",
+                    tags=["VedicChanting", "SwaraMastery", "PurushaSukta"],
+                    content="Learn authentic Sanskrit Swara accents (Udatta, Anudatta, Svarita) and master Purusha Sukta, Sri Sukta, and Durga Sukta chanting under Shri Pradeep Nadig.",
+                    seo_title="Sacred Vedic Chanting & Swara Mastery | Pradeep Nadig",
+                    seo_description="Learn authentic Sanskrit Swara pronunciation and master Sukta chanting under Shri Pradeep Nadig."
+                ),
+                Blog(
+                    title="Holistic Energy Healing: Exploring 7 Chakras, Aura Cleansing, Reiki Channeling, and Hypnotherapy",
+                    slug="holistic-energy-healing-chakras-aura-reiki-hypnotherapy",
+                    category="Holistic Healing",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-10",
+                    cover_image="/images/courses/chakra-aura-healing-workshop.jpg",
+                    tags=["ChakraHealing", "AuraCleansing", "ReikiMastery", "Hypnotherapy"],
+                    content="Master 7 chakras energy balancing, pendulum radiesthesia testing, aura cleansing, Reiki attunements, and clinical hypnotherapy & spirit release protocols.",
+                    seo_title="Chakra, Aura, Reiki & Hypnotherapy Masterclass | Pradeep Nadig",
+                    seo_description="Master 7 chakras energy balancing, aura cleansing, pendulum dowsing, and spirit release therapy."
+                ),
+                Blog(
+                    title="Sacred Floor Geometry: The Ancient Tradition, Symmetry, and Spiritual Benefits of Rangoli Art",
+                    slug="sacred-floor-geometry-rangoli-art-tradition",
+                    category="Arts & Heritage",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-15",
+                    cover_image="/images/courses/rangoli-art-workshop.jpg",
+                    tags=["RangoliArt", "FloorGeometry", "SacredMandala"],
+                    content="Discover traditional dot grids, vibrant powder blending, mandala symmetry, and spiritual symbolism of Rangoli art to invite Goddess Lakshmi into your home.",
+                    seo_title="Rangoli Art & Sacred Floor Geometry Workshop | Pradeep Nadig",
+                    seo_description="Discover spiritual symbolism, dot grids, and sacred floor geometry of Rangoli art in intensive workshop."
+                ),
+                Blog(
+                    title="Vedic Rituals During Celestial Events: Solar Eclipse Shanti Pooja and Mahashivaratri Vigil Explained",
+                    slug="vedic-rituals-celestial-events-surya-grahan-mahashivaratri",
+                    category="Live Events & Rituals",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-20",
+                    cover_image="/images/live-events/solar-eclipse-shanti-pooja.jpg",
+                    tags=["SolarEclipsePooja", "Mahashivaratri", "CelestialEvents"],
+                    content="Celestial alignments during Solar Eclipse and Mahashivaratri magnify mantra potency 1000-fold. Learn how remote Sankalpa allows global devotees to participate live.",
+                    seo_title="Surya Grahan & Mahashivaratri Live Rituals | Pradeep Nadig",
+                    seo_description="Learn why celestial events like Surya Grahan and Mahashivaratri possess high spiritual potency and how remote Sankalpa works."
+                ),
+                Blog(
+                    title="Bringing Sacred Art to Life: Interactive Live Thread Art Events for Birthdays & Weddings",
+                    slug="interactive-live-thread-art-events-celebrations",
+                    category="Events & Celebrations",
+                    author="Veda Brahma Shri Pradeep Nadig",
+                    publish_date="2026-03-25",
+                    cover_image="/images/live-events/thread-art-live.jpg",
+                    tags=["ThreadArt", "LiveEvent", "WeddingCelebrations"],
+                    content="Interactive live string art experience where guests weave colored threads across a wooden canvas to craft a collaborative portrait gift for weddings and milestone birthdays.",
+                    seo_title="Interactive Live Thread Art Events | Pradeep Nadig",
+                    seo_description="Discover live interactive string art events for weddings, birthdays, and celebrations across Bengaluru."
+                )
+            ]
+            db.add_all(blogs)
 
         # 6. Seed Gallery Items
         existing_gallery = await db.execute(select(GalleryItem))
