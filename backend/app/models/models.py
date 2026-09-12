@@ -284,3 +284,19 @@ class MessageLog(Base):
     customer = relationship("Customer", back_populates="message_logs")
     request = relationship("Request", back_populates="message_logs")
 
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False)
+    city = Column(String(100), nullable=True)
+    rating = Column(Integer, default=5)  # 1 to 5 stars
+    service_type = Column(String(255), nullable=True)
+    comment = Column(Text, nullable=False)
+    status = Column(String(50), default="Pending", index=True)  # Pending | Approved | Rejected
+    display_order = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+

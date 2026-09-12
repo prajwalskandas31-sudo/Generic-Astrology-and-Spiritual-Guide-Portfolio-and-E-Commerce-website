@@ -332,3 +332,16 @@ export interface LiveEventRegistration {
   payment_status: "Pending" | "Paid";
   created_at?: string;
 }
+
+export interface Review {
+  id: number;
+  client_name: string;
+  client_email?: string | null;
+  client_location?: string | null;
+  service_taken?: string | null;
+  rating: number;
+  review_text: string;
+  status: "Pending" | "Approved" | "Rejected";
+  created_at?: string;
+  updated_at?: string;
+}

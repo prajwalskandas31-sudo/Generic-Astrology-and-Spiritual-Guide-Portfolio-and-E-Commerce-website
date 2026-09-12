@@ -904,6 +904,61 @@ export async function registerLiveEvent(eventId: number, data: any) {
   }
 }
 
+// ------------------------------
+// Reviews API
+// ------------------------------
+
+export async function submitReview(data: {
+  client_name: string;
+  client_email?: string;
+  client_location?: string;
+  service_taken?: string;
+  rating: number;
+  review_text: string;
+}) {
+  return fetchAPI<{ message: string; review_id: number }>("/reviews", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getApprovedReviews() {
+  try {
+    return await fetchAPI<any[]>("/reviews");
+  } catch (error) {
+    return [];
+  }
+}
+
+export async function getAdminReviews(token: string, statusFilter?: string) {
+  const query = statusFilter ? `?status_filter=${statusFilter}` : "";
+  return fetchAPI<any[]>(`/reviews/admin${query}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function updateReviewStatus(id: number, status: "Approved" | "Rejected" | "Pending", token: string) {
+  return fetchAPI<{ message: string; id: number; status: string }>(`/reviews/admin/${id}/status`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+}
+
+export async function deleteReview(id: number, token: string) {
+  return fetchAPI<{ message: string }>(`/reviews/admin/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+
 
 
 

@@ -18,6 +18,7 @@ import {
   Sparkles,
   BookOpenCheck,
   Radio,
+  Star,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -41,6 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Media Library", href: "/admin/media", icon: FolderOpen },
     { name: "FAQ", href: "/admin/faq", icon: HelpCircle },
     { name: "Enquiries & Regs", href: "/admin/enquiries", icon: MessageSquare },
+    { name: "Client Reviews", href: "/admin/reviews", icon: Star },
     { name: "Accepted Schedule", href: "/admin/accepted", icon: CalendarCheck },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];

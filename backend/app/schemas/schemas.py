@@ -7,6 +7,30 @@ class MessageResponse(BaseModel):
     message: str
     success: bool = True
 
+# --- Review Schemas ---
+class ReviewCreate(BaseModel):
+    name: str
+    city: Optional[str] = None
+    rating: int = 5
+    service_type: Optional[str] = None
+    comment: str
+
+class ReviewStatusUpdate(BaseModel):
+    status: str  # Pending | Approved | Rejected
+
+class ReviewResponse(BaseModel):
+    id: int
+    name: str
+    city: Optional[str] = None
+    rating: int = 5
+    service_type: Optional[str] = None
+    comment: str
+    status: str = "Pending"
+    display_order: int = 0
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    model_config = ConfigDict(from_attributes=True)
+
 # --- Offering Schemas ---
 class OfferingBase(BaseModel):
     type: str  # Service | Consultation
