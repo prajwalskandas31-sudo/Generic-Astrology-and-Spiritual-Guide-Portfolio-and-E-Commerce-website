@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Sparkles, MapPin, Phone, Mail, Star } from "lucide-react";
+import { Sparkles, MapPin, Phone, Mail, Star, Crown } from "lucide-react";
 import ReviewSubmissionModal from "@/components/ReviewSubmissionModal";
 
 export interface FooterProps {
@@ -174,17 +174,18 @@ export default function Footer({
             </p>
           </div>
 
-          {/* Bottom Bar & Royal Creator Tagmark */}
+          {/* Bottom Bar & Ultra-Elitist Creator Tagmark */}
           <div className="mt-8 pt-8 border-t border-amber-800/20 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-600">
             <p className="order-2 md:order-1 text-center md:text-left">
               &copy; {currentYear} {siteName}. All rights reserved.
             </p>
 
-            {/* Elite Signature Creator Tagmark */}
-            <div className="order-1 md:order-2 text-center py-1">
-              <span className="font-serif tracking-widest text-[11px] text-amber-950/75 uppercase">
-                Designed &amp; Crafted by{" "}
-                <span className="font-semibold tracking-[0.18em] text-amber-950 border-b border-amber-800/40 pb-0.5 hover:border-amber-900 transition-colors">
+            {/* Ultra-Elitist Signature Creator Tagmark */}
+            <div className="order-1 md:order-2 flex items-center gap-2.5 px-4.5 py-1.5 rounded-full bg-gradient-to-r from-amber-950 via-slate-950 to-amber-950 text-amber-100 border border-amber-500/40 shadow-lg shadow-amber-950/20 hover:border-amber-400 hover:shadow-amber-500/30 transition-all duration-300 group">
+              <Crown className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shrink-0" />
+              <span className="font-serif tracking-[0.2em] text-[11px] whitespace-nowrap uppercase">
+                Architected &amp; Crafted by{" "}
+                <span className="font-bold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 bg-clip-text text-transparent tracking-[0.22em] drop-shadow-xs">
                   Prajwal Skanda S
                 </span>
               </span>
