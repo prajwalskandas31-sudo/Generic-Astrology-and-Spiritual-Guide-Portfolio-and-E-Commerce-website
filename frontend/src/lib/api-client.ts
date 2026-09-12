@@ -255,26 +255,59 @@ export async function getClasses() {
 }
 
 export async function getBlogs(category?: string) {
+  let fetched: import("../types").Blog[] = [];
   try {
     const query = category ? `?category=${encodeURIComponent(category)}` : "";
-    return await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 15000 });
+    const data = await fetchAPI<import("../types").Blog[]>(`/blogs${query}`, { timeoutMs: 15000 });
+    if (Array.isArray(data)) fetched = data;
   } catch (error) {
     console.warn("API notice for getBlogs:", error);
-    if (category) {
-      return FALLBACK_BLOGS.filter((b) => b.category === category);
-    }
-    return FALLBACK_BLOGS;
   }
+
+  const mapBySlug = new Map<string, import("../types").Blog>();
+  // Seed map with FALLBACK_BLOGS
+  for (const fb of FALLBACK_BLOGS) {
+    mapBySlug.set(fb.slug, { ...fb });
+  }
+  // Overlay backend API records
+  for (const b of fetched) {
+    const fb = mapBySlug.get(b.slug);
+    mapBySlug.set(b.slug, {
+      ...fb,
+      ...b,
+      cover_image: b.cover_image || fb?.cover_image,
+      images: (b.images && b.images.length > 0) ? b.images : fb?.images,
+      faq: (b.faq && b.faq.length > 0) ? b.faq : fb?.faq,
+      related_offering_slug: b.related_offering_slug || fb?.related_offering_slug,
+      related_offering_type: b.related_offering_type || fb?.related_offering_type,
+      related_offering_title: b.related_offering_title || fb?.related_offering_title,
+    });
+  }
+
+  let result = Array.from(mapBySlug.values());
+  if (category) {
+    result = result.filter((b) => b.category === category);
+  }
+  return result;
 }
 
 export async function getBlogBySlug(slug: string) {
+  const fb = FALLBACK_BLOGS.find((b) => b.slug === slug);
   try {
-    return await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
+    const item = await fetchAPI<import("../types").Blog>(`/blogs/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
+    return {
+      ...fb,
+      ...item,
+      cover_image: item.cover_image || fb?.cover_image,
+      images: (item.images && item.images.length > 0) ? item.images : (fb?.images || []),
+      faq: (item.faq && item.faq.length > 0) ? item.faq : (fb?.faq || []),
+      related_offering_slug: item.related_offering_slug || fb?.related_offering_slug,
+      related_offering_type: item.related_offering_type || fb?.related_offering_type,
+      related_offering_title: item.related_offering_title || fb?.related_offering_title,
+    };
   } catch (error) {
-    console.warn(`API notice for getBlogBySlug(${slug}):`, error);
-    const item = FALLBACK_BLOGS.find((b) => b.slug === slug);
-    if (!item) throw error;
-    return item;
+    if (fb) return fb;
+    throw error;
   }
 }
 
