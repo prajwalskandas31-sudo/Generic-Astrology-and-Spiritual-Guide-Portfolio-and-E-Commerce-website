@@ -179,6 +179,11 @@ const jsonLd = {
       publisher: {
         "@id": "https://pradeepnadig.in/#person",
       },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://pradeepnadig.in/services?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
     },
   ],
 };
@@ -194,6 +199,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        {/* Geo & Regional Local SEO Meta Tags */}
+        <meta name="geo.region" content="IN-KA" />
+        <meta name="geo.placename" content="Bengaluru" />
+        <meta name="geo.position" content="13.0903;77.5458" />
+        <meta name="ICBM" content="13.0903, 77.5458" />
+
         {/* Google Tag (gtag.js) */}
         <script
           async

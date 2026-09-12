@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import { Metadata } from "next";
 
+import { buildBreadcrumbSchema } from "@/lib/seo";
+
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -20,6 +22,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
       title,
       description,
+      keywords: [
+        blog.title,
+        blog.category || "Vedic Insights",
+        "Spiritual Blog",
+        "Pradeep Nadig Articles",
+        "Vedic Knowledge",
+      ],
       alternates: {
         canonical: url,
       },
@@ -32,6 +41,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         publishedTime: blog.publish_date,
         authors: [blog.author || "Pradeep Nadig"],
         images: blog.cover_image ? [{ url: blog.cover_image }] : ["/pradeep-nadig.jpg"],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: blog.cover_image ? [blog.cover_image] : ["/pradeep-nadig.jpg"],
       },
     };
   } catch (_) {
@@ -86,11 +101,22 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     },
   };
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", item: "https://pradeepnadig.in" },
+    { name: "Blogs", item: "https://pradeepnadig.in/blogs" },
+    { name: blog.title, item: `https://pradeepnadig.in/blogs/${slug}` },
+  ]);
+
+  const jsonLdGraph = {
+    "@context": "https://schema.org",
+    "@graph": [breadcrumbSchema, blogSchema],
+  };
+
   return (
     <PublicLayout settings={settings}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
       />
       <article className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-4xl mx-auto space-y-8">

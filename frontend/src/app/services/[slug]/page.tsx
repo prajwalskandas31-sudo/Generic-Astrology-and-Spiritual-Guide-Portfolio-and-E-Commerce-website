@@ -8,6 +8,8 @@ import { FALLBACK_OFFERINGS } from "@/lib/fallback-data";
 
 export const revalidate = 60;
 
+import { buildServiceSchema, buildFAQSchema, buildBreadcrumbSchema } from "@/lib/seo";
+
 export async function generateStaticParams() {
   return FALLBACK_OFFERINGS.map((offering) => ({
     slug: offering.slug,
@@ -19,12 +21,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   try {
     const offering = await getOfferingBySlug(slug);
     const title = offering.seo_title || `Book ${offering.title} in Bangalore | Pradeep Nadig`;
-    const description = offering.seo_description || offering.short_description;
+    const description = offering.seo_description || offering.short_description || offering.full_description;
     const url = `https://pradeepnadig.in/services/${slug}`;
 
     return {
       title,
       description,
+      keywords: [
+        offering.title,
+        "Kannada Purohit near me",
+        "Ganapathi Homa Pandit",
+        "Vedic Ritual Bangalore",
+        "Pradeep Nadig Services",
+        "Pooja Services Bengaluru",
+      ],
       alternates: {
         canonical: url,
       },
@@ -33,7 +43,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         url,
         siteName: "Pradeep Nadig",
-        images: offering.images?.[0] ? [{ url: offering.images[0] }] : [],
+        images: offering.images?.[0] ? [{ url: offering.images[0] }] : ["/pradeep-nadig.jpg"],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: offering.images?.[0] ? [offering.images[0]] : ["/pradeep-nadig.jpg"],
       },
     };
   } catch (_) {
@@ -62,41 +78,20 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const jsonLd = {
+  const serviceSchema = buildServiceSchema(offering);
+  const faqSchema = offering.faq && offering.faq.length > 0 ? buildFAQSchema(offering.faq) : null;
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", item: "https://pradeepnadig.in" },
+    { name: "Services", item: "https://pradeepnadig.in/services" },
+    { name: offering.title, item: `https://pradeepnadig.in/services/${slug}` },
+  ]);
+
+  const jsonLdGraph = {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Service",
-        name: offering.title,
-        serviceType: "Vedic Ritual Service",
-        description: offering.short_description || offering.full_description,
-        url: `https://pradeepnadig.in/services/${slug}`,
-        provider: {
-          "@type": "Person",
-          name: "Pradeep Nadig",
-          jobTitle: "Vedic Scholar & Spiritual Guide",
-          url: "https://pradeepnadig.in",
-        },
-        areaServed: {
-          "@type": "AdministrativeArea",
-          name: "Bengaluru, Karnataka, India",
-        },
-      },
-      ...(offering.faq && offering.faq.length > 0
-        ? [
-            {
-              "@type": "FAQPage",
-              mainEntity: offering.faq.map((item: any) => ({
-                "@type": "Question",
-                name: item.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: item.answer,
-                },
-              })),
-            },
-          ]
-        : []),
+      breadcrumbSchema,
+      ...(serviceSchema ? [serviceSchema] : []),
+      ...(faqSchema ? [faqSchema] : []),
     ],
   };
 
@@ -104,7 +99,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     <PublicLayout settings={settings}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
       />
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-[70vh]">
         <div className="max-w-7xl mx-auto">
