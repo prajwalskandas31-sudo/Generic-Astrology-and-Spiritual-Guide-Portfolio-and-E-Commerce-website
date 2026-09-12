@@ -4,7 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-FTZ1SWVN52";
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-FTZ1SWVNS2";
 
 const inter = Inter({ subsets: ["latin"] });
 
