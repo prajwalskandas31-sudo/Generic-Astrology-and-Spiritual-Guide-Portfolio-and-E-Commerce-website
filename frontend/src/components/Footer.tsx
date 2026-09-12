@@ -180,15 +180,9 @@ export default function Footer({
               &copy; {currentYear} {siteName}. All rights reserved.
             </p>
 
-            {/* Ultra-Elitist Signature Creator Tagmark */}
-            <div className="order-1 md:order-2 flex items-center gap-2.5 px-4.5 py-1.5 rounded-full bg-gradient-to-r from-amber-950 via-slate-950 to-amber-950 text-amber-100 border border-amber-500/40 shadow-lg shadow-amber-950/20 hover:border-amber-400 hover:shadow-amber-500/30 transition-all duration-300 group">
-              <Crown className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shrink-0" />
-              <span className="font-serif tracking-[0.2em] text-[11px] whitespace-nowrap uppercase">
-                Architected &amp; Crafted by{" "}
-                <span className="font-bold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 bg-clip-text text-transparent tracking-[0.22em] drop-shadow-xs">
-                  Prajwal Skanda S
-                </span>
-              </span>
+            {/* Simple Creator Tagmark */}
+            <div className="order-1 md:order-2 text-center text-xs text-slate-600 font-medium">
+              Created by Prajwal Skanda S
             </div>
 
             <div className="order-3 flex items-center gap-4">
