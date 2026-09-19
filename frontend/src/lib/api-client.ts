@@ -149,23 +149,48 @@ export async function getOfferingBySlug(slug: string) {
   }
 }
 
+export function resolveWorkshopStatus(workshop: import("../types").Workshop): import("../types").Workshop {
+  if (!workshop) return workshop;
+  const todayStr = new Date().toISOString().split("T")[0];
+  const endDate = workshop.end_date || workshop.start_date;
+
+  if (endDate && endDate < todayStr) {
+    return {
+      ...workshop,
+      status: "Completed",
+    };
+  }
+
+  if (workshop.registration_deadline && workshop.registration_deadline < todayStr) {
+    if (workshop.status === "Published") {
+      return {
+        ...workshop,
+        status: "Closed",
+      };
+    }
+  }
+
+  return workshop;
+}
+
 export async function getWorkshops(status_filter?: string) {
   try {
     const isAll = !status_filter || status_filter.toLowerCase() === "all";
     const query = !isAll ? `?status_filter=${encodeURIComponent(status_filter!)}` : "";
     const workshops = await fetchAPI<import("../types").Workshop[]>(`/workshops${query}`, { timeoutMs: 15000 });
-    return workshops.map((w) => {
+    const mapped = workshops.map((w) => {
       const fb = FALLBACK_WORKSHOPS.find((f) => f.slug === w.slug);
       const hasUnsplash = !w.cover_image || w.cover_image.includes("unsplash.com");
-      return {
+      return resolveWorkshopStatus({
         ...fb,
         ...w,
         cover_image: hasUnsplash ? (fb?.cover_image || "/images/services/sundarakanda-parayana-pooja.jpg") : w.cover_image,
-      };
+      });
     });
+    return mapped;
   } catch (error) {
     console.warn("API notice for getWorkshops:", error);
-    let result = FALLBACK_WORKSHOPS;
+    let result = FALLBACK_WORKSHOPS.map(resolveWorkshopStatus);
     if (status_filter && status_filter.toLowerCase() !== "all") {
       result = result.filter((w) => w.status === status_filter);
     }
@@ -178,13 +203,13 @@ export async function getWorkshopBySlug(slug: string) {
   try {
     const item = await fetchAPI<import("../types").Workshop>(`/workshops/${encodeURIComponent(slug)}`, { timeoutMs: 15000 });
     const hasUnsplash = !item.cover_image || item.cover_image.includes("unsplash.com");
-    return {
+    return resolveWorkshopStatus({
       ...fb,
       ...item,
       cover_image: hasUnsplash ? (fb?.cover_image || "/images/services/sundarakanda-parayana-pooja.jpg") : item.cover_image,
-    };
+    });
   } catch (error) {
-    if (fb) return fb;
+    if (fb) return resolveWorkshopStatus(fb);
     throw error;
   }
 }

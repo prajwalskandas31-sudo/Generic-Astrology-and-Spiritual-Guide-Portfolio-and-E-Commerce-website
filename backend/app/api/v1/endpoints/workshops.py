@@ -20,6 +20,19 @@ router = APIRouter()
 
 from fastapi.responses import JSONResponse
 
+import datetime
+
+def _resolve_workshop_date_status(w: Workshop) -> Workshop:
+    if not w:
+        return w
+    today_str = datetime.date.today().isoformat()
+    end_d = w.end_date or w.start_date
+    if end_d and end_d < today_str and w.status == "Published":
+        w.status = "Completed"
+    elif w.registration_deadline and w.registration_deadline < today_str and w.status == "Published":
+        w.status = "Closed"
+    return w
+
 @router.get("", response_model=List[WorkshopResponse])
 async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
@@ -31,7 +44,8 @@ async def get_workshops(status_filter: Optional[str] = None, db: AsyncSession = 
             query = query.where(Workshop.status.in_(["Published", "Completed"]))
         query = query.order_by(Workshop.featured.desc(), Workshop.id.desc())
         result = await db.execute(query)
-        return result.scalars().all()
+        workshops = result.scalars().all()
+        return [_resolve_workshop_date_status(w) for w in workshops]
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": f"Workshops Error: {str(e)}", "error_type": type(e).__name__})
 
@@ -43,7 +57,7 @@ async def get_workshop_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
         workshop = result.scalar_one_or_none()
         if not workshop:
             raise HTTPException(status_code=404, detail="Workshop not found")
-        return workshop
+        return _resolve_workshop_date_status(workshop)
     except HTTPException:
         raise
     except Exception as e:
@@ -58,8 +72,12 @@ async def register_for_workshop(
     db: AsyncSession = Depends(get_db)
 ):
     workshop = await db.get(Workshop, id)
-    if not workshop or workshop.status != "Published":
-        raise HTTPException(status_code=404, detail="Workshop not available for registration")
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    
+    workshop = _resolve_workshop_date_status(workshop)
+    if workshop.status != "Published":
+        raise HTTPException(status_code=400, detail="Registration is closed as this workshop has concluded or is no longer open.")
     
     batch = None
     if data.batch_id:
