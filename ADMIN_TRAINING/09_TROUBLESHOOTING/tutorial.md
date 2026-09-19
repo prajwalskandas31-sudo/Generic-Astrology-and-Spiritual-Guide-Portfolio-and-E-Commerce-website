@@ -5,15 +5,16 @@ A comprehensive troubleshooting manual and source document for diagnosing, resol
 
 ---
 
-## 1. Authentication & Access Errors
+## 1. Authentication & Security Credential Errors
 
-### Problem 1: Invalid Login Credentials or Access Denied
-- **Symptom**: Error notification "Invalid credentials" upon submitting `/admin/login`.
-- **Root Cause**: Password typo, unauthorized user account, or Supabase Auth token mismatch.
+### Problem 1: Changing Account Password or Invalid Login Credentials
+- **Symptom**: Need to change active admin security password or error notification "Invalid credentials" upon submitting `/admin/login`.
+- **Root Cause**: Desynchronized password credentials, password typo, or expired session.
 - **Recommended Action**:
-  1. In local dev mode, use default credentials: `admin@pradeepnadig.com` with password `admin123`.
-  2. In production mode, reset user password via Supabase Auth Dashboard -> Users -> Send Password Reset Email.
-  3. Ensure user account has administrative role privileges in Supabase `auth.users` metadata.
+  1. To change your active security password, log into the Admin Portal, navigate to **Settings** (`/admin/settings`), and scroll to **Admin Account Security & Password Reset**.
+  2. Select your account profile, enter your new password, and click **Save & Change Password**. A green success notification will display immediately and trigger backend API log `POST /api/v1/admin/change-password`.
+  3. **Security Policy**: For account protection, password changes are strictly restricted to authenticated admin sessions inside `/admin/settings` (and are disabled on public login screens).
+  4. In production mode, reset user passwords via Supabase Auth Dashboard -> Users -> Send Password Reset Email.
 
 ---
 

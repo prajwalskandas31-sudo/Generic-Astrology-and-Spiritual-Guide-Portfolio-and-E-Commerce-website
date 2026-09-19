@@ -160,19 +160,24 @@ When a visitor submits an enquiry on the website, a notification is sent to the 
 
 ---
 
-## ⚙️ 12. General Site Settings (`/admin/settings`)
+## ⚙️ 12. General Site Settings & Admin Account Security (`/admin/settings`)
 
-Update website text and legal content without writing code:
+Update website text, legal content, and admin security credentials:
 
 - **Hero & Branding**: Edit Site Title, Hero Main Title, and Subtitle text.
 - **Contact & WhatsApp**: Edit Mobile Contact Number, WhatsApp Digits, Email Address, and Physical Office Address.
-- **Legal Policy Pages**: Update text for Privacy Policy, Terms & Conditions, and Refund Policy pages.
-- Click **Save All Settings** to apply changes live to the public website immediately.
+- **Legal Policy Pages**: Update text for Privacy Policy, Terms & Conditions, and Refund Policy pages. Click **Save All Settings** to apply changes live to the public website.
+- **Admin Account Security & Password Reset**:
+  - Located in an independent security card at the bottom of `/admin/settings`.
+  - To change your password, select your target account profile, enter your **New Security Password** (min 6 characters), confirm the password, and click **Save & Change Password**.
+  - A bright green success notification will display immediately upon successful update, and the event is recorded in the **Principal Admin Audit Logs Center**.
+  - **Security Note**: Password changes require an active, authenticated admin session on `/admin/settings`. Password modification forms are intentionally excluded from the public login screen (`/admin/login`) for security protection.
 
 ---
 
 ## ❓ Troubleshooting & Support
 
+- **Changing or Updating Admin Password**: Log in to the Admin Portal, go to `/admin/settings`, scroll to **Admin Account Security & Password Reset**, enter your new password, and click **Save & Change Password**.
 - **Forgot Admin Password?**: Reset via Supabase Auth Dashboard -> Users -> Send Password Reset Email.
 - **Image Link Broken?**: Ensure image URLs start with `https://` and are accessible publicly. Use the **Media Library** for best results.
 - **WhatsApp Webhook Disconnected?**: Verify `WHATSAPP_TOKEN` and `WHATSAPP_VERIFY_TOKEN` in your backend server `.env` file.
