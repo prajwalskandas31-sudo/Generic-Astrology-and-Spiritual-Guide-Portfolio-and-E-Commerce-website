@@ -1,5 +1,15 @@
 import LegalLayout from "@/components/LegalLayout";
 import { getSettings } from "@/lib/api-client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Cookie Policy | Veda Brahma Shri Pradeep Nadig",
+  description:
+    "Cookie policy explaining how essential cookies and session technologies are used on pradeepnadig.in.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/cookie-policy",
+  },
+};
 
 export const revalidate = 300;
 

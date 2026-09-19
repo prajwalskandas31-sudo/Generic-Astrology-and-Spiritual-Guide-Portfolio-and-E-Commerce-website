@@ -259,6 +259,7 @@ export interface Course {
   id: number;
   title: string;
   slug: string;
+  category?: string;
   short_description?: string;
   full_description?: string;
   instructor?: string;
@@ -275,6 +276,8 @@ export interface Course {
   schedule?: string;
   status?: "Active" | "Upcoming" | "Completed" | string;
   featured?: boolean;
+  seo_title?: string;
+  seo_description?: string;
   syllabus_modules?: CourseModule[];
   faq?: { question: string; answer: string }[];
   created_at?: string;
@@ -319,6 +322,8 @@ export interface LiveEvent {
   status: "Upcoming" | "Live Now" | "Ended" | string;
   agenda: LiveEventAgendaItem[];
   pandits_count?: number;
+  seo_title?: string;
+  seo_description?: string;
   faq?: { question: string; answer: string }[];
   created_at?: string;
 }

@@ -1,5 +1,15 @@
 import LegalLayout from "@/components/LegalLayout";
 import { getSettings } from "@/lib/api-client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Refund Policy | Veda Brahma Shri Pradeep Nadig",
+  description:
+    "Refund policy for workshop registrations, online courses, and ritual services.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/refund-policy",
+  },
+};
 
 export const revalidate = 300;
 

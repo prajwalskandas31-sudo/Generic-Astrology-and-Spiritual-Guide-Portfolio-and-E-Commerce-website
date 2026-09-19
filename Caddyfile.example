@@ -1,7 +1,12 @@
 # Reference Caddyfile for Hostinger VPS Deployment
 # Copy relevant blocks into /etc/caddy/Caddyfile on the VPS server.
 
-pradeepnadig.in, www.pradeepnadig.in {
+# Redirect WWW to Apex Domain (301 Permanent Redirect for SEO)
+www.pradeepnadig.in {
+    redir https://pradeepnadig.in{uri} permanent
+}
+
+pradeepnadig.in {
     # Route API endpoints directly to FastAPI backend container
     handle_path /api/* {
         rewrite * /api{path}

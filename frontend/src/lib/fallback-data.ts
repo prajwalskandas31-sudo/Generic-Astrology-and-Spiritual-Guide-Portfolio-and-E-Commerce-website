@@ -1,4 +1,4 @@
-import { Offering, Workshop, ClassItem, Blog, FAQItem, GalleryItem } from "@/types";
+import { Offering, Workshop, ClassItem, Blog, FAQItem, GalleryItem, LiveEvent, Course } from "@/types";
 
 export const FALLBACK_SETTINGS: Record<string, any> = {
   site_name: "Veda Brahma Shri Pradeep Nadig",
@@ -495,7 +495,7 @@ export const FALLBACK_OFFERINGS: Offering[] = [
   }
 ];
 
-export const FALLBACK_LIVE_EVENTS = [
+export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
   {
     id: 1,
     title: "Surya Grahan (Solar Eclipse) Shanti Pooja 2026",
@@ -792,7 +792,7 @@ export const FALLBACK_WORKSHOPS: Workshop[] = [
   }
 ];
 
-export const FALLBACK_COURSES: ClassItem[] = [
+export const FALLBACK_COURSES: Course[] = [
   {
     id: 1,
     title: "Sacred Vedic Chanting Mastery",

@@ -1,5 +1,15 @@
 import LegalLayout from "@/components/LegalLayout";
 import { getSettings } from "@/lib/api-client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms & Conditions | Veda Brahma Shri Pradeep Nadig",
+  description:
+    "Terms and conditions governing Vedic service bookings, consultations, workshops, and website usage.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/terms-and-conditions",
+  },
+};
 
 export const revalidate = 300;
 

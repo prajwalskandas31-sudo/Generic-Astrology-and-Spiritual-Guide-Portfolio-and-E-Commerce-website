@@ -1,5 +1,15 @@
 import LegalLayout from "@/components/LegalLayout";
 import { getSettings } from "@/lib/api-client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Veda Brahma Shri Pradeep Nadig",
+  description:
+    "Privacy Policy for Veda Brahma Shri Pradeep Nadig. Learn how personal data submitted during enquiry, booking, and workshop registrations is protected.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/privacy-policy",
+  },
+};
 
 export const revalidate = 300;
 

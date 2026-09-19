@@ -17,7 +17,17 @@ import {
   Radio,
 } from "lucide-react";
 
+import { Metadata } from "next";
 import { Offering, Workshop } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Veda Brahma Shri Pradeep Nadig | Kannada Purohit & Vedic Astrologer Bengaluru",
+  description:
+    "Official website of Veda Brahma Shri Pradeep Nadig. Authentic Kannada Purohit & Vedic Pandit near me for Griha Pravesha, Ganapathi Homa, Navagraha Homa, Vastu Homa, Poojas, and Astrology Consultations in Bengaluru.",
+  alternates: {
+    canonical: "https://pradeepnadig.in",
+  },
+};
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

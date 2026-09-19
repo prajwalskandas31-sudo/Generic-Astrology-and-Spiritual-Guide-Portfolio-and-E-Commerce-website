@@ -1,5 +1,15 @@
 import LegalLayout from "@/components/LegalLayout";
 import { getSettings } from "@/lib/api-client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Cancellation Policy | Veda Brahma Shri Pradeep Nadig",
+  description:
+    "Cancellation policy for Vedic consultations, homa services, and chanting workshops.",
+  alternates: {
+    canonical: "https://pradeepnadig.in/cancellation-policy",
+  },
+};
 
 export const revalidate = 300;
 
