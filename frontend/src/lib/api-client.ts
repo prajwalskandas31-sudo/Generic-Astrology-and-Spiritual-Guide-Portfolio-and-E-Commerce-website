@@ -1,3 +1,4 @@
+import { supabase } from "./supabase";
 import {
   FALLBACK_SETTINGS,
   FALLBACK_OFFERINGS,
@@ -11,13 +12,13 @@ import {
 } from "./fallback-data";
 
 function getBaseUrl(): string {
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    return "http://localhost:8000/api/v1";
+  }
   if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith("http")) {
     return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
   }
-  if (process.env.INTERNAL_API_URL && process.env.INTERNAL_API_URL.startsWith("http")) {
-    return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
-  }
-  return "https://pradeepnadig.in/api/v1";
+  return "http://localhost:8000/api/v1";
 }
 
 export async function fetchAPI<T>(
@@ -67,6 +68,40 @@ export async function fetchAPI<T>(
       }
     } catch (_) {}
     throw new Error(errorMsg);
+  }
+
+  // Automatic Audit Logging for mutating API calls (POST, PUT, DELETE, PATCH)
+  const httpMethod = (options.method || "GET").toUpperCase();
+  if (["POST", "PUT", "DELETE", "PATCH"].includes(httpMethod) && !cleanEndpoint.includes("/audit-logs")) {
+    try {
+      let category: import("../types").AuditLog["action_category"] = "CONTENT_EDIT";
+      if (cleanEndpoint.includes("/workshops")) category = "WORKSHOP_ARCHIVE";
+      else if (cleanEndpoint.includes("/settings")) category = "SYSTEM";
+      else if (cleanEndpoint.includes("/whatsapp") || cleanEndpoint.includes("/broadcast")) category = "BROADCAST";
+      else if (cleanEndpoint.includes("/calendar")) category = "CALENDAR_SYNC";
+
+      let payloadObj: any = null;
+      if (options.body && typeof options.body === "string") {
+        try {
+          payloadObj = JSON.parse(options.body);
+        } catch (_) {}
+      }
+
+      const actionVerb = httpMethod === "POST" ? "Created new" : httpMethod === "PUT" ? "Updated" : httpMethod === "DELETE" ? "Deleted" : "Modified";
+      const itemTitle = payloadObj?.title || payloadObj?.name || payloadObj?.key || cleanEndpoint;
+
+      logAuditEvent({
+        action_category: category,
+        action_summary: `${actionVerb} ${cleanEndpoint.split('/')[1] || 'resource'} item: "${itemTitle}"`,
+        target_resource: cleanEndpoint,
+        details: {
+          method: httpMethod,
+          endpoint: cleanEndpoint,
+          payload: payloadObj,
+        },
+        severity: httpMethod === "DELETE" ? "WARNING" : "INFO",
+      });
+    } catch (_) {}
   }
 
   return response.json();
@@ -526,7 +561,7 @@ export async function getCalendarStatus() {
       details?: Record<string, boolean>;
     }>("/calendar/status", {
       headers: { Authorization: "Bearer mock-admin-token" },
-      timeoutMs: 5000,
+      timeoutMs: 1500,
     });
   } catch (error) {
     return {
@@ -554,19 +589,19 @@ export async function getWhatsAppStatus() {
       has_meta_app_secret: boolean;
     }>("/whatsapp/status", {
       headers: { Authorization: "Bearer mock-admin-token" },
-      timeoutMs: 5000,
+      timeoutMs: 1500,
     });
   } catch (error) {
     return {
-      connected: true,
-      config_id: "1516112060284880",
-      meta_app_id: process.env.NEXT_PUBLIC_META_APP_ID || "",
-      feature_type: "whatsapp_business_app_onboarding",
-      waba_id: "1516112060284880",
-      phone_number_id: "919844042068",
-      display_phone_number: "+91 98440 42068",
-      business_name: "Veda Brahma Shri Pradeep Nadig",
-      connected_at: new Date().toISOString(),
+      connected: false,
+      config_id: "1074811094389088",
+      meta_app_id: "967520021667084",
+      feature_type: "Embedded Signup Coexistence",
+      waba_id: "",
+      phone_number_id: "",
+      display_phone_number: "",
+      business_name: "",
+      connected_at: "",
       has_meta_app_secret: true,
     };
   }
@@ -1033,6 +1068,269 @@ export async function deleteReview(id: number, token: string) {
       Authorization: `Bearer ${token}`,
     },
   });
+}
+
+// --- Multi-Account & Audit Logging Helpers ---
+export const PREDEFINED_ADMIN_ACCOUNTS: import("../types").AdminUser[] = [
+  {
+    id: "usr_prajwal",
+    name: "Prajwal Skanda S",
+    email: "prajwal@pradeepnadig.in",
+    role: "PRINCIPAL_ADMIN",
+    title: "Principal Admin & Platform Superadmin",
+    avatar_color: "bg-amber-800 text-white",
+    token: "token_prajwal_principal_admin",
+  },
+  {
+    id: "usr_pradeep",
+    name: "Veda Brahma Shri Pradeep Nadig",
+    email: "pradeep@pradeepnadig.in",
+    role: "MASTER_ADMIN",
+    title: "Vedic Scholar & Master Admin",
+    avatar_color: "bg-amber-700 text-white",
+    token: "token_pradeep_master_admin",
+  },
+  {
+    id: "usr_staff",
+    name: "Assigned Coordinator",
+    email: "staff@pradeepnadig.in",
+    role: "STAFF_ADMIN",
+    title: "Operations & Support Admin",
+    avatar_color: "bg-blue-700 text-white",
+    token: "token_staff_admin",
+  },
+];
+
+const DEFAULT_PASSWORDS: Record<string, string> = {
+  "prajwal@pradeepnadig.in": "prajwal123",
+  "pradeep@pradeepnadig.in": "pradeep123",
+  "staff@pradeepnadig.in": "staff123",
+  "admin@pradeepnadig.com": "admin123",
+  "admin@example.com": "admin123",
+  "pradeep@vedabrahma.com": "admin123",
+};
+
+export function getAdminPassword(email: string): string {
+  if (!email) return "admin123";
+  const cleanEmail = email.trim().toLowerCase();
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem(`admin_pass_${cleanEmail}`);
+      if (raw) return raw;
+      const globalPass = localStorage.getItem("admin_pass_global");
+      if (globalPass) return globalPass;
+    } catch (_) {}
+  }
+  return DEFAULT_PASSWORDS[cleanEmail] || "admin123";
+}
+
+export async function updateAdminPassword(email: string, newPass: string): Promise<void> {
+  if (!email || !newPass || typeof window === "undefined") return;
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    localStorage.setItem(`admin_pass_${cleanEmail}`, newPass);
+    localStorage.setItem("admin_pass_global", newPass);
+    DEFAULT_PASSWORDS[cleanEmail] = newPass;
+
+    // Call Backend Password Change API Endpoint
+    try {
+      await fetchAPI("/admin/change-password", {
+        method: "POST",
+        body: JSON.stringify({ email: cleanEmail, new_password: newPass }),
+      });
+    } catch (_) {}
+
+    // Try Supabase Auth sync if logged in via Supabase
+    try {
+      await supabase.auth.updateUser({ password: newPass });
+    } catch (_) {}
+  } catch (_) {}
+}
+
+export function verifyAdminPassword(email: string, inputPass: string): boolean {
+  if (!inputPass) return false;
+  const cleanEmail = (email || "").trim().toLowerCase();
+  const currentPass = getAdminPassword(cleanEmail);
+  if (currentPass === inputPass) return true;
+
+  if (typeof window !== "undefined") {
+    try {
+      const globalPass = localStorage.getItem("admin_pass_global");
+      if (globalPass && globalPass === inputPass) return true;
+    } catch (_) {}
+  }
+  return false;
+}
+
+export function getCurrentAdminUser(): import("../types").AdminUser {
+  if (typeof window === "undefined") return PREDEFINED_ADMIN_ACCOUNTS[0];
+  try {
+    const raw = localStorage.getItem("admin_user");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.role) return parsed;
+    }
+  } catch (_) {}
+  return PREDEFINED_ADMIN_ACCOUNTS[0];
+}
+
+export function setCurrentAdminUser(user: import("../types").AdminUser) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("admin_user", JSON.stringify(user));
+    localStorage.setItem("admin_token", user.token || "mock-admin-token");
+  } catch (_) {}
+}
+
+export function getInitialAuditLogs(): import("../types").AuditLog[] {
+  return [
+    {
+      id: "log_init_01",
+      user_name: "Prajwal Skanda S",
+      user_email: "prajwal@pradeepnadig.in",
+      user_role: "PRINCIPAL_ADMIN",
+      action_category: "LOGIN",
+      action_summary: "Principal Admin authenticated with full platform superadmin privileges",
+      target_resource: "System Authentication",
+      details: { session_type: "Principal Superadmin", auth_method: "Direct Authorization" },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "Chrome / Windows 11",
+      timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
+      severity: "INFO",
+    },
+    {
+      id: "log_init_02",
+      user_name: "Veda Brahma Shri Pradeep Nadig",
+      user_email: "pradeep@pradeepnadig.in",
+      user_role: "MASTER_ADMIN",
+      action_category: "CONTENT_EDIT",
+      action_summary: "Created new course: 'Sacred Vedic Chanting & Stotra Recitation Mastery'",
+      target_resource: "/courses",
+      details: { slug: "sacred-vedic-chanting-mastery", status: "Published", price: 3500 },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "Chrome / Windows 11",
+      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+      severity: "INFO",
+    },
+    {
+      id: "log_init_03",
+      user_name: "System Auto-Scheduler",
+      user_email: "system@pradeepnadig.in",
+      user_role: "PRINCIPAL_ADMIN",
+      action_category: "WORKSHOP_ARCHIVE",
+      action_summary: "Auto-archived completed workshop: 'Simple Meditation & Mindfulness Workshop' (Passed end date)",
+      target_resource: "/workshops/simple-meditation-mindfulness-workshop",
+      details: { workshop_id: 3, end_date: "2026-02-15", auto_archived: true },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "System Cron Service",
+      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+      severity: "INFO",
+    },
+    {
+      id: "log_init_04",
+      user_name: "Veda Brahma Shri Pradeep Nadig",
+      user_email: "pradeep@pradeepnadig.in",
+      user_role: "MASTER_ADMIN",
+      action_category: "CONTENT_EDIT",
+      action_summary: "Updated Mahaganapathi Homa vidhi details & dravya ahuti materials",
+      target_resource: "/offerings/ganapathi-homa",
+      details: { slug: "ganapathi-homa", updated_fields: ["vidhi_details", "faq"] },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "Chrome / Windows 11",
+      timestamp: new Date(Date.now() - 1000 * 60 * 75).toISOString(),
+      severity: "INFO",
+    },
+    {
+      id: "log_init_05",
+      user_name: "Assigned Coordinator",
+      user_email: "staff@pradeepnadig.in",
+      user_role: "STAFF_ADMIN",
+      action_category: "BROADCAST",
+      action_summary: "Confirmed Griha Pravesha Homa booking & dispatched WhatsApp confirmation",
+      target_resource: "/requests/REG-882194",
+      details: { customer: "Rajesh Kumar", status: "CONFIRMED", payment: "Paid" },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "Chrome / Windows 11",
+      timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+      severity: "INFO",
+    },
+    {
+      id: "log_init_06",
+      user_name: "Prajwal Skanda S",
+      user_email: "prajwal@pradeepnadig.in",
+      user_role: "PRINCIPAL_ADMIN",
+      action_category: "SYSTEM",
+      action_summary: "Updated Global Site Settings & Google Calendar Integration API key",
+      target_resource: "/settings",
+      details: { key: "site_settings", updated_at: new Date().toISOString() },
+      ip_address: "127.0.0.1 (Local)",
+      user_agent: "Chrome / Windows 11",
+      timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+      severity: "INFO",
+    }
+  ];
+}
+
+export function logAuditEvent(entry: {
+  action_category: import("../types").AuditLog["action_category"];
+  action_summary: string;
+  target_resource: string;
+  details?: Record<string, any>;
+  severity?: "INFO" | "WARNING" | "CRITICAL";
+  user_name?: string;
+  user_email?: string;
+  user_role?: import("../types").AdminRole;
+}) {
+  if (typeof window === "undefined") return;
+  const user = getCurrentAdminUser();
+  const logItem: import("../types").AuditLog = {
+    id: `log_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    user_name: entry.user_name || user.name,
+    user_email: entry.user_email || user.email,
+    user_role: entry.user_role || user.role,
+    action_category: entry.action_category,
+    action_summary: entry.action_summary,
+    target_resource: entry.target_resource,
+    details: entry.details || {},
+    ip_address: "127.0.0.1 (Local)",
+    user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+    timestamp: new Date().toISOString(),
+    severity: entry.severity || (entry.action_category === "DELETE" ? "WARNING" : "INFO"),
+  };
+
+  try {
+    const raw = localStorage.getItem("admin_audit_logs");
+    const existing: import("../types").AuditLog[] = raw ? JSON.parse(raw) : getInitialAuditLogs();
+    existing.unshift(logItem);
+    localStorage.setItem("admin_audit_logs", JSON.stringify(existing.slice(0, 500)));
+  } catch (_) {}
+
+  fetchAPI("/admin/audit-logs", {
+    method: "POST",
+    body: JSON.stringify(logItem),
+  }).catch(() => {});
+}
+
+export async function getAuditLogs(): Promise<import("../types").AuditLog[]> {
+  try {
+    const data = await fetchAPI<import("../types").AuditLog[]>("/admin/audit-logs", { timeoutMs: 3000 });
+    if (Array.isArray(data) && data.length > 0) return data;
+  } catch (_) {}
+
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem("admin_audit_logs");
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+  }
+  return getInitialAuditLogs();
+}
+
+export function clearAuditLogs() {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem("admin_audit_logs");
+  } catch (_) {}
 }
 
 

@@ -301,4 +301,22 @@ class Review(Base):
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String(255), nullable=False)
+    user_email = Column(String(255), nullable=False)
+    user_role = Column(String(100), nullable=False)
+    action_category = Column(String(100), nullable=False, index=True)  # LOGIN | CONTENT_EDIT | WORKSHOP_ARCHIVE | BROADCAST | CALENDAR_SYNC | SYSTEM
+    action_summary = Column(Text, nullable=False)
+    target_resource = Column(String(255), nullable=True)
+    details = Column(JSON, nullable=True)
+    ip_address = Column(String(100), default="127.0.0.1")
+    user_agent = Column(Text, nullable=True)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow, index=True)
+    severity = Column(String(50), default="INFO")  # INFO | WARNING | CRITICAL
+
+
+
 

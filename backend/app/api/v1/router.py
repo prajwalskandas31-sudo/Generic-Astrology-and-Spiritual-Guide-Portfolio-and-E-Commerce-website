@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.api.v1.endpoints import (
     offerings, workshops, payments, classes_api,
     blogs, gallery, media, faq, enquiries, settings, admin, webhooks, requests_api, calendar_api,
-    courses, live_events, whatsapp_api, reviews
+    courses, live_events, whatsapp_api, reviews, audit_logs
 )
 
 api_router = APIRouter()
@@ -27,7 +27,8 @@ async def api_v1_root():
             "/settings",
             "/payments",
             "/calendar",
-            "/whatsapp"
+            "/whatsapp",
+            "/audit-logs"
         ]
     }
 
@@ -49,6 +50,9 @@ api_router.include_router(admin.router, prefix="/admin", tags=["Admin Dashboard"
 api_router.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
 api_router.include_router(calendar_api.router, prefix="/calendar", tags=["Google Calendar Integrations"])
 api_router.include_router(whatsapp_api.router, prefix="/whatsapp", tags=["WhatsApp Integration"])
+api_router.include_router(audit_logs.router, prefix="/audit-logs", tags=["Audit Logs"])
+api_router.include_router(audit_logs.router, prefix="/admin/audit-logs", tags=["Audit Logs"])
+
 
 
 

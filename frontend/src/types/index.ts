@@ -356,3 +356,30 @@ export interface Review {
   created_at?: string;
   updated_at?: string;
 }
+
+export type AdminRole = "PRINCIPAL_ADMIN" | "MASTER_ADMIN" | "STAFF_ADMIN";
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: AdminRole;
+  title: string;
+  avatar_color?: string;
+  token: string;
+}
+
+export interface AuditLog {
+  id: string | number;
+  user_name: string;
+  user_email: string;
+  user_role: AdminRole;
+  action_category: "LOGIN" | "LOGOUT" | "CREATE" | "UPDATE" | "DELETE" | "BROADCAST" | "SYNC" | "SETTINGS" | "CONTENT_EDIT" | "WORKSHOP_ARCHIVE" | "CALENDAR_SYNC" | "SYSTEM";
+  action_summary: string;
+  target_resource: string;
+  details?: Record<string, any>;
+  ip_address?: string;
+  user_agent?: string;
+  timestamp: string;
+  severity?: "INFO" | "WARNING" | "CRITICAL";
+}

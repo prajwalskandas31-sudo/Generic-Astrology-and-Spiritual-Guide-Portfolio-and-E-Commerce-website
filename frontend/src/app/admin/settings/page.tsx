@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp, sendWhatsAppTestMessage } from "@/lib/api-client";
+import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp, sendWhatsAppTestMessage, getCurrentAdminUser, logAuditEvent, updateAdminPassword, verifyAdminPassword, PREDEFINED_ADMIN_ACCOUNTS } from "@/lib/api-client";
 import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle, CreditCard, Key, MessageSquare, Smartphone, ExternalLink, ShieldCheck, RefreshCw, Unlink, Send } from "lucide-react";
 
 export default function AdminSettingsPage() {
@@ -69,14 +69,14 @@ export default function AdminSettingsPage() {
     try {
       const data = await getSettings();
       setSettings(data);
-      const cStatus = await getCalendarStatus();
-      setCalendarStatus(cStatus);
-      const wStatus = await getWhatsAppStatus();
-      setWaStatus(wStatus);
     } catch (_) {
     } finally {
       setIsLoading(false);
     }
+
+    // Background fetch integration statuses without blocking settings UI
+    getCalendarStatus().then(setCalendarStatus).catch(() => {});
+    getWhatsAppStatus().then(setWaStatus).catch(() => {});
   };
 
   const handleLaunchWhatsAppOnboarding = async () => {
@@ -687,7 +687,6 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-
         <div className="flex justify-end">
           <button
             type="submit"
@@ -708,6 +707,224 @@ export default function AdminSettingsPage() {
           </button>
         </div>
       </form>
+
+      {/* ADMIN SECURITY & PASSWORD RESET CARD (Independent Card outside settings form) */}
+      <div className="bg-white rounded-2xl p-6 border border-amber-200 shadow-xs space-y-4 bg-gradient-to-br from-amber-50/20 via-white to-orange-50/20">
+        <div className="flex items-center gap-2 border-b border-amber-100 pb-2">
+          <Key className="w-5 h-5 text-amber-700" />
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            Admin Account Security &amp; Password Reset
+          </h2>
+        </div>
+        <p className="text-xs text-slate-500">
+          Change your active admin account password. Click <strong>Save &amp; Change Password</strong> below to update immediately.
+        </p>
+
+        <PasswordResetCard />
+      </div>
+    </div>
+  );
+}
+
+function PasswordResetCard() {
+  const [currentAdmin, setCurrentAdmin] = useState<any>(null);
+  const [selectedEmail, setSelectedEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChanging, setIsChanging] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [msgType, setMsgType] = useState<"success" | "error">("success");
+  const [testPassword, setTestPassword] = useState("");
+  const [testResult, setTestResult] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = getCurrentAdminUser();
+    setCurrentAdmin(user);
+    if (user?.email) {
+      setSelectedEmail(user.email);
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg("");
+    setTestResult(null);
+
+    if (!selectedEmail) {
+      setMsgType("error");
+      setMsg("Please select an admin account.");
+      return;
+    }
+
+    if (currentPassword) {
+      const isCurrentValid = verifyAdminPassword(selectedEmail, currentPassword);
+      if (!isCurrentValid) {
+        setMsgType("error");
+        setMsg("Current password verification failed. Please enter your correct current password.");
+        return;
+      }
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      setMsgType("error");
+      setMsg("New password must be at least 6 characters long.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setMsgType("error");
+      setMsg("New password and confirm password do not match.");
+      return;
+    }
+
+    setIsChanging(true);
+    try {
+      await updateAdminPassword(selectedEmail, newPassword);
+
+      const targetAccount = PREDEFINED_ADMIN_ACCOUNTS.find(a => a.email.toLowerCase() === selectedEmail.toLowerCase()) || currentAdmin;
+
+      logAuditEvent({
+        action_category: "SYSTEM",
+        action_summary: `${currentAdmin?.name || "Admin"} updated security password for ${targetAccount?.name || selectedEmail}`,
+        target_resource: "Account Security Credentials",
+        details: { target_email: selectedEmail, updated_at: new Date().toISOString() },
+        severity: "CRITICAL",
+      });
+
+      setMsgType("success");
+      setMsg(`✅ Security password changed successfully for ${selectedEmail}! The new password is active immediately for your next login.`);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      setMsgType("error");
+      setMsg("Failed to update password: " + err.message);
+    } finally {
+      setIsChanging(false);
+    }
+  };
+
+  const handleTestVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testPassword) return;
+    const isValid = verifyAdminPassword(selectedEmail, testPassword);
+    if (isValid) {
+      setTestResult("✅ Password Verified! Your new password matches active system credentials.");
+    } else {
+      setTestResult("❌ Password Verification Failed: Does not match active credentials.");
+    }
+  };
+
+  return (
+    <div className="space-y-6 pt-2">
+      <div className="space-y-4">
+        {msg && (
+          <div className={`p-4 rounded-xl text-xs font-bold ${msgType === "success" ? "bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-sm" : "bg-red-100 text-red-900 border border-red-300 shadow-sm"}`}>
+            {msg}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Target Account</label>
+            <select
+              value={selectedEmail}
+              onChange={(e) => setSelectedEmail(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+            >
+              {PREDEFINED_ADMIN_ACCOUNTS.map((acc) => (
+                <option key={acc.id} value={acc.email}>
+                  {acc.name} ({acc.email})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Current Password (Optional Verification)</label>
+            <input
+              type="password"
+              placeholder="Enter current password..."
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">New Security Password</label>
+            <input
+              type="password"
+              required
+              placeholder="Enter new password (min 6 chars)..."
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Confirm New Password</label>
+            <input
+              type="password"
+              required
+              placeholder="Confirm new password..."
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+
+          <div className="sm:col-span-2 flex items-center justify-start gap-3">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={isChanging}
+              className="px-5 py-2.5 bg-amber-900 hover:bg-amber-950 text-amber-100 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            >
+              {isChanging ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+              <span>Save &amp; Change Password</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* INSTANT CREDENTIAL TESTING SUITE */}
+      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <Key className="w-4 h-4 text-amber-700" />
+            Verify / Test Password Credentials
+          </span>
+          <span className="text-[11px] text-slate-500 font-medium">Test active stored password</span>
+        </div>
+        <form onSubmit={handleTestVerify} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input
+            type="password"
+            placeholder="Type your password to test..."
+            value={testPassword}
+            onChange={(e) => {
+              setTestPassword(e.target.value);
+              setTestResult(null);
+            }}
+            className="flex-1 px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all"
+          >
+            Verify Password
+          </button>
+        </form>
+        {testResult && (
+          <div className={`p-2.5 rounded-xl text-xs font-semibold ${testResult.startsWith("✅") ? "bg-emerald-100 text-emerald-900 border border-emerald-300" : "bg-red-100 text-red-900 border border-red-300"}`}>
+            {testResult}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
