@@ -899,6 +899,7 @@ async def seed_database():
 
         await db.commit()
         print("Database seeded successfully!")
+        break
 
 if __name__ == "__main__":
     asyncio.run(seed_database())

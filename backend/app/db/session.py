@@ -63,16 +63,31 @@ sqlite_engine = create_async_engine(sqlite_url, echo=False, future=True)
 SQLiteSessionLocal = async_sessionmaker(sqlite_engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db():
+    use_sqlite = False
+    db_session = None
+
     try:
-        async with AsyncSessionLocal() as session:
-            # Test connection
-            await session.execute(text("SELECT 1"))
+        session = AsyncSessionLocal()
+        await session.execute(text("SELECT 1"))
+        db_session = session
+    except Exception as e:
+        print(f"[DB Session Warning]: Primary PostgreSQL failed ({e}). Falling back to SQLite.")
+        if session:
             try:
-                yield session
+                await session.close()
             except Exception:
-                await session.rollback()
+                pass
+        db_session = None
+        use_sqlite = True
+
+    if not use_sqlite and db_session is not None:
+        async with db_session:
+            try:
+                yield db_session
+            except Exception:
+                await db_session.rollback()
                 raise
-    except Exception:
+    else:
         async with SQLiteSessionLocal() as session:
             try:
                 yield session
