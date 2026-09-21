@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Workshop, WorkshopBatch } from "@/types";
 import WorkshopRegistrationModal from "./WorkshopRegistrationModal";
+import ReviewSubmissionModal from "./ReviewSubmissionModal";
 import {
   Calendar,
   Clock,
@@ -13,6 +14,7 @@ import {
   ArrowLeft,
   CreditCard,
   ExternalLink,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -22,6 +24,7 @@ export interface WorkshopDetailClientProps {
 
 export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const batches = workshop.batches || [];
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(
     batches.length === 1 ? batches[0].id : undefined
@@ -203,6 +206,14 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
                   : "Register for Free"}
               </span>
             </button>
+
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              className="w-full py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
+            >
+              <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+              <span>Leave Feedback for Workshop</span>
+            </button>
           </div>
         </div>
       </div>
@@ -213,6 +224,13 @@ export default function WorkshopDetailClient({ workshop }: WorkshopDetailClientP
         onClose={() => setIsModalOpen(false)}
         workshop={workshop}
         selectedBatchId={selectedBatchId}
+      />
+
+      {/* Review Submission Modal */}
+      <ReviewSubmissionModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        initialService={workshop.title}
       />
     </div>
   );

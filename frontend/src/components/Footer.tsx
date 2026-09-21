@@ -87,6 +87,11 @@ export default function Footer({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/feedback" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
+                    Client Feedback &amp; Reviews
+                  </Link>
+                </li>
+                <li>
                   <Link href="/blogs" className="hover:text-amber-900 transition-colors">
                     Spiritual Blogs
                   </Link>

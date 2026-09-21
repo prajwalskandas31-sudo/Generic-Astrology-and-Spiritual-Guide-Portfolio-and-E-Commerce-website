@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Offering } from "@/types";
 import EnquiryModal from "./EnquiryModal";
-import { Sparkles, CheckCircle2, ChevronDown, MessageSquare, ArrowLeft } from "lucide-react";
+import ReviewSubmissionModal from "./ReviewSubmissionModal";
+import { Sparkles, CheckCircle2, ChevronDown, MessageSquare, ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
 
 export interface OfferingDetailClientProps {
@@ -12,6 +13,7 @@ export interface OfferingDetailClientProps {
 
 export default function OfferingDetailClient({ offering }: OfferingDetailClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const isService = offering.type === "Service";
@@ -192,6 +194,14 @@ export default function OfferingDetailClient({ offering }: OfferingDetailClientP
               <span>{isService ? "Request Service" : "Request Consultation"}</span>
             </button>
 
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              className="w-full py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
+            >
+              <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+              <span>Leave Feedback for {offering.title}</span>
+            </button>
+
             <p className="text-[11px] text-slate-400 text-center">
               No immediate online payment required. Submitting this form sends an enquiry to Shri Pradeep.
             </p>
@@ -205,6 +215,13 @@ export default function OfferingDetailClient({ offering }: OfferingDetailClientP
         onClose={() => setIsModalOpen(false)}
         defaultType={offering.type}
         defaultCategory={offering.title}
+      />
+
+      {/* Review Submission Modal */}
+      <ReviewSubmissionModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        initialService={offering.title}
       />
     </div>
   );

@@ -15,10 +15,12 @@ import {
   CheckCircle2,
   BookOpenCheck,
   Radio,
+  HeartHandshake,
 } from "lucide-react";
 
 import { Metadata } from "next";
 import { Offering, Workshop } from "@/types";
+import ClientFeedbackSection from "@/components/ClientFeedbackSection";
 
 export const metadata: Metadata = {
   title: "Veda Brahma Shri Pradeep Nadig | Kannada Purohit & Vedic Astrologer Bengaluru",
@@ -62,10 +64,10 @@ export default async function HomePage() {
     { name: "Classes", href: "/classes", icon: GraduationCap, count: "Vedic Learning" },
     { name: "Courses", href: "/courses", icon: BookOpenCheck, count: "Jyotish & Veda" },
     { name: "Live Events", href: "/live-events", icon: Radio, count: "Streaming & Pooja" },
+    { name: "Feedback", href: "/feedback", icon: HeartHandshake, count: "Client Reviews" },
     { name: "Blogs", href: "/blogs", icon: FileText, count: "Articles & Insights" },
     { name: "Gallery", href: "/gallery", icon: ImageIcon, count: "Photos & Media" },
     { name: "FAQ", href: "/faq", icon: HelpCircle, count: "Questions Answered" },
-    { name: "Contact", href: "/contact", icon: PhoneCall, count: "Get in Touch" },
   ];
 
   return (
@@ -358,6 +360,9 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* 6. CLIENT FEEDBACK & TESTIMONIALS SECTION */}
+      <ClientFeedbackSection limit={6} showAllLink={true} />
     </PublicLayout>
   );
 }

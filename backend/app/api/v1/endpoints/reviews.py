@@ -44,12 +44,14 @@ async def submit_review(
 @router.get("/admin", response_model=List[ReviewResponse])
 async def get_admin_reviews(
     review_status: Optional[str] = None,
+    status_filter: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     auth: dict = Depends(verify_supabase_token)
 ):
     query = select(Review)
-    if review_status:
-        query = query.where(Review.status == review_status)
+    target_status = status_filter or review_status
+    if target_status and target_status.lower() != "all":
+        query = query.where(Review.status == target_status)
     query = query.order_by(Review.id.desc())
     result = await db.execute(query)
     return result.scalars().all()

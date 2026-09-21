@@ -7,6 +7,7 @@ import { submitReview, getOfferings, getWorkshops, getCourses, getClasses, getLi
 export interface ReviewSubmissionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialService?: string;
 }
 
 const FALLBACK_CATEGORIES: Record<string, string[]> = {
@@ -64,13 +65,14 @@ const FALLBACK_CATEGORIES: Record<string, string[]> = {
 export default function ReviewSubmissionModal({
   isOpen,
   onClose,
+  initialService,
 }: ReviewSubmissionModalProps) {
   const [rating, setRating] = useState<number>(5);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [clientName, setClientName] = useState<string>("");
   const [clientEmail, setClientEmail] = useState<string>("");
   const [clientLocation, setClientLocation] = useState<string>("");
-  const [serviceTaken, setServiceTaken] = useState<string>("Griha Pravesha Pooja");
+  const [serviceTaken, setServiceTaken] = useState<string>(initialService || "Griha Pravesha Pooja");
   const [customService, setCustomService] = useState<string>("");
   const [reviewText, setReviewText] = useState<string>("");
 
@@ -82,6 +84,9 @@ export default function ReviewSubmissionModal({
 
   useEffect(() => {
     if (!isOpen) return;
+    if (initialService) {
+      setServiceTaken(initialService);
+    }
     let isMounted = true;
 
     async function loadAllCategories() {

@@ -2,7 +2,7 @@ import asyncio
 from app.db.session import get_db, Base
 from app.models.models import (
     Offering, Workshop, WorkshopBatch, ClassItem,
-    Blog, GalleryAlbum, GalleryItem, MediaItem, FAQItem, Setting
+    Blog, GalleryAlbum, GalleryItem, MediaItem, FAQItem, Setting, Review
 )
 from sqlalchemy.future import select
 
@@ -838,6 +838,64 @@ async def seed_database():
                 )
             ]
             db.add_all(faqs)
+
+        # 10. Seed Initial Client Reviews
+        existing_reviews = await db.execute(select(Review))
+        if not existing_reviews.scalars().all():
+            print("Seeding initial approved client reviews...")
+            reviews_data = [
+                Review(
+                    name="Ramesh Kumar & Family",
+                    email="ramesh.k@gmail.com",
+                    city="Malleswaram, Bengaluru",
+                    rating=5,
+                    service_type="Griha Pravesha Pooja",
+                    comment="Shri Pradeep Nadig conducted our housewarming Griha Pravesha with immaculate devotion, pristine Swara chanting, and complete explanations of each Vastu & Homa step. Our entire family felt immense divine vibrations and spiritual tranquility.",
+                    status="Approved",
+                    display_order=1
+                ),
+                Review(
+                    name="Smt. Sunitha & Master Arvind",
+                    email="sunitha.yelahanka@yahoo.com",
+                    city="Yelahanka, Bengaluru",
+                    rating=5,
+                    service_type="Sacred Vedic Chanting Mastery Course",
+                    comment="Learning Purusha Sukta and Sri Sukta under Guruji Pradeep Nadig has been a life-transforming experience. His patience with Swara intonation and audio feedback is unparalleled.",
+                    status="Approved",
+                    display_order=2
+                ),
+                Review(
+                    name="Dr. Venkatesh Rao",
+                    email="dr.venkatesh.rao@outlook.com",
+                    city="Vidyaranyapura, Bengaluru",
+                    rating=5,
+                    service_type="Prashna Marga Horary Astrology",
+                    comment="Shri Pradeep's Prashna chart analysis was astonishingly accurate regarding our career transition. His Parihara remedies were simple, practical, and highly effective without unnecessary commercial gimmicks.",
+                    status="Approved",
+                    display_order=3
+                ),
+                Review(
+                    name="Anantharaman & Family",
+                    email="ananth.indiranagar@gmail.com",
+                    city="Indiranagar, Bengaluru",
+                    rating=5,
+                    service_type="Ganapathi Homa",
+                    comment="We performed Mahaganapathi Homa and Navagraha Shanthi at our home before starting our new business venture. Guruji's punctuality, authentic samagri setup, and divine mantras brought absolute peace.",
+                    status="Approved",
+                    display_order=4
+                ),
+                Review(
+                    name="Vidya Sagar M",
+                    email="vidyasagar.bgr@gmail.com",
+                    city="Sahakara Nagar, Bengaluru",
+                    rating=5,
+                    service_type="Vastu Shastra Energy Healing & Consultation",
+                    comment="Practical Vastu guidance without demolition or structural hassle. Highly recommend Shri Pradeep Nadig for anyone seeking genuine Vedic guidance and home energy balance in Bangalore.",
+                    status="Approved",
+                    display_order=5
+                )
+            ]
+            db.add_all(reviews_data)
 
         await db.commit()
         print("Database seeded successfully!")
