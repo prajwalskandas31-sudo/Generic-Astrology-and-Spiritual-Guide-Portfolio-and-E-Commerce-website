@@ -61,6 +61,31 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/workshops/meditation",
+        destination: "/workshops/simple-meditation-mindfulness-workshop",
+        permanent: true,
+      },
+      {
+        source: "/workshops/vedic-chanting-suktas-recitation-workshop",
+        destination: "/workshops/vedic-chanting-sukta-recitation-workshop",
+        permanent: true,
+      },
+      {
+        source: "/live-events/solar-grahan-shanti-havan-august-2026",
+        destination: "/live-events/solar-eclipse-shanti-pooja",
+        permanent: true,
+      },
+      {
+        source: "/live-events/pradosham-shanti-rudrabhishekam-2026",
+        destination: "/live-events/monthly-pradosham-rudrabhishekam",
+        permanent: true,
+      },
+      {
+        source: "/live-events/navratri-satsang",
+        destination: "/live-events/navratri-chandi-homa-live",
+        permanent: true,
+      },
+      {
         source: "/services/events",
         destination: "/events",
         permanent: true,
