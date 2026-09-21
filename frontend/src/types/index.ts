@@ -305,6 +305,7 @@ export interface LiveEvent {
   id: number;
   title: string;
   slug: string;
+  category?: "Live Stream" | "Event Management" | string;
   short_description: string;
   full_description: string;
   event_date: string;

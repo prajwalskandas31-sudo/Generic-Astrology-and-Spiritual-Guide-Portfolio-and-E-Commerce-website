@@ -500,6 +500,7 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     id: 1,
     title: "Surya Grahan (Solar Eclipse) Shanti Pooja 2026",
     slug: "solar-eclipse-shanti-pooja",
+    category: "Live Stream",
     status: "Upcoming",
     venue_type: "Hybrid",
     event_date: "2026-09-12",
@@ -528,6 +529,7 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     id: 2,
     title: "Mahashivaratri Grand Night 2026",
     slug: "mahashivaratri-grand-night-2026",
+    category: "Live Stream",
     status: "Upcoming",
     venue_type: "Hybrid",
     event_date: "2026-02-15",
@@ -556,6 +558,7 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     id: 3,
     title: "Navratri Chandi Homa Live 2026",
     slug: "navratri-chandi-homa-live",
+    category: "Live Stream",
     status: "Upcoming",
     venue_type: "Hybrid",
     event_date: "2026-10-18",
@@ -583,6 +586,7 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     id: 4,
     title: "Monthly Pradosham Rudrabhishekam",
     slug: "monthly-pradosham-rudrabhishekam",
+    category: "Live Stream",
     status: "Upcoming",
     venue_type: "Hybrid",
     event_date: "2026-09-24",
@@ -609,6 +613,7 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     id: 5,
     title: "Interactive Live Thread Art Event",
     slug: "thread-art-live-event",
+    category: "Live Stream",
     status: "Upcoming",
     venue_type: "Hybrid",
     event_date: "2026-10-05",
@@ -630,6 +635,208 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     faq: [
       { question: "Can Thread Art live events be conducted at private birthday or marriage venues?", answer: "Yes, our guided instructor and setup team travel to your event venue across Bengaluru to facilitate the interactive thread art experience for your guests." },
       { question: "Who creates the portrait during the live event?", answer: "Your guests participate actively by moving the threads along guided paths, creating a memorable collaborative gift for the hosts." }
+    ]
+  },
+  {
+    id: 101,
+    title: "Marriage / Maduve (Vedic Vivaha Ceremony)",
+    slug: "marriage-maduve",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Auspicious Muhoortha",
+    pandits_count: 5,
+    price: 0,
+    has_payment: false,
+    short_description: "Complete authentic Vedic Vivaha event management including Purohit panel, Mandap Mandala setup, Kanyadaana & Saptapadi rites.",
+    full_description: "Comprehensive Vedic Marriage event management by Veda Brahma Shri Pradeep Nadig and his learned team of Ghanapathi pandits. We handle complete ritual execution, custom Yajnashala setup, Vedic chanting as per your family tradition (Ashvalayana, Apastamba, or Bodhayana Sutra), and complete ceremony orchestration.",
+    venue_address: "Client Venue / Kalyana Mantapa across Bengaluru & India",
+    cover_image: "/images/services/marriage-maduve.jpg",
+    images: ["/images/services/marriage-maduve.jpg"],
+    agenda: [
+      { time: "Phase 1", title: "Nandi Pooja & Varakatana", description: "Inaugural ancestral seeking and groom reception." },
+      { time: "Phase 2", title: "Kanyadaana & Mangalya Dharana", description: "Sacred tying of Mangalsutra and Vedic blessing." },
+      { time: "Phase 3", title: "Saptapadi & Laja Homa", description: "Seven sacred steps around Agni deva and rice offerings." }
+    ],
+    faq: [
+      { question: "What is included in the Marriage / Maduve Event Management package?", answer: "We provide complete Purohit panel, Puja samagri arrangement, Yajnashala setup, Veda chanting, and full ritual guidance from Nandi Pooja to Saptapadi." }
+    ]
+  },
+  {
+    id: 102,
+    title: "Threading Ceremony / Upanayana (Munjvi)",
+    slug: "threading-ceremony-upanayana",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Muhoortha",
+    pandits_count: 3,
+    price: 0,
+    has_payment: false,
+    short_description: "Sacred Thread initiation ceremony with Brahmopadesha, Gayatri Mantra initiation, & Complete Veda Vrata rituals.",
+    full_description: "End-to-end Upanayana ceremony management conducted by learned Vedic scholars. Includes Yajnashala arrangement, Agnikarya, Gayatri Mantropadesha, Bhikshacharana, and traditional blessing orchestration.",
+    venue_address: "Client Residence / Event Hall across Bengaluru & Pan-India",
+    cover_image: "/images/services/upanayana-threading.jpg",
+    images: ["/images/services/upanayana-threading.jpg"],
+    agenda: [
+      { time: "Morning", title: "Choodakarana & Yajnopavita Dharana", description: "Purification and sacred thread investiture." },
+      { time: "Mid-Day", title: "Brahmopadesha", description: "Gayatri Mantra initiation by Father/Guru under sacred cloth." },
+      { time: "Afternoon", title: "Bhikshacharana & Medha Janana", description: "First alms collection and prayer for supreme intellect." }
+    ],
+    faq: [
+      { question: "Do you supply the required puja items and sacred thread for Upanayana?", answer: "Yes, we arrange authentic Yajnopavitha, deerskin/mounji belt, samidhah wood, and complete ritual samagri." }
+    ]
+  },
+  {
+    id: 103,
+    title: "Garbha Sanskaar / Garbha Sanskaara",
+    slug: "garbha-sanskaar",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Auspicious Tithi",
+    pandits_count: 2,
+    price: 0,
+    has_payment: false,
+    short_description: "Holistic Vedic prenatal guidance rituals, Garbha Raksha Sookta parayana, and positive fetal mental impression ceremony.",
+    full_description: "Specialized Vedic spiritual guidance and rituals during pregnancy. Includes Garbha Raksha Stotra parayana, specialized homa for maternal & fetal health, dietary alignment, and Vedic sound meditation for the expectant mother.",
+    venue_address: "Client Residence / Virtual Guidance",
+    cover_image: "/images/services/garbha-sanskaar.jpg",
+    images: ["/images/services/garbha-sanskaar.jpg"],
+    agenda: [
+      { time: "Session 1", title: "Garbha Raksha Sookta Parayana", description: "Chanting of protective mantras for healthy pregnancy." },
+      { time: "Session 2", title: "Sanctified Mantras & Meditation", description: "Sound therapy and positive spiritual impressions for the baby." }
+    ],
+    faq: [
+      { question: "At what month of pregnancy should Garbha Sanskaar be conducted?", answer: "Garbha Sanskaar guidance begins from early pregnancy, with specific Homas conducted during the 3rd, 5th, or 7th months." }
+    ]
+  },
+  {
+    id: 104,
+    title: "Naming Ceremony / Naamakarana",
+    slug: "naming-ceremony-naamakarana",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Hours",
+    pandits_count: 2,
+    price: 0,
+    has_payment: false,
+    short_description: "Authentic Vedic naming ritual for newborn infants, Janma Rashi calculation, and family benediction rites.",
+    full_description: "Sacred Namakarana ceremony performed on the 11th, 12th, or auspicious day after childbirth. Includes Janma Nakshatra analysis, sacred ear-whispering of the name, Puja of the 10 Dikpalakas, and cradle blessings.",
+    venue_address: "Client Residence / Party Hall across Bengaluru",
+    cover_image: "/images/services/naming-ceremony-naamakarana.jpg",
+    images: ["/images/services/naming-ceremony-naamakarana.jpg"],
+    agenda: [
+      { time: "Part 1", title: "Punya Havachana & Kula Devata Pooja", description: "House purification and family deity invocation." },
+      { time: "Part 2", title: "Namakarana Vidhi", description: "Whispering sacred name in baby's right ear and honey touching rite." }
+    ],
+    faq: [
+      { question: "Can astrologically suitable names be recommended during the ceremony?", answer: "Yes, Shri Pradeep Nadig analyzes the child's exact Janma Nakshatra and Pada to suggest auspicious starting syllables." }
+    ]
+  },
+  {
+    id: 105,
+    title: "Baby Shower / Seemantha (Seemanthonnayanam)",
+    slug: "baby-shower-seemantha",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Auspicious Muhoortha",
+    pandits_count: 3,
+    price: 0,
+    has_payment: false,
+    short_description: "Traditional Vedic Seemantha ritual for expectant mothers, Udaka Shanti, and auspicious family celebrations.",
+    full_description: "Auspicious 7th or 8th month pregnancy ceremony (Seemanthonnayanam). Includes Udaka Shanti mantras, Vishnu Sahasranama parayana, mother's adornment, ritual blessing by elders, and full event coordination.",
+    venue_address: "Client Residence / Convention Hall across Bengaluru",
+    cover_image: "/images/services/baby-shower-seemantha.jpg",
+    images: ["/images/services/baby-shower-seemantha.jpg"],
+    agenda: [
+      { time: "Morning", title: "Udaka Shanti & Kalasha Sthapana", description: "Sanctification of water and protective Vedic recitation." },
+      { time: "Mid-Day", title: "Seemantha Vidhi & Elder Blessings", description: "Parting of hair ritual with sanctified porcupine quill/rose, followed by feast." }
+    ],
+    faq: [
+      { question: "What is the significance of Udaka Shanti during Seemantha?", answer: "Udaka Shanti invokes powerful protective deities into sanctified water to bestow health and long life to mother and child." }
+    ]
+  },
+  {
+    id: 106,
+    title: "Gabhadaan / Gabhadaana Samskara",
+    slug: "gabhadaan-gabhadaana",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Private Auspicious Time",
+    pandits_count: 1,
+    price: 0,
+    has_payment: false,
+    short_description: "First Samskara of Vedic tradition for spiritual, mental, and physical sanctification before conception.",
+    full_description: "The foundational first Samskara in Hindu tradition performed for newly married couples desiring virtuous, healthy, and enlightened offspring. Conducted with absolute privacy, sanctity, and authentic Vedic mantras.",
+    venue_address: "Client Residence",
+    cover_image: "/images/services/gabhadaan-gabhadaana.jpg",
+    images: ["/images/services/gabhadaan-gabhadaana.jpg"],
+    agenda: [
+      { time: "Evening", title: "Prajapati & Garbha Homa", description: "Sacred fire invocation seeking blessings for noble lineage." }
+    ],
+    faq: [
+      { question: "Is Gabhadaan performed with complete privacy?", answer: "Yes, this sacred Samskara is conducted with extreme sanctity and confidentiality for the couple." }
+    ]
+  },
+  {
+    id: 107,
+    title: "First Haircut Ceremony / Chowla (Choodakarana)",
+    slug: "first-haircut-ceremony-chowla",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Hours",
+    pandits_count: 2,
+    price: 0,
+    has_payment: false,
+    short_description: "First tonsure ceremony for child's longevity, health, and intellectual enhancement with Ayushya Homa.",
+    full_description: "Choodakarana Samskara conducted in the 1st or 3rd year of the child. Includes Ayushya Homa, Navagraha Pooja, traditional tonsure ritual coordination, and sanctified bathing.",
+    venue_address: "Client Residence / Temple / Hall across Bengaluru",
+    cover_image: "/images/services/chowla-haircut.jpg",
+    images: ["/images/services/chowla-haircut.jpg"],
+    agenda: [
+      { time: "Part 1", title: "Ayushya Homa", description: "Fire ritual invoking longevity and robust health for the child." },
+      { time: "Part 2", title: "Chowla Vidhi", description: "Sacred first hair removal with ritual mantras and curd/butter application." }
+    ],
+    faq: [
+      { question: "When is Chowla / Choodakarana traditionally performed?", answer: "It is usually performed at the end of the 1st year or during the 3rd year at an auspicious Muhoortha." }
+    ]
+  },
+  {
+    id: 108,
+    title: "House Warming Ceremony / Griha Pravesha",
+    slug: "house-warming-griha-pravesha",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Brahma Muhoortha / Morning",
+    pandits_count: 4,
+    price: 0,
+    has_payment: false,
+    short_description: "Complete Griha Pravesha event management: Vastu Shanti, Navagraha Homa, Lakshmi Pooja, and milk boiling ritual.",
+    full_description: "Comprehensive Griha Pravesha ceremony management for new homes or apartments. Includes Vastu Purusha Pooja, Ganapathi & Navagraha Homa, Threshold Entrance rites, Ksheera Ubaluvudhu (milk boiling rite), and complete event coordination.",
+    venue_address: "Client Residence across Bengaluru & Pan-India",
+    cover_image: "/images/services/griha-pravesha.jpg",
+    images: ["/images/services/griha-pravesha.jpg"],
+    agenda: [
+      { time: "Dawn", title: "Dwara Pooja & Gau Pravesha", description: "Threshold ritual and sacred cow entrance into the new house." },
+      { time: "Morning", title: "Vastu Shanti & Navagraha Homa", description: "Purifying directional energies and planetary offerings in Homa Kunda." },
+      { time: "Mid-Morning", title: "Lakshmi Pooja & Ksheera Paaka", description: "Prosperity invocation and ceremonial milk boiling." }
+    ],
+    faq: [
+      { question: "Do you arrange for Cow & Calf (Gau Pravesha) for Griha Pravesha?", answer: "Yes, upon request we facilitate sacred Gau Pravesha arrangement along with full Vastu Shanti setup." }
     ]
   }
 ];

@@ -1,12 +1,12 @@
 import PublicLayout from "@/components/PublicLayout";
-import EventsClient from "@/app/events/EventsClient";
+import EventsClient from "./EventsClient";
 import { getSettings, getLiveEvents } from "@/lib/api-client";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Event Management & Sacred Samskaras | Veda Brahma Shri Pradeep Nadig",
   description:
-    "Participate in live stream Vedic rituals and book end-to-end Event Management for Marriage, Upanayana, Griha Pravesha in Bengaluru.",
+    "End-to-end Vedic Event Management in Bengaluru for Marriage (Maduve), Upanayana, Griha Pravesha, Seemantha, Naamakarana, Chowla, and live streaming Mahahomas.",
   alternates: {
     canonical: "https://pradeepnadig.in/events",
   },
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function LiveEventsPage() {
+export default async function EventsPage() {
   let settings: Record<string, any> = {};
   let events: import("@/types").LiveEvent[] = [];
 

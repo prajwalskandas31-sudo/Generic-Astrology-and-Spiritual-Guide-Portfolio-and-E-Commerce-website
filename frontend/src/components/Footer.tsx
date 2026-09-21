@@ -82,8 +82,8 @@ export default function Footer({
                   </Link>
                 </li>
                 <li>
-                  <Link href="/live-events" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
-                    Sacred Live Events
+                  <Link href="/events" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
+                    Event Management
                   </Link>
                 </li>
                 <li>

@@ -42,7 +42,7 @@ export default function Navigation({ siteName = "Veda Brahma Shri Pradeep Nadig"
     { name: "Workshops", href: "/workshops" },
     { name: "Classes", href: "/classes" },
     { name: "Courses", href: "/courses" },
-    { name: "Live Events", href: "/live-events" },
+    { name: "Event Management", href: "/events" },
     { name: "Feedback", href: "/feedback" },
     { name: "Blogs", href: "/blogs" },
     { name: "Gallery", href: "/gallery" },

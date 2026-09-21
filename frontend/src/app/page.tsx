@@ -63,7 +63,7 @@ export default async function HomePage() {
     { name: "Workshops", href: "/workshops", icon: Calendar, count: "Chanting Sessions" },
     { name: "Classes", href: "/classes", icon: GraduationCap, count: "Vedic Learning" },
     { name: "Courses", href: "/courses", icon: BookOpenCheck, count: "Jyotish & Veda" },
-    { name: "Live Events", href: "/live-events", icon: Radio, count: "Streaming & Pooja" },
+    { name: "Event Management", href: "/events", icon: Radio, count: "Samskaras & Streaming" },
     { name: "Feedback", href: "/feedback", icon: HeartHandshake, count: "Client Reviews" },
     { name: "Blogs", href: "/blogs", icon: FileText, count: "Articles & Insights" },
     { name: "Gallery", href: "/gallery", icon: ImageIcon, count: "Photos & Media" },

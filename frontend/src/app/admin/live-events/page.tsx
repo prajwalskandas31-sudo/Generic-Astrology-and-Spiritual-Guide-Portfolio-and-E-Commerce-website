@@ -194,10 +194,10 @@ export default function AdminLiveEventsPage() {
         <div>
           <h1 className="text-3xl font-serif font-bold text-slate-900 flex items-center gap-2">
             <Radio className="w-7 h-7 text-amber-700 animate-pulse" />
-            <span>Manage Live Spiritual Events &amp; Sankalpa</span>
+            <span>Manage Event Management &amp; Live Events</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Configure live broadcast streams, event dates, VIP Sankalpa pass fees, and broadcast live links to registered devotees.
+            Configure live broadcast streams, Samskara ceremonies, event dates, pass fees, and client enquiry options.
           </p>
         </div>
         {!isEditing && (

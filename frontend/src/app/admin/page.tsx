@@ -186,20 +186,20 @@ export default function AdminDashboardPage() {
             </div>
           </Link>
 
-          {/* 6. Live Events */}
+          {/* 6. Event Management */}
           <Link
             href="/admin/enquiries?type=live event"
             className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-amber-400 transition-all group flex flex-col justify-between"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Live Events</span>
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Event Management</span>
               <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
                 <Radio className="w-4 h-4 text-rose-700 animate-pulse" />
               </div>
             </div>
             <div className="mt-3">
               <span className="text-2xl font-serif font-bold text-slate-900 block">{liveEventCount}</span>
-              <span className="text-[10px] text-rose-700 font-semibold group-hover:underline">View Sankalpas &rarr;</span>
+              <span className="text-[10px] text-rose-700 font-semibold group-hover:underline">View Enquiries &rarr;</span>
             </div>
           </Link>
 
@@ -238,7 +238,7 @@ export default function AdminDashboardPage() {
             className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-950 font-bold text-xs transition-colors"
           >
             <Radio className="w-3.5 h-3.5 text-amber-800" />
-            <span>Live Events</span>
+            <span>Event Management</span>
           </Link>
           <Link
             href="/admin/blogs"
