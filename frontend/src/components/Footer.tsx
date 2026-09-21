@@ -195,7 +195,11 @@ export default function Footer({
                 Disclaimer: Information curated by AI &amp; images are AI-generated.
               </span>
               <span className="text-slate-300 hidden sm:inline">•</span>
-              <Link href="/admin/login" className="text-slate-600 hover:text-amber-900 transition-colors font-medium text-xs">
+              <Link
+                href="/admin/login"
+                rel="nofollow"
+                className="text-slate-600 hover:text-amber-900 transition-colors font-medium text-xs"
+              >
                 Admin Portal
               </Link>
             </div>
