@@ -238,10 +238,21 @@ export default function AdminAcceptedPage() {
       item.item_title.toLowerCase().includes(term) ||
       (item.location || "").toLowerCase().includes(term);
 
-    const matchesType =
-      typeFilter === "all"
-        ? true
-        : item.request_type.toLowerCase() === typeFilter.toLowerCase();
+    const matchesType = (() => {
+      if (typeFilter === "all") return true;
+      const filter = typeFilter.toLowerCase();
+      const reqType = (item.request_type || "").toLowerCase();
+      const itemTitle = (item.item_title || "").toLowerCase();
+
+      if (filter === "class") return reqType.includes("class") || itemTitle.includes("class");
+      if (filter === "consultation") return reqType.includes("consult") || itemTitle.includes("consult");
+      if (filter === "service") return reqType.includes("service") || reqType.includes("pooja") || itemTitle.includes("service");
+      if (filter === "workshop") return reqType.includes("workshop") || itemTitle.includes("workshop");
+      if (filter === "course") return reqType.includes("course") || itemTitle.includes("course");
+      if (filter === "live event") return reqType.includes("live") || reqType.includes("event") || itemTitle.includes("live");
+
+      return reqType === filter || reqType.includes(filter);
+    })();
 
     return matchesSearch && matchesType;
   });

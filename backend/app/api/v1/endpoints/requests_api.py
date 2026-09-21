@@ -43,7 +43,7 @@ async def list_requests(
         query = query.where(Request.status == status_filter.upper())
 
     if request_type:
-        query = query.where(Request.request_type == request_type)
+        query = query.where(Request.request_type.ilike(f"%{request_type.strip()}%"))
 
     if search:
         s_term = f"%{search.strip()}%"

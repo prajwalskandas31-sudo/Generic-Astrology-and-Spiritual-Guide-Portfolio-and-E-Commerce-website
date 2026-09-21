@@ -262,10 +262,21 @@ export default function AdminRequestsPage() {
       (req.customer?.phone || "").includes(searchTerm) ||
       (req.service_name || req.workshop_name || "").toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesType =
-      typeFilter === "all"
-        ? true
-        : req.request_type.toLowerCase() === typeFilter.toLowerCase();
+    const matchesType = (() => {
+      if (typeFilter === "all") return true;
+      const filter = typeFilter.toLowerCase();
+      const reqType = (req.request_type || "").toLowerCase();
+      const serviceName = (req.service_name || req.workshop_name || "").toLowerCase();
+
+      if (filter === "class") return reqType.includes("class") || serviceName.includes("class");
+      if (filter === "consultation") return reqType.includes("consult") || serviceName.includes("consult");
+      if (filter === "service") return reqType.includes("service") || reqType.includes("pooja") || serviceName.includes("service") || serviceName.includes("pooja");
+      if (filter === "workshop") return reqType.includes("workshop") || serviceName.includes("workshop");
+      if (filter === "course") return reqType.includes("course") || serviceName.includes("course");
+      if (filter === "live event") return reqType.includes("live") || reqType.includes("event") || serviceName.includes("live") || serviceName.includes("event");
+
+      return reqType === filter || reqType.includes(filter);
+    })();
 
     return matchesSearch && matchesType;
   });
