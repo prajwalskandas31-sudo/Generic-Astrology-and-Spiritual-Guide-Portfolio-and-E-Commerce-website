@@ -40,7 +40,8 @@ connect_args = {
     "statement_cache_size": 0,
     "prepared_statement_cache_size": 0,
 }
-if "supabase" in primary_url or "onrender" in primary_url or "postgres" in primary_url:
+lower_url = primary_url.lower()
+if "supabase" in lower_url or "onrender" in lower_url or "sslmode=require" in lower_url or "ssl=true" in lower_url:
     connect_args["ssl"] = ssl_ctx
 
 from sqlalchemy.pool import NullPool
