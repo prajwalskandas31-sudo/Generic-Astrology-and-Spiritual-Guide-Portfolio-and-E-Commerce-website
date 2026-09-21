@@ -510,19 +510,34 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     has_payment: true,
     stream_url: "https://youtube.com/live/placeholder",
     short_description: "Special Vedic Shanti Pooja conducted during Surya Grahan to neutralize negative planetary rays and grahan doshas.",
-    full_description: "Surya Grahan (Solar Eclipse) is a powerful celestial event. Participating in live remote Sankalpa and Surya Shanti Homa during the eclipse period mitigates Rahu-Ketu afflictions, protects health, and enhances mental clarity.",
-    venue_address: "Shaankari Vedic Kendra, Vaderahalli, Bengaluru & Live Stream",
+    full_description: "Surya Grahan (Solar Eclipse) is a critical cosmic event where solar energy is temporarily obscured by Rahu/Ketu alignment. According to the Rigveda and Jyotisha Shastras, performing sacred Shanti Pooja, Surya Sukta Japa, and Homa during Grahan Kala mitigates Rahu-Ketu afflictions, shields physical and mental vitality, neutralizes Janma Rashi/Nakshatra doshas, and bestows profound spiritual luminescence. Veda Brahma Shri Pradeep Nadig and a panel of 5 Ghanapathi scholars perform continuous Veda mantra chanting and fire oblations during the exact eclipse window.",
+    vidhi_details: "1. Grahan Purva Sankalpa: Chanting of Devotee Names, Gothras, and Birth Stars (Janma Nakshatras).\n2. Kalasa Sthapana & Navagraha Avahana: Invoking Lord Surya, Chhaya Devi, Rahu, Ketu, and Digpalakas into sanctified copper Kalashas.\n3. Aditya Hrudayam & Surya Sukta Japa: 1008 recitations of Surya Beeja Mantras.\n4. Grahan Kala Agnikarya: Offering Arka Samidhah, Red Lotus flowers, Wheat grains, and pure Ghee into the sacred Homa Kunda.\n5. Poornahuti & Samprokshana: Concluding oblation at eclipse release (Moksha Kala) followed by distribution of energised Raksha Prasadam.",
+    who_benefits: "Individuals whose birth star (Janma Nakshatra) or moon sign (Rashi) is directly afflicted by the solar eclipse, as well as anyone suffering from Rahu-Ketu Dasha, eye ailments, lack of confidence, or career blockages.",
+    who_should_attend: "Devotees from around the globe can join the HD Live Stream and submit remote Sankalpa for family health, prosperity, and planetary protection.",
+    when_performed: "Conducted precisely during the Surya Grahan (Solar Eclipse) Sparsha, Madhya, and Moksha Kala (peak eclipse hours).",
+    where_performed: "Shaankari Sacred Mandap, Bengaluru with HD 4K YouTube Live Stream for international devotees.",
+    samagri_highlights: [
+      "Pure Cow Ghee (10kg)",
+      "Arka Veda Samidhah (Solar Sacred Wood)",
+      "Red Lotus Flowers & Wheat Grains",
+      "Sanctified Copper Kalasha & Raksha Thread",
+      "Energised Surya Yantra Coin for home mandir"
+    ],
+    venue_address: "Shaankari Vedic Kendra, Vaderahalli, Bengaluru & HD Live Stream",
     cover_image: "/images/live-events/solar-eclipse-shanti-pooja.jpg",
     images: ["/images/live-events/solar-eclipse-shanti-pooja.jpg"],
     agenda: [
-      { time: "08:30 AM", title: "Grahan Purva Sankalpa & Avahana", description: "Remote Sankalpa with names and Gothras of registered participants." },
-      { time: "09:30 AM", title: "Surya Sukta & Navagraha Japa", description: "1008 recitations of Aditya Hrudayam and Surya Beeja Mantra." },
-      { time: "11:00 AM", title: "Surya Shanti Homa & Poornahuti", description: "Sacred fire oblations during eclipse peak followed by Samprokshana." }
+      { time: "08:30 AM", title: "Grahan Purva Sankalpa & Avahana", description: "Remote Sankalpa reciting names, Gothras, and Nakshatras of registered devotees." },
+      { time: "09:30 AM", title: "Surya Sukta & Navagraha Japa", description: "Continuous 1008 recitations of Aditya Hrudayam, Navagraha Stotram, and Arka Gayatri." },
+      { time: "11:00 AM", title: "Surya Shanti Homa & Grahan Peak Oblations", description: "Fire oblations during eclipse peak using pure Ghee, Red Lotus, and Arka Samidhah." },
+      { time: "12:15 PM", title: "Poornahuti & Moksha Kala Prokshana", description: "Mahapoornahuti at eclipse release followed by sanctified water sprinkling and Aarti." }
     ],
     faq: [
-      { question: "Why perform Shanti Pooja during Solar Eclipse (Surya Grahan)?", answer: "Eclipse hours generate intense electromagnetic and subtle karmic shifts. Performing Shanti Homa during grahan kala neutralizes planetary afflictions for affected birth stars (Nakshatras)." },
-      { question: "How does remote Sankalpa work for live events?", answer: "Your Name, Gothra, and Nakshatra are solemnly uttered by Shri Pradeep Nadig during ritual initiation, and live streaming link is provided." },
-      { question: "Will sacred Prasadam be dispatched after the event?", answer: "Yes, consecrated Vibhuthi, Kumkum, and energised Surya Raksha coin are mailed to your registered address." }
+      { question: "Why perform Shanti Pooja during Solar Eclipse (Surya Grahan)?", answer: "Eclipse hours generate intense electromagnetic and subtle karmic shifts. Performing Shanti Homa during grahan kala neutralizes planetary afflictions for affected birth stars (Nakshatras), protecting physical immunity and vital life force (Prana)." },
+      { question: "How does remote Sankalpa work for live events?", answer: "Your Full Name, Gothra, and Birth Nakshatra are solemnly uttered by Shri Pradeep Nadig during ritual initiation (Sankalpa). You receive an exclusive private live stream link to view the entire live broadcast." },
+      { question: "Will sacred Prasadam be dispatched after the event?", answer: "Yes, consecrated Vibhuthi, Kumkum, and an energised Surya Raksha Coin are safely mailed via express courier to your registered home address." },
+      { question: "Can pregnant women or families register remote Sankalpa?", answer: "Absolutely. Remote Sankalpa is especially beneficial for pregnant mothers and elders to seek divine protection during eclipse hours without leaving their home safety." },
+      { question: "What materials do I need to keep ready at home while watching the live stream?", answer: "You only need to sit quietly in a clean space, light a simple ghee lamp (Diya) at home during the stream, and chant along with Shri Pradeep Nadig." }
     ]
   },
   {
@@ -539,19 +554,34 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     has_payment: true,
     stream_url: "https://youtube.com/live/placeholder",
     short_description: "All-night 4 Prahara Maha Rudrabhishekam, Chandi Parayana, and Shivagni Homa on sacred Mahashivaratri night.",
-    full_description: "Join Veda Brahma Shri Pradeep Nadig and a team of 11 Vedic scholars for an auspicious 12-hour continuous spiritual vigil on Mahashivaratri, featuring 4 Prahara Rudrabhishekam, Bilvarchana, and Shivagni Homa.",
+    full_description: "Mahashivaratri is the supreme night of Lord Shiva, where planetary alignments naturally assist in spiritual awakening, destruction of negative karma, and divine grace. Join Veda Brahma Shri Pradeep Nadig and a panel of 11 Vedic Ghanapathis for an unbroken 12-hour continuous vigil across all 4 Praharas. The ceremony includes continuous Ekadasa Dravya Abhishekam, Sri Rudram Chamakam recitation, Bilvarchana, midnight Lingodbhava Pooja, and dawn Shivagni Homa.",
+    vidhi_details: "1. First Prahara (6:00 PM - 9:00 PM): Ganapathi Pooja, Maha Sankalpa, Ksheera (Pure Milk) & Jalabhishekam with Rigveda Samhita chanting.\n2. Second Prahara (9:00 PM - 12:00 AM): Dadhi (Curd) & Honey Abhishekam, Yajurveda Sri Rudra Prashna Parayana with Bilva Patra Archana.\n3. Third Prahara (12:00 AM - 3:00 AM): Lingodbhava Midnight Abhishekam with pure Ghee, Sugarcane juice, Sandalwood paste, & Panchamrutam.\n4. Fourth Prahara (3:00 AM - 6:00 AM): Shivagni Homa with 1008 Rudra Ahutis, Bhasma Alankara, Mahapoornahuti, and Mahamangalarthi.",
+    who_benefits: "All devotees seeking liberation from karmic debts, spiritual elevation, relief from chronic health issues, peace in family life, and divine grace of Lord Shiva.",
+    who_should_attend: "Devotees, families, and spiritual seekers worldwide participating via HD Live Stream or in-person at the sacred mandap in Bengaluru.",
+    when_performed: "Conducted on the night of Krishna Paksha Chaturdashi in the month of Magha/Phalguna (Mahashivaratri).",
+    where_performed: "Shaankari Sacred Mandap, Bengaluru with HD 4K YouTube Live Stream broadcast.",
+    samagri_highlights: [
+      "108 Liters Pure Cow Milk, Curd, Ghee & Honey",
+      "10000 Fresh Sacred Bilva Leaves (Bilva Patra)",
+      "Pure Kashmiri Saffron & Sandalwood Abhisheka Paste",
+      "Vedic Samidhah Wood & Gugglu Incense",
+      "Consecrated Sacred Bhasma & Rudraksha Prasadam"
+    ],
     venue_address: "Shaankari Sacred Mandap, Bengaluru & HD YouTube Live Stream",
     cover_image: "/images/live-events/mahashivaratri-grand-night-2026.jpg",
     images: ["/images/live-events/mahashivaratri-grand-night-2026.jpg"],
     agenda: [
-      { time: "06:00 PM", title: "First Prahara Abhishekam (Milk & Water)", description: "Rigveda Rudra Chanting & Milk Abhishekam." },
-      { time: "09:00 PM", title: "Second Prahara Abhishekam (Curd & Honey)", description: "Yajurveda Namaka-Chamaka Parayana." },
-      { time: "12:00 AM", title: "Third Prahara Abhishekam (Ghee & Sugar)", description: "Midnight Lingodbhava Maha Rudrabhishekam." },
-      { time: "03:00 AM", title: "Fourth Prahara Shivagni Homa & Poornahuti", description: "Sacred fire oblations and Bhasma Alankara." }
+      { time: "06:00 PM", title: "First Prahara Abhishekam (Milk & Holy Water)", description: "Rigveda Rudra Chanting, Mahasankalpa, and sacred Milk Abhishekam." },
+      { time: "09:00 PM", title: "Second Prahara Abhishekam (Curd & Honey)", description: "Yajurveda Namaka-Chamaka Parayana and 1000 Bilvarchana." },
+      { time: "12:00 AM", title: "Third Prahara Lingodbhava Abhishekam (Ghee & Saffron)", description: "Midnight Lingodbhava Maha Rudrabhishekam with Panchamrutham." },
+      { time: "03:00 AM", title: "Fourth Prahara Shivagni Homa & Poornahuti", description: "Sacred fire oblations, Bhasma Alankara, Mahapoornahuti, and morning Prasadam." }
     ],
     faq: [
-      { question: "What are the 4 Prahara timings on Mahashivaratri?", answer: "The 4 Prahara rituals run continuously from 6:00 PM evening to 6:00 AM dawn, covering milk, curd, ghee, and honey abhishekams." },
-      { question: "Can international devotees participate via live stream?", answer: "Yes, the full 12-hour vigil is live streamed in HD, allowing global devotees to take remote Sankalpa." }
+      { question: "What are the 4 Prahara timings on Mahashivaratri?", answer: "The 4 Prahara rituals run continuously from 6:00 PM evening to 6:00 AM dawn, covering distinct abhishekams (Milk, Curd, Ghee, Honey) and scriptural chantings every 3 hours." },
+      { question: "Can international devotees participate via live stream?", answer: "Yes, the full 12-hour vigil is live streamed in 4K HD, allowing global devotees to take remote Sankalpa and experience the sacred vibration in real-time." },
+      { question: "What is Lingodbhava Kala?", answer: "Lingodbhava Kala occurs precisely at midnight (12:00 AM), representing the moment Lord Shiva manifested as the infinite column of cosmic light (Jyotirlinga)." },
+      { question: "How do I fast or observe the night vigil at home?", answer: "Devotees can fast on fruits/milk or water during the day, remain awake during the live stream, and break their fast after the 4th Prahara Poornahuti at dawn." },
+      { question: "What Prasadam will be delivered to registered attendees?", answer: "Registered participants receive sanctified Bhasma (Vibhuthi), Rudraksha bead energised during 4 Prahara Rudram, and Panchamruta Prasadam." }
     ]
   },
   {
@@ -568,18 +598,34 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     has_payment: true,
     stream_url: "https://youtube.com/live/placeholder",
     short_description: "Grand 9-Priest Durga Saptashati Chandi Homa live streamed during sacred Sharad Navratri Mahashtami.",
-    full_description: "Join Veda Brahma Shri Pradeep Nadig for the grand Sharad Navratri Chandi Homa. Includes 700 Durga Saptashati Ahutis, Suvasini Pooja, Kanya Pooja, and Mahapoornahuti.",
+    full_description: "Maha Chandi Homa is the ultimate ritual dedicated to Goddess Durga (Chandi Devi) as described in the Devi Mahatmyam (700 Mantras across 13 chapters). Performed during Sharad Navratri Mahashtami by 9 Ghanapathi priests led by Shri Pradeep Nadig, this grand Homa eradicates severe black energy, planetary obstacles, legal disputes, fear, and bestows unmatched spiritual strength, victory, and prosperity.",
+    vidhi_details: "1. Mahaganapathi Pooja & Navadurga Avahana: Invoking 9 forms of Goddess Durga into sacred Kalashas.\n2. Chandi Navakshari Japa & Kavacha-Argala-Kilaka Recitation: Purificatory prologue recitations.\n3. Durga Saptashati 13 Adhyaya Homa: 700 sacred mantras offered into the Yajna Kunda with Payasam, Ghee, Kumkum, and Dry Fruits.\n4. Kanya Pooja & Dampati Pooja: Worship of 9 young girls (Kumaris) and Suvasinis representing the Divine Mother.\n5. Mahapoornahuti: Offering of sacred Silk Saree, Coconuts, Herbs, and Spices into the fire followed by Kumkuma Archana.",
+    who_benefits: "Anyone experiencing persistent life obstacles, negative planetary Dashas (Rahu/Ketu/Shani), business losses, health troubles, or seeking divine victory.",
+    who_should_attend: "Devotees and families seeking the divine protective shield of Goddess Durga during sacred Sharad Navratri.",
+    when_performed: "Conducted on sacred Durgashtami / Mahashtami morning during Sharad Navratri.",
+    where_performed: "Shaankari Sacred Mandap, Bengaluru with global HD YouTube Live Stream.",
+    samagri_highlights: [
+      "Pure Silk Saree for Mahapoornahuti",
+      "Payasam & Dry Fruit Ahuti Materials",
+      "700 Fresh Lotus & Red Hibiscus Flowers",
+      "Sanctified Kumkum Prasadam from Chandi Yajna",
+      "Energised Durga Yantra for home protection"
+    ],
     venue_address: "Shaankari Mandap Bengaluru & YouTube Live",
     cover_image: "/images/live-events/navratri-chandi-homa-live.jpg",
     images: ["/images/live-events/navratri-chandi-homa-live.jpg"],
     agenda: [
-      { time: "07:00 AM", title: "Navadurga Avahana & Sankalpa", description: "Initiation & Devotee Sankalpa." },
-      { time: "08:30 AM", title: "Durga Saptashati 13 Adhyaya Homa", description: "700 Sacred Chandi Mantras Ahuti." },
-      { time: "12:00 PM", title: "Suvasini & Kanya Pooja", description: "Honoring 9 sacred maidens & Suvasinis." },
-      { time: "12:45 PM", title: "Mahapoornahuti & Blessing", description: "Silk Saree oblations and Aarti." }
+      { time: "07:00 AM", title: "Navadurga Avahana & Mahasankalpa", description: "Initiation & recitation of registered devotee names and Gothras." },
+      { time: "08:30 AM", title: "Durga Saptashati 13 Adhyaya Homa", description: "700 Sacred Chandi Mantras Ahuti with pure Ghee, Payasam, and sacred Samidhah." },
+      { time: "12:00 PM", title: "Suvasini & Kanya Pooja", description: "Honoring 9 sacred maidens & Suvasinis representing Navadurga." },
+      { time: "12:45 PM", title: "Mahapoornahuti & Blessing", description: "Silk Saree oblations, Poornahuti, Mahamangalarthi, and Prasadam distribution." }
     ],
     faq: [
-      { question: "What are the benefits of Sharad Navratri Chandi Homa?", answer: "Invokes Goddess Durga's supreme grace for obstacle removal, health, and family prosperity." }
+      { question: "What are the benefits of Sharad Navratri Chandi Homa?", answer: "Invokes Goddess Durga's supreme grace for immediate obstacle removal, protection from envy/enemies, family prosperity, and physical vitality." },
+      { question: "How many priests participate in this live Chandi Homa?", answer: "A team of 9 highly learned Ghanapathi Vedic scholars led by Veda Brahma Shri Pradeep Nadig conduct the entire 6-hour ritual." },
+      { question: "Can I submit my family details for remote Sankalpa?", answer: "Yes, during registration you provide your family member names, Gothra, and Nakshatras which are solemnly offered during Mahasankalpa." },
+      { question: "What items are offered during Poornahuti?", answer: "Pure Silk Saree, Coconuts, Sacred Herbs, Spices, Camphor, and Ghee are offered into the Yajnashala fire." },
+      { question: "When will the energised Prasadam arrive?", answer: "Prasadam containing Chandi Kumkum, sacred Homa Bhasma, and Durga Raksha Yantra is dispatched within 3 business days following the event." }
     ]
   },
   {
@@ -596,7 +642,18 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     has_payment: true,
     stream_url: "https://youtube.com/live/placeholder",
     short_description: "Sacred evening Pradosham Kala Rudrabhishekam & Bilvarchana dedicated to Lord Shiva.",
-    full_description: "Participate in monthly Pradosha Kala Rudrabhishekam. Worship during sunset Pradosham time absolves past karma and bestows mental peace.",
+    full_description: "Pradosham occurs twice a month during the 1.5-hour period before sunset on Trayodashi tithi. Scripturally, this is the exact window when Lord Shiva performs the cosmic Anandatandava dance on Nandi Deva's horns. Participating in monthly Pradosha Rudrabhishekam and Sri Rudram chanting absolves karmic afflictions, removes grief, and bestows peace of mind.",
+    vidhi_details: "1. Pradosha Purva Sankalpa & Nandi Archana.\n2. Ekadasa Dravya Abhisheka (Milk, Curd, Tender Coconut water, Honey, Ghee, Fruit juices, Bhasma, Sandalwood water).\n3. Continuous Yajurveda Namaka & Chamaka Parayana.\n4. 108 Sacred Bilva Leaf Archana & Trishati Stotram.\n5. Maha Mangalarthi with 16 Upachara Deeparadhana.",
+    who_benefits: "Anyone seeking mental tranquility, relief from emotional stress, removal of ancestors' karmic debts, and Lord Shiva's blessings.",
+    who_should_attend: "Devotees joining via HD Live Stream or in-person at the temple sanctum.",
+    when_performed: "Conducted during sunset hours (4:30 PM - 7:30 PM) on Trayodashi Tithi every lunar month.",
+    where_performed: "Shaankari Temple Sanctum & YouTube Live Stream.",
+    samagri_highlights: [
+      "11 Liters Fresh Cow Milk & Tender Coconuts",
+      "1008 Fresh Bilva Leaves",
+      "Pure Gandham & Bhasma",
+      "Vedic Prasad Boxes for registered devotees"
+    ],
     venue_address: "Shaankari Temple Sanctum & Live Stream",
     cover_image: "/images/live-events/monthly-pradosham-rudrabhishekam.jpg",
     images: ["/images/live-events/monthly-pradosham-rudrabhishekam.jpg"],
@@ -606,7 +663,9 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
       { time: "07:00 PM", title: "108 Bilvarchana & Deeparadhana", description: "Shiva Stotra & Aarti." }
     ],
     faq: [
-      { question: "What is Pradosham Kala?", answer: "The 1.5-hour period before sunset on Trayodashi tithi, considered most potent for Lord Shiva's worship." }
+      { question: "What is Pradosham Kala?", answer: "The 1.5-hour period before sunset on Trayodashi tithi, considered most potent for Lord Shiva's worship." },
+      { question: "How often is Pradosham observed?", answer: "Pradosham occurs twice every month (Shukla Paksha Trayodashi & Krishna Paksha Trayodashi)." },
+      { question: "What are the benefits of Bilvarchana on Pradosham?", answer: "Offering Bilva leaves during Pradosha Kala destroys sins committed over three lifetimes (Trijanma Paapa Samhara)." }
     ]
   },
   {
@@ -624,6 +683,17 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     stream_url: "https://youtube.com/live/placeholder",
     short_description: "An interactive live string art experience for birthdays, marriages, and celebrations where guests move threads across pegs guided by expert instructors to create custom portrait art.",
     full_description: "Thread Art is an extraordinary interactive live event designed for birthdays, weddings, anniversaries, and grand celebrations. Under the guidance of an expert instructor, guests themselves weave vibrant threads across precision-placed pins on a wooden canvas, collectively crafting a stunning custom string-art portrait of the birthday child, wedding couple, or honored host.",
+    vidhi_details: "1. Precision Pin Matrix Preparation on custom birch wood base.\n2. Guest Orientation & Thread Weaving Sequence Guidance.\n3. Collaborative Multilayer Thread Overlay & Portrait Contouring.\n4. Final Varnish & Custom Framing Presentation.",
+    who_benefits: "Event hosts, wedding couples, birthday hosts, and corporate celebrations seeking an engaging live collaborative artwork experience.",
+    who_should_attend: "Event guests, family members, and attendees.",
+    when_performed: "Conducted live during wedding receptions, milestone birthdays, or cultural galas.",
+    where_performed: "Client event venue across Bengaluru or live interactive broadcast studio.",
+    samagri_highlights: [
+      "Custom Birchwood Base Board with 500+ Precision Pins",
+      "High-Tenacity Silk & Metallic Thread Spools",
+      "Laser-Guided Path Indicators",
+      "Protective Acrylic Frame"
+    ],
     venue_address: "Shaankari Sacred Event Mandap & On-Location Event Venues, Bengaluru",
     cover_image: "/images/live-events/thread-art-live.jpg",
     images: ["/images/live-events/thread-art-live.jpg"],
@@ -650,17 +720,35 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Complete authentic Vedic Vivaha event management including Purohit panel, Mandap Mandala setup, Kanyadaana & Saptapadi rites.",
-    full_description: "Comprehensive Vedic Marriage event management by Veda Brahma Shri Pradeep Nadig and his learned team of Ghanapathi pandits. We handle complete ritual execution, custom Yajnashala setup, Vedic chanting as per your family tradition (Ashvalayana, Apastamba, or Bodhayana Sutra), and complete ceremony orchestration.",
-    venue_address: "Client Venue / Kalyana Mantapa across Bengaluru & India",
+    full_description: "Comprehensive Vedic Marriage (Vivaha Samskara) event management conducted by Veda Brahma Shri Pradeep Nadig and a panel of senior Ghanapathi scholars. Marriage is the sacred union of two souls across seven lives in Hindu Dharma. We manage end-to-end ritual execution according to your family's exact Veda Shakha (Ashvalayana, Apastamba, Bodhayana, or Rigveda), including Varakatana, Nandi Pooja, Kanyadaana, Mangalya Dharana, Saptapadi, Laja Homa, and Arundhati Darshana. Our service includes custom Yajnashala construction, pure puja samagri, mandap mandala design, and complete ceremonial orchestration.",
+    vidhi_details: "1. Nandi Pooja & Devata Avahana: Invoking ancestors and Kula Devatas for obstacles-free marriage.\n2. Vara Pooja & Kashiyatra: Ceremonial welcome of the bridegroom and ritual Kashiyatra.\n3. Kanyadaana & Varamala: Parents solemnize the handovers of the bride with sacred Veda Sukta recitations.\n4. Mangalya Dharana: Tying of sacred Mangalsutra at the precise auspicious Muhoortha with 3 knots.\n5. Saptapadi & Agni Pradaksina: Taking 7 sacred steps together around Agni Deva invoking 7 fundamental life vows.\n6. Laja Homa & Arundhati Darshana: Parched rice oblations in Yajna Kunda and viewing the sacred Arundhati-Vasistha star pair.",
+    who_benefits: "The bride, bridegroom, and both families receive divine harmony, lifelong matrimonial bliss, progeny, and prosperity.",
+    who_should_attend: "Bride, Groom, Parents, Close Relatives, and honored wedding guests.",
+    when_performed: "Conducted during auspicious Shubha Muhoortha calculated accurately based on Bride and Groom's Janma Nakshatra.",
+    where_performed: "Kalyana Mantapa, Convention Hall, Resort, or Traditional Marriage Venue across Bengaluru, Karnataka, and Pan-India.",
+    samagri_highlights: [
+      "Complete Pure Cow Ghee & Sacred Samidhah Wood",
+      "Traditional Yajnashala & Mandala Setup Materials",
+      "Sanctified Turmeric, Kumkum, & Akshata",
+      "Sacred Threads, Mangalya Accessories, & Garland Materials",
+      "Purohit Panel (5 to 11 Ghanapathis)"
+    ],
+    venue_address: "Client Venue / Kalyana Mantapa across Bengaluru & Pan-India",
     cover_image: "/images/services/marriage-maduve.jpg",
     images: ["/images/services/marriage-maduve.jpg"],
     agenda: [
-      { time: "Phase 1", title: "Nandi Pooja & Varakatana", description: "Inaugural ancestral seeking and groom reception." },
-      { time: "Phase 2", title: "Kanyadaana & Mangalya Dharana", description: "Sacred tying of Mangalsutra and Vedic blessing." },
-      { time: "Phase 3", title: "Saptapadi & Laja Homa", description: "Seven sacred steps around Agni deva and rice offerings." }
+      { time: "Phase 1: Pre-Wed", title: "Nandi Pooja, Vara Pooja & Kashiyatra", description: "Inaugural ancestral seeking, groom reception, and traditional Kashiyatra rites." },
+      { time: "Phase 2: Muhoortha", title: "Kanyadaana & Mangalya Dharana", description: "Sacred handover of bride and tying of Mangalsutra at exact Muhoortha." },
+      { time: "Phase 3: Post-Wed", title: "Saptapadi, Laja Homa & Arundhati Darshana", description: "Seven sacred steps around Agni deva, puffed rice oblations, and star viewing." },
+      { time: "Phase 4: Griha Pravesha", title: "Vadhusankrama & Blessing Ceremony", description: "Welcoming bride to new home with Lakshmi Pooja and elder blessings." }
     ],
     faq: [
-      { question: "What is included in the Marriage / Maduve Event Management package?", answer: "We provide complete Purohit panel, Puja samagri arrangement, Yajnashala setup, Veda chanting, and full ritual guidance from Nandi Pooja to Saptapadi." }
+      { question: "What is included in the Marriage / Maduve Event Management package?", answer: "We provide complete Purohit panel, Puja samagri arrangement, Yajnashala setup, Veda chanting as per your family Shakha, and full ritual guidance from Nandi Pooja to Saptapadi." },
+      { question: "Can the rituals be customized based on our family tradition (Sutra/Community)?", answer: "Yes, Shri Pradeep Nadig specializes in Rigveda (Ashvalayana), Krishna Yajurveda (Apastamba/Bodhayana), and Sukla Yajurveda traditions across Kannada, Smartha, Madhva, and South Indian customs." },
+      { question: "How many Pandits will be present for the marriage ceremony?", answer: "We assign a chief Ghanapathi Pandit along with 4 to 10 supporting priests depending on the scale and complexity of the wedding rituals." },
+      { question: "Do you supply all required puja samagri and homa materials?", answer: "Yes, 100% of pure puja samagri (including pure cow ghee, samidhah, dry fruits, turmeric, kalashas, and mandala powders) are arranged by our team." },
+      { question: "How early should we book event management for a wedding?", answer: "We recommend booking at least 3 to 6 weeks in advance to secure optimal Muhoortha lock-in and priest panel availability." },
+      { question: "How do I request a quote or book an event management consultation?", answer: "Click the 'Enquire Event Booking' button on this page to submit your wedding dates and location. Shri Pradeep Nadig's team will contact you within 24 hours." }
     ]
   },
   {
@@ -676,17 +764,34 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Sacred Thread initiation ceremony with Brahmopadesha, Gayatri Mantra initiation, & Complete Veda Vrata rituals.",
-    full_description: "End-to-end Upanayana ceremony management conducted by learned Vedic scholars. Includes Yajnashala arrangement, Agnikarya, Gayatri Mantropadesha, Bhikshacharana, and traditional blessing orchestration.",
+    full_description: "Upanayana (Munjvi) is the sacred second birth (Dvija) of a young boy into Vedic learning and spiritual discipline. Conducted by Veda Brahma Shri Pradeep Nadig and learned Ghanapathi scholars, this event management service covers the complete ritual flow: Nandi Pooja, Choodakarana (Tonsure), Yajnopavita Dharana (investiture of 3-strand sacred thread), Gayatri Mantropadesha under the sacred cloth (Brahmopadesha), Bhikshacharana, Agnikarya, and Medha Janana Homa.",
+    vidhi_details: "1. Matru Bhojana & Choodakarana: Final mother-son feast followed by purificatory hair removal.\n2. Abhyangana Snana & Yajnopavita Dharana: Ceremonial bath and investiture of the holy Yajnopavita thread.\n3. Brahmopadesha: Father/Guru imparts the supreme Gayatri Mantra under a sanctified silk canopy.\n4. Bhikshacharana: The Vatu (young boy) collects first alms (Bhiksha) from Mother and ladies.\n5. Agnikarya & Samidadhana: Fire ritual teaching daily Sandhyavandanam and Agni worship.\n6. Medha Janana Homa: Homa invoking Saraswati Deva for supreme memory, intellect, and character.",
+    who_benefits: "The young boy (Vatu) gains supreme intellect (Medha), concentration in education, spiritual protection, and entry into Vedic traditions.",
+    who_should_attend: "Vatu, Father, Mother, Maternal Uncle (Mama), Family Elders, and Relatives.",
+    when_performed: "Conducted in the 7th, 8th, 9th, or 11th year of the child at an auspicious morning Muhoortha.",
+    where_performed: "Client Residence, Community Hall, Party Hall, or Kalyana Mantapa across Bengaluru & Pan-India.",
+    samagri_highlights: [
+      "Pure Cotton Yajnopavita (Sacred Threads)",
+      "Mounji Grass Belt & Deerskin Piece",
+      "Palasa (Flame of the Forest) Sacred Wooden Staff",
+      "Complete Yajnashala & Agnikarya Samagri",
+      "Vedic Pandit Panel (3 to 7 Priests)"
+    ],
     venue_address: "Client Residence / Event Hall across Bengaluru & Pan-India",
     cover_image: "/images/services/upanayana-threading.jpg",
     images: ["/images/services/upanayana-threading.jpg"],
     agenda: [
-      { time: "Morning", title: "Choodakarana & Yajnopavita Dharana", description: "Purification and sacred thread investiture." },
-      { time: "Mid-Day", title: "Brahmopadesha", description: "Gayatri Mantra initiation by Father/Guru under sacred cloth." },
-      { time: "Afternoon", title: "Bhikshacharana & Medha Janana", description: "First alms collection and prayer for supreme intellect." }
+      { time: "07:00 AM", title: "Nandi Pooja & Matru Bhojana", description: "Ancestral blessings and final maternal childhood meal." },
+      { time: "08:30 AM", title: "Yajnopavita Dharana & Brahmopadesha", description: "Sacred thread investiture and Gayatri Mantra initiation under silk cloth." },
+      { time: "11:00 AM", title: "Bhikshacharana & Agnikarya", description: "First alms collection from elders and sacred fire offering." },
+      { time: "12:30 PM", title: "Medha Janana Homa & Blessings", description: "Homa for memory power and grand elder blessings." }
     ],
     faq: [
-      { question: "Do you supply the required puja items and sacred thread for Upanayana?", answer: "Yes, we arrange authentic Yajnopavitha, deerskin/mounji belt, samidhah wood, and complete ritual samagri." }
+      { question: "Do you supply the required puja items and sacred thread for Upanayana?", answer: "Yes, we arrange authentic Yajnopavitha, deerskin/mounji belt, Palasa staff, samidhah wood, and 100% of ritual samagri." },
+      { question: "Will the boy be taught how to perform Sandhyavandanam?", answer: "Yes, Shri Pradeep Nadig personally guides the boy through the step-by-step Sandhyavandanam procedure during the ceremony." },
+      { question: "How many pandits are required for a traditional Upanayana?", answer: "Typically 3 to 5 senior Ghanapathi pandits conduct the ceremony seamlessly." },
+      { question: "Can Upanayana be combined with Chowla (first haircut)?", answer: "Yes, if Chowla was not done earlier, it can be seamlessly integrated into the morning rituals before Brahmopadesha." },
+      { question: "How do I book this Upanayana event management?", answer: "Click 'Enquire Event Booking' on this page, fill in your details, and our team will provide a tailored event proposal within 24 hours." }
     ]
   },
   {
@@ -702,16 +807,30 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Holistic Vedic prenatal guidance rituals, Garbha Raksha Sookta parayana, and positive fetal mental impression ceremony.",
-    full_description: "Specialized Vedic spiritual guidance and rituals during pregnancy. Includes Garbha Raksha Stotra parayana, specialized homa for maternal & fetal health, dietary alignment, and Vedic sound meditation for the expectant mother.",
+    full_description: "Garbha Sanskaar is the ancient Vedic science of nurturing a child's mental, physical, and spiritual development right from the womb. According to Ayurveda and Veda Shastras, a unborn child absorbs vibrations, emotions, and thoughts from the 3rd month onward. Veda Brahma Shri Pradeep Nadig provides complete event management and guidance for Garbha Sanskaar, including Garbha Raksha Sukta chanting, Santana Gopala Homa, Vedic sound meditation, and positive mental impression ceremonies for expectant parents.",
+    vidhi_details: "1. Sankalpa & Garbha Raksha Sookta Parayana: Chanting 108 protective Vedic mantras for maternal and fetal well-being.\n2. Santana Gopala Homa: Fire oblations offering Lotus seeds, Ghee, and Charu for intelligent, healthy offspring.\n3. Abhimantrita Ksheera & Jalabhisheka: Sanctifying drinking milk and water with protective mantras for daily consumption.\n4. Sound Therapy & Vedic Chanting Guidance: Teaching parents sacred daily stotrams and peaceful routines.",
+    who_benefits: "The expectant mother and the unborn child receive physical immunity, intellectual sharpness, calm disposition, and divine protection.",
+    who_should_attend: "Expectant Mother, Husband, and immediate family members.",
+    when_performed: "Conducted during the 3rd, 5th, or 7th month of pregnancy at an auspicious morning time.",
+    where_performed: "Client Residence across Bengaluru or Online Consultation & Remote Guidance.",
+    samagri_highlights: [
+      "Pure Cow Milk & Charu (Sweet Rice) Samagri",
+      "Santana Gopala Yantra",
+      "Sanctified Herbal Protective Thread (Raksha Sutra)",
+      "Prasadam & Audio Guide for daily mantras"
+    ],
     venue_address: "Client Residence / Virtual Guidance",
     cover_image: "/images/services/garbha-sanskaar.jpg",
     images: ["/images/services/garbha-sanskaar.jpg"],
     agenda: [
-      { time: "Session 1", title: "Garbha Raksha Sookta Parayana", description: "Chanting of protective mantras for healthy pregnancy." },
-      { time: "Session 2", title: "Sanctified Mantras & Meditation", description: "Sound therapy and positive spiritual impressions for the baby." }
+      { time: "Session 1", title: "Garbha Raksha Sookta Parayana", description: "Chanting of protective mantras for healthy pregnancy and peaceful mind." },
+      { time: "Session 2", title: "Santana Gopala Homa", description: "Fire ritual invoking Lord Krishna's blessings for healthy & wise offspring." },
+      { time: "Session 3", title: "Sanctified Mantras & Meditation", description: "Sound therapy and positive spiritual impressions for the mother and baby." }
     ],
     faq: [
-      { question: "At what month of pregnancy should Garbha Sanskaar be conducted?", answer: "Garbha Sanskaar guidance begins from early pregnancy, with specific Homas conducted during the 3rd, 5th, or 7th months." }
+      { question: "At what month of pregnancy should Garbha Sanskaar be conducted?", answer: "Garbha Sanskaar guidance begins from early pregnancy, with specific Homas conducted during the 3rd, 5th, or 7th months." },
+      { question: "Is this safe for the expectant mother?", answer: "Yes, all rituals involve soothing Vedic chantings, mild incense, and peaceful home-based ceremonies designed for mother's total comfort." },
+      { question: "Can Garbha Sanskaar be conducted remotely?", answer: "Yes, remote Sankalpa and online guided sessions can be conducted if traveling is restricted." }
     ]
   },
   {
@@ -727,16 +846,30 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Authentic Vedic naming ritual for newborn infants, Janma Rashi calculation, and family benediction rites.",
-    full_description: "Sacred Namakarana ceremony performed on the 11th, 12th, or auspicious day after childbirth. Includes Janma Nakshatra analysis, sacred ear-whispering of the name, Puja of the 10 Dikpalakas, and cradle blessings.",
+    full_description: "Naamakarana Samskara is the sacred ritual of formally naming a newborn baby on the 11th, 12th, 16th, or 21st day after birth. The name assigned during Naamakarana forms the child's energetic identity across life. Shri Pradeep Nadig calculates the exact Janma Nakshatra Pada, recommends astrologically aligned name initials (Nama Akshara), and conducts complete end-to-end ritual management including Punyahavachana, Kula Devata Pooja, ear-whispering ceremony, cradle decoration, and elder blessings.",
+    vidhi_details: "1. Punyahavachana & Shuddhi: Purification of the home environment with sanctified Kalasa water.\n2. Janma Kundali & Nama Akshara Determination: Astrological calculation of the child's birth star syllable.\n3. Ear-Whispering Vidhi: Father whispers the secret astrological name and public name 3 times into the baby's right ear.\n4. Honey & Ghee Rite (Licking of Medha): Touching pure honey and ghee to baby's tongue for eloquence and intellect.\n5. Cradle Blessing (Thottilu Pooja): Placing baby in decorated cradle accompanied by auspicious ladies' songs.",
+    who_benefits: "The newborn baby receives lifelong protection, positive name vibrations, health, and auspicious energy.",
+    who_should_attend: "Parents, Grandparents, Relatives, and Friends.",
+    when_performed: "Conducted on the 11th, 12th, 16th, 21st, or 40th day after childbirth.",
+    where_performed: "Client Residence, Party Hall, or Event Venue across Bengaluru.",
+    samagri_highlights: [
+      "Kalasa Sthapana & Pure Honey/Ghee setup",
+      "Janma Nakshatra Chart Document",
+      "Decorated Cradle Accessories & Flowers",
+      "Purohit Panel (2 Priests)"
+    ],
     venue_address: "Client Residence / Party Hall across Bengaluru",
     cover_image: "/images/services/naming-ceremony-naamakarana.jpg",
     images: ["/images/services/naming-ceremony-naamakarana.jpg"],
     agenda: [
       { time: "Part 1", title: "Punya Havachana & Kula Devata Pooja", description: "House purification and family deity invocation." },
-      { time: "Part 2", title: "Namakarana Vidhi", description: "Whispering sacred name in baby's right ear and honey touching rite." }
+      { time: "Part 2", title: "Namakarana Vidhi & Ear Whispering", description: "Whispering sacred name in baby's right ear and honey touching rite." },
+      { time: "Part 3", title: "Thottilu Pooja & Cradle Blessings", description: "Placing baby in decorated cradle followed by elder blessings and feast." }
     ],
     faq: [
-      { question: "Can astrologically suitable names be recommended during the ceremony?", answer: "Yes, Shri Pradeep Nadig analyzes the child's exact Janma Nakshatra and Pada to suggest auspicious starting syllables." }
+      { question: "Can astrologically suitable names be recommended during the ceremony?", answer: "Yes, Shri Pradeep Nadig analyzes the child's exact Janma Nakshatra and Pada to suggest auspicious starting syllables." },
+      { question: "What materials do parents need to prepare?", answer: "We provide complete puja samagri; parents only need to keep clean clothes for baby and silver plate/honey if preferred." },
+      { question: "Can Naamakarana be performed if the child is a few months old?", answer: "Yes, if missed in the first month, Naamakarana can be performed on any auspicious Tithi." }
     ]
   },
   {
@@ -752,16 +885,29 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Traditional Vedic Seemantha ritual for expectant mothers, Udaka Shanti, and auspicious family celebrations.",
-    full_description: "Auspicious 7th or 8th month pregnancy ceremony (Seemanthonnayanam). Includes Udaka Shanti mantras, Vishnu Sahasranama parayana, mother's adornment, ritual blessing by elders, and full event coordination.",
+    full_description: "Seemanthonnayanam (Seemantha) is the third pregnant Samskara conducted during the 5th, 7th, or 8th month of pregnancy. It is designed to keep the expectant mother joyous, calm, and spiritually protected. Our comprehensive event management includes Udaka Shanti parayana (recitation of 144 protective mantras into sanctified water), hair-parting ritual with sacred Porcupine quill/Rose twig (Seemantha Vidhi), Bangles distribution (Valaikappu), Vishnu Sahasranama chanting, and lavish feast coordination.",
+    vidhi_details: "1. Udaka Shanti Mantras: Recitation of powerful protective Veda mantras over Kalasha water.\n2. Seemanthonnayanam Rite: Gentle parting of mother's hair by husband using sanctified porcupine quill/rose branch.\n3. Kalasabhishekam & Prokshana: Sprinkling sacred water over the mother for safe childbirth.\n4. Valaikappu & Glass Bangles Adornment: Adornment of colorful glass bangles by family Suvasinis.\n5. Elder Blessings & Naivedya: Offering special sweets and receiving blessings from elders.",
+    who_benefits: "The expectant mother receives mental calmness, safe delivery blessings, and physical well-being for mother and baby.",
+    who_should_attend: "Expectant Mother, Husband, Grandmothers, In-laws, Relatives, and Suvasinis.",
+    when_performed: "Conducted during the 5th, 7th, or 8th month of pregnancy on an auspicious Muhoortha.",
+    where_performed: "Client Residence, Party Hall, or Convention Center across Bengaluru.",
+    samagri_highlights: [
+      "Udaka Shanti Kalasa Setup",
+      "Traditional Porcupine Quill & Rose Twig",
+      "Glass Bangles & Kumkum Sets",
+      "3 Senior Ghanapathi Priests"
+    ],
     venue_address: "Client Residence / Convention Hall across Bengaluru",
     cover_image: "/images/services/baby-shower-seemantha.jpg",
     images: ["/images/services/baby-shower-seemantha.jpg"],
     agenda: [
-      { time: "Morning", title: "Udaka Shanti & Kalasha Sthapana", description: "Sanctification of water and protective Vedic recitation." },
-      { time: "Mid-Day", title: "Seemantha Vidhi & Elder Blessings", description: "Parting of hair ritual with sanctified porcupine quill/rose, followed by feast." }
+      { time: "Morning", title: "Udaka Shanti & Kalasha Sthapana", description: "Sanctification of water and protective Vedic recitation by 3 priests." },
+      { time: "Mid-Day", title: "Seemantha Vidhi & Valaikappu", description: "Parting of hair ritual, glass bangles adornment, and elder blessings." },
+      { time: "Afternoon", title: "Grand Feast & Guest Departure", description: "Traditional South Indian feast and return gift distribution." }
     ],
     faq: [
-      { question: "What is the significance of Udaka Shanti during Seemantha?", answer: "Udaka Shanti invokes powerful protective deities into sanctified water to bestow health and long life to mother and child." }
+      { question: "What is the significance of Udaka Shanti during Seemantha?", answer: "Udaka Shanti invokes powerful protective deities into sanctified water to bestow health, easy delivery, and long life to mother and child." },
+      { question: "Do you supply bangles and puja materials?", answer: "Yes, we handle complete ritual materials, Kalashas, and optional bangle distribution management." }
     ]
   },
   {
@@ -778,6 +924,15 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     has_payment: false,
     short_description: "First Samskara of Vedic tradition for spiritual, mental, and physical sanctification before conception.",
     full_description: "The foundational first Samskara in Hindu tradition performed for newly married couples desiring virtuous, healthy, and enlightened offspring. Conducted with absolute privacy, sanctity, and authentic Vedic mantras.",
+    vidhi_details: "1. Prajapati Avahana & Homa: Fire oblations seeking blessings for noble lineage.\n2. Garbha Shuddhi Mantras: Purificatory recitations for physical and mental alignment.\n3. Private Blessing & Prasadam.",
+    who_benefits: "Newly married couples seeking noble, intelligent, and virtuous progeny.",
+    who_should_attend: "Husband and Wife (Strictly Private).",
+    when_performed: "Conducted after marriage before planning conception at an auspicious Muhoortha.",
+    where_performed: "Client Residence.",
+    samagri_highlights: [
+      "Pure Cow Ghee & Prajapati Samagri",
+      "Prajapati Yantra & Sacred Threads"
+    ],
     venue_address: "Client Residence",
     cover_image: "/images/services/gabhadaan-gabhadaana.jpg",
     images: ["/images/services/gabhadaan-gabhadaana.jpg"],
@@ -801,13 +956,23 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "First tonsure ceremony for child's longevity, health, and intellectual enhancement with Ayushya Homa.",
-    full_description: "Choodakarana Samskara conducted in the 1st or 3rd year of the child. Includes Ayushya Homa, Navagraha Pooja, traditional tonsure ritual coordination, and sanctified bathing.",
+    full_description: "Choodakarana Samskara (Chowla) is the ceremonial first haircut performed in the 1st or 3rd year of the child. It symbolizes shedding past life karmic impressions and fostering health, brain development, and longevity. Includes Ayushya Homa, Navagraha Pooja, traditional tonsure ritual coordination, and sanctified bathing.",
+    vidhi_details: "1. Ayushya Homa: Fire ritual invoking Markandeya, Chiranjivis, and Ayur Devatas for child's longevity.\n2. Chowla Vidhi: Sacred first hair removal with ritual mantras, curd/butter application, and barbers' blessing.\n3. Abhyangana Snana & New Clothes Presentation.",
+    who_benefits: "The child receives longevity (Ayush), robust health, mental clarity, and protection from evil eye.",
+    who_should_attend: "Child, Parents, Maternal Uncle, and Relatives.",
+    when_performed: "Conducted at the end of the 1st year or during the 3rd year at an auspicious Muhoortha.",
+    where_performed: "Client Residence, Temple, or Event Hall across Bengaluru.",
+    samagri_highlights: [
+      "Ayushya Homa Samagri",
+      "Pure Butter/Curd for hair sanctification",
+      "Purohit Panel (2 Priests)"
+    ],
     venue_address: "Client Residence / Temple / Hall across Bengaluru",
     cover_image: "/images/services/chowla-haircut.jpg",
     images: ["/images/services/chowla-haircut.jpg"],
     agenda: [
-      { time: "Part 1", title: "Ayushya Homa", description: "Fire ritual invoking longevity and robust health for the child." },
-      { time: "Part 2", title: "Chowla Vidhi", description: "Sacred first hair removal with ritual mantras and curd/butter application." }
+      { time: "Part 1", title: "Ayushya Homa & Navagraha Pooja", description: "Fire ritual invoking longevity and robust health for the child." },
+      { time: "Part 2", title: "Chowla Vidhi & Snana", description: "Sacred first hair removal with ritual mantras and curd/butter application." }
     ],
     faq: [
       { question: "When is Chowla / Choodakarana traditionally performed?", answer: "It is usually performed at the end of the 1st year or during the 3rd year at an auspicious Muhoortha." }
@@ -826,17 +991,137 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
     price: 0,
     has_payment: false,
     short_description: "Complete Griha Pravesha event management: Vastu Shanti, Navagraha Homa, Lakshmi Pooja, and milk boiling ritual.",
-    full_description: "Comprehensive Griha Pravesha ceremony management for new homes or apartments. Includes Vastu Purusha Pooja, Ganapathi & Navagraha Homa, Threshold Entrance rites, Ksheera Ubaluvudhu (milk boiling rite), and complete event coordination.",
+    full_description: "Comprehensive Griha Pravesha event management for new independent houses, villas, or apartments across Bengaluru and Pan-India. Moving into a new home requires pacifying Vastu Purusha, neutralizing directional doshas, and welcoming Goddess Lakshmi. Shri Pradeep Nadig provides end-to-end management including Dwara Pooja, Gau Pravesha (Cow & Calf entrance), Vastu Shanti Homa, Navagraha Homa, Ksheera Ubaluvudhu (milk boiling rite), and Ganapathi Homa.",
+    vidhi_details: "1. Dwara Pooja & Gau Pravesha: Threshold sanctification and auspicious sacred cow entrance at dawn.\n2. Vastu Purusha Mandala Sthapana & Shanti Homa: 16-point Vastu grid worship and samidhah offerings.\n3. Ksheera Paaka (Milk Boiling): Ceremonial boiling of fresh milk until it overflows, signifying overflowing abundance.\n4. Navagraha & Ganapathi Homa: Removing all negative vibrations from the land and walls.\n5. Kalasa Samprokshana: Sprinkling holy water in all rooms and corners.",
+    who_benefits: "The entire homeowner family enjoys happiness, financial abundance, protection from negative energies, and long life in the new home.",
+    who_should_attend: "Homeowners, Family Members, Relatives, and Guests.",
+    when_performed: "Conducted during Brahma Muhoortha or early morning based on homeowner's Janma Rashi.",
+    where_performed: "New Residence / Apartment / Villa across Bengaluru & India.",
+    samagri_highlights: [
+      "Vastu Mandala Chart & Copper Pyramids",
+      "Complete Homa Samagri & Samidhah",
+      "Gau Pravesha (Cow & Calf arrangement)",
+      "4 Senior Ghanapathi Priests"
+    ],
     venue_address: "Client Residence across Bengaluru & Pan-India",
     cover_image: "/images/services/griha-pravesha.jpg",
     images: ["/images/services/griha-pravesha.jpg"],
     agenda: [
-      { time: "Dawn", title: "Dwara Pooja & Gau Pravesha", description: "Threshold ritual and sacred cow entrance into the new house." },
-      { time: "Morning", title: "Vastu Shanti & Navagraha Homa", description: "Purifying directional energies and planetary offerings in Homa Kunda." },
-      { time: "Mid-Morning", title: "Lakshmi Pooja & Ksheera Paaka", description: "Prosperity invocation and ceremonial milk boiling." }
+      { time: "Dawn (5:30 AM)", title: "Dwara Pooja & Gau Pravesha", description: "Threshold ritual and sacred cow entrance into the new house." },
+      { time: "06:30 AM", title: "Ksheera Paaka (Milk Boiling)", description: "Ceremonial milk boiling in the new kitchen for abundance." },
+      { time: "08:00 AM", title: "Vastu Shanti & Navagraha Homa", description: "Purifying directional energies and planetary offerings in Homa Kunda." },
+      { time: "11:00 AM", title: "Kalasa Samprokshana & Satyanarayana Pooja", description: "Sprinkling sanctified water in all rooms followed by Mahamangalarthi." }
     ],
     faq: [
-      { question: "Do you arrange for Cow & Calf (Gau Pravesha) for Griha Pravesha?", answer: "Yes, upon request we facilitate sacred Gau Pravesha arrangement along with full Vastu Shanti setup." }
+      { question: "Do you arrange for Cow & Calf (Gau Pravesha) for Griha Pravesha?", answer: "Yes, upon request we facilitate authentic sacred Gau Pravesha arrangement along with full Vastu Shanti setup." },
+      { question: "What is included in the Griha Pravesha Event Management?", answer: "We provide complete Pandit panel, Puja samagri, Homa kunda setup, Vastu Mandala setup, and end-to-end ritual coordination." },
+      { question: "Can Satyanarayana Pooja be performed on the same day?", answer: "Yes, Satyanarayana Pooja is typically conducted right after the Vastu Homa in the afternoon." }
+    ]
+  },
+  {
+    id: 109,
+    title: "Shashti Poorthi (60th Birthday Renewal / Ugraratha Shanthi)",
+    slug: "shashti-poorthi-60th-birthday",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Muhoortha",
+    pandits_count: 5,
+    price: 0,
+    has_payment: false,
+    short_description: "Grand 60th birthday marital vow renewal & longevity ceremony with Ayushya Homa, 60 Kalasa Abhishekam, & Dampati Pooja.",
+    full_description: "Shashti Poorthi (Ugraratha Shanthi) marks the completion of 60 years of life (completion of one full 60-year Jupiter-Saturn astrological cycle). It is a grand milestone where the couple re-enacts their marital vows (Maduve renewal) and receives 60 Kalashas Abhishekam. Shri Pradeep Nadig handles complete event management including Ayushya Homa, Mrityunjaya Homa, 60 Sacred Waters Kalasabhishekam, Dampati Pooja, and Mangalya Dharana.",
+    vidhi_details: "1. 60 Kalasa Sthapana: Invoking 60 Samvatsara Devatas, Navagrahas, and Chiranjivis into 60 sanctified Kalashas.\n2. Maha Mrityunjaya & Ayushya Homa: Fire oblations for robust health and overcoming planetary afflictions.\n3. 60 Kalasa Abhishekam: Children and grandchildren pour sacred water over the celebrated couple.\n4. Re-Tying of Mangalsutra (Dampati Pooja): Husband re-ties Mangalsutra to wife with Veda chantings.\n5. Elder Blessings & Grand Feast.",
+    who_benefits: "The celebrated couple gains renewed health, longevity, harmony, and blessings for children/grandchildren.",
+    who_should_attend: "Celebrated Couple, Children, Grandchildren, Relatives, and Friends.",
+    when_performed: "Conducted upon reaching the 60th birthday (completion of 60th year).",
+    where_performed: "Convention Hall, Kalyana Mantapa, Temple, or Home across Bengaluru.",
+    samagri_highlights: [
+      "60 Copper Kalashas & Sanctified Water Setup",
+      "Ayushya & Mrityunjaya Homa Materials",
+      "New Garlands, Silk Clothes & Mangalya Thread",
+      "5 Ghanapathi Priests"
+    ],
+    venue_address: "Client Venue / Kalyana Mantapa across Bengaluru",
+    cover_image: "/images/services/shashti-poorthi.jpg",
+    images: ["/images/services/shashti-poorthi.jpg"],
+    agenda: [
+      { time: "07:00 AM", title: "60 Kalasa Sthapana & Mrityunjaya Homa", description: "Invoking 60 year deities and longevity fire ritual." },
+      { time: "09:30 AM", title: "60 Kalasabhishekam", description: "Ceremonial bathing of couple by children and grandchildren." },
+      { time: "11:00 AM", title: "Dampati Pooja & Mangalya Dharana", description: "Re-tying of sacred thread and floral garland exchange." }
+    ],
+    faq: [
+      { question: "What is the significance of Shashti Poorthi?", answer: "Marks the completion of 60 years of life and protects against Ugraratha planetary afflictions while renewing marriage vows." }
+    ]
+  },
+  {
+    id: 110,
+    title: "Sathabhishekam (80th Birthday / Sahasra Chandra Darshana)",
+    slug: "sathabhishekam-80th-birthday",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Hours",
+    pandits_count: 5,
+    price: 0,
+    has_payment: false,
+    short_description: "Sacred 80th birthday celebration (seeing 1000 full moons) with Ayushya Homa, 1008 Kalasa Abhishekam, and Daanam.",
+    full_description: "Sathabhishekam celebrates a person completing 80 years and 8 months of life, having witnessed 1000 full moons (Sahasra Chandra Darshana). It is considered one of the highest spiritual honors in a human life. Shri Pradeep Nadig conducts full ceremonial management including 1000 Moon blessings, Ayur Sukta Homa, Kanakabhishekam (showering with gold/flowers), and 10 Mahadaanas.",
+    vidhi_details: "1. Sahasra Chandra Darshana Smarana & Kalasa Sthapana.\n2. Ayushya & Rudra Homa.\n3. Kanakabhishekam & Floral Abhishekam by 3 generations of family.\n4. Daanam (Gau, Bhumi, Tila, Gold, Clothes offerings).\n5. Grand family feast and seeking padanamaskaram.",
+    who_benefits: "The octogenarian elder and 3 generations of descendants receive immense spiritual merits and long life.",
+    who_should_attend: "Elders, Children, Grandchildren, Great-grandchildren, and Relatives.",
+    when_performed: "Conducted upon completing 80 years and 8 lunar months.",
+    where_performed: "Kalyana Mantapa, Convention Hall, or Residence across Bengaluru.",
+    samagri_highlights: [
+      "1008 Kalasa / Floral Abhisheka Setup",
+      "Ayushya Homa & Daanam Materials",
+      "5 Senior Ghanapathi Priests"
+    ],
+    venue_address: "Client Venue across Bengaluru & Pan-India",
+    cover_image: "/images/services/sathabhishekam.jpg",
+    images: ["/images/services/sathabhishekam.jpg"],
+    agenda: [
+      { time: "Morning", title: "Sahasra Chandra Puja & Ayur Homa", description: "Worshipping 1000 full moons and longevity fire ritual." },
+      { time: "Mid-Day", title: "Kanakabhishekam & Elder Blessings", description: "Gold/flower shower by 3 generations and Daanam rites." }
+    ],
+    faq: [
+      { question: "What is Sahasra Chandra Darshana?", answer: "It celebrates an elder having lived through 1000 full moon cycles (approx 80 years and 8 months)." }
+    ]
+  },
+  {
+    id: 111,
+    title: "Aksharabhyasa / Vidyarambham Ceremony",
+    slug: "aksharabhyasa-vidyarambham",
+    category: "Event Management",
+    status: "Upcoming",
+    venue_type: "In-Person",
+    event_date: "On Request",
+    event_time: "Morning Hours",
+    pandits_count: 2,
+    price: 0,
+    has_payment: false,
+    short_description: "Sacred initiation into learning, writing, and education for toddlers with Saraswati Pooja and rice writing.",
+    full_description: "Aksharabhyasa (Vidyarambham) is the sacred initiation into formal education and writing for young toddlers (usually around age 3 to 5). Conducted by Shri Pradeep Nadig, the ritual involves Saraswati Pooja, Hayagriva Pooja, Medha Sukta parayana, and guiding the child's finger to write 'Om Namah Shivaya' or 'Hari Sri Ganapataye Namah' in raw rice and sand.",
+    vidhi_details: "1. Saraswati & Hayagriva Avahana: Invoking Goddess of Knowledge into sacred books & slate.\n2. Medha Sukta Parayana: Chanting for supreme memory and intellect.\n3. Akshara Lekhana: Father/Guru holds child's right index finger to trace sacred mantras in raw rice.\n4. Tongue Writing: Tracing 'Om' on child's tongue with a gold ring dipped in honey.",
+    who_benefits: "The child receives sharp intellect, speech clarity, love for education, and academic success.",
+    who_should_attend: "Child, Parents, Grandparents, and Teachers.",
+    when_performed: "Conducted on Vijayadasami, Vasant Panchami, or auspicious morning Tithis.",
+    where_performed: "Client Residence, Temple, or School Venue across Bengaluru.",
+    samagri_highlights: [
+      "Saraswati Yantra & Puja Slate",
+      "Raw Rice & Pure Honey with Gold Ring",
+      "Purohit Panel (2 Priests)"
+    ],
+    venue_address: "Client Residence / Temple across Bengaluru",
+    cover_image: "/images/services/aksharabhyasa.jpg",
+    images: ["/images/services/aksharabhyasa.jpg"],
+    agenda: [
+      { time: "Morning", title: "Saraswati Pooja & Akshara Lekhana", description: "Pooja to Goddess of learning and writing first sacred letters in raw rice." }
+    ],
+    faq: [
+      { question: "At what age should Aksharabhyasa be performed?", answer: "It is traditionally performed between 3 to 5 years of age before the child begins formal school." }
     ]
   }
 ];

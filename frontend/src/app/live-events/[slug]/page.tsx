@@ -22,6 +22,18 @@ export async function generateStaticParams() {
       { slug: "navratri-chandi-homa-live" },
       { slug: "solar-eclipse-shanti-pooja" },
       { slug: "monthly-pradosham-rudrabhishekam" },
+      { slug: "thread-art-live-event" },
+      { slug: "marriage-maduve" },
+      { slug: "threading-ceremony-upanayana" },
+      { slug: "garbha-sanskaar" },
+      { slug: "naming-ceremony-naamakarana" },
+      { slug: "baby-shower-seemantha" },
+      { slug: "gabhadaan-gabhadaana" },
+      { slug: "first-haircut-ceremony-chowla" },
+      { slug: "house-warming-griha-pravesha" },
+      { slug: "shashti-poorthi-60th-birthday" },
+      { slug: "sathabhishekam-80th-birthday" },
+      { slug: "aksharabhyasa-vidyarambham" },
     ];
   }
 }

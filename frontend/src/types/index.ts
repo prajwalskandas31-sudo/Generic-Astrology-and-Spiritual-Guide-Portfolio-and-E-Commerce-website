@@ -310,7 +310,7 @@ export interface LiveEvent {
   full_description: string;
   event_date: string;
   event_time: string;
-  venue_type: "Online Stream" | "In-Person & Live Stream" | "Temple Ground" | "Hybrid" | string;
+  venue_type: "Online Stream" | "In-Person & Live Stream" | "Temple Ground" | "Hybrid" | "In-Person" | string;
   venue_address?: string;
   stream_url?: string;
   price: number;
@@ -323,6 +323,12 @@ export interface LiveEvent {
   status: "Upcoming" | "Live Now" | "Ended" | string;
   agenda: LiveEventAgendaItem[];
   pandits_count?: number;
+  vidhi_details?: string;
+  who_benefits?: string;
+  who_should_attend?: string;
+  when_performed?: string;
+  where_performed?: string;
+  samagri_highlights?: string[];
   seo_title?: string;
   seo_description?: string;
   faq?: { question: string; answer: string }[];
