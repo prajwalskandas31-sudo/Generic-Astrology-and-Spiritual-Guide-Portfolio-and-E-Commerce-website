@@ -746,19 +746,23 @@ function PasswordResetCard() {
     }
   }, []);
 
+  const isPrincipalAdmin = currentAdmin?.role === "PRINCIPAL_ADMIN";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMsg("");
     setTestResult(null);
 
-    if (!selectedEmail) {
+    const targetEmail = isPrincipalAdmin ? selectedEmail : currentAdmin?.email;
+
+    if (!targetEmail) {
       setMsgType("error");
       setMsg("Please select an admin account.");
       return;
     }
 
     if (currentPassword) {
-      const isCurrentValid = verifyAdminPassword(selectedEmail, currentPassword);
+      const isCurrentValid = verifyAdminPassword(targetEmail, currentPassword);
       if (!isCurrentValid) {
         setMsgType("error");
         setMsg("Current password verification failed. Please enter your correct current password.");
@@ -780,20 +784,20 @@ function PasswordResetCard() {
 
     setIsChanging(true);
     try {
-      await updateAdminPassword(selectedEmail, newPassword);
+      await updateAdminPassword(targetEmail, newPassword);
 
-      const targetAccount = PREDEFINED_ADMIN_ACCOUNTS.find(a => a.email.toLowerCase() === selectedEmail.toLowerCase()) || currentAdmin;
+      const targetAccount = PREDEFINED_ADMIN_ACCOUNTS.find(a => a.email.toLowerCase() === targetEmail.toLowerCase()) || currentAdmin;
 
       logAuditEvent({
         action_category: "SYSTEM",
-        action_summary: `${currentAdmin?.name || "Admin"} updated security password for ${targetAccount?.name || selectedEmail}`,
+        action_summary: `${currentAdmin?.name || "Admin"} updated security password for ${targetAccount?.name || targetEmail}`,
         target_resource: "Account Security Credentials",
-        details: { target_email: selectedEmail, updated_at: new Date().toISOString() },
+        details: { target_email: targetEmail, updated_at: new Date().toISOString() },
         severity: "CRITICAL",
       });
 
       setMsgType("success");
-      setMsg(`✅ Security password changed successfully for ${selectedEmail}! The new password is active immediately for your next login.`);
+      setMsg(`✅ Security password changed successfully for ${targetEmail}! The new password is active immediately for your next login.`);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -808,7 +812,8 @@ function PasswordResetCard() {
   const handleTestVerify = (e: React.FormEvent) => {
     e.preventDefault();
     if (!testPassword) return;
-    const isValid = verifyAdminPassword(selectedEmail, testPassword);
+    const targetEmail = isPrincipalAdmin ? selectedEmail : currentAdmin?.email;
+    const isValid = verifyAdminPassword(targetEmail, testPassword);
     if (isValid) {
       setTestResult("✅ Password Verified! Your new password matches active system credentials.");
     } else {
@@ -830,8 +835,9 @@ function PasswordResetCard() {
             <label className="block text-xs font-semibold text-slate-700 mb-1">Target Account</label>
             <select
               value={selectedEmail}
+              disabled={!isPrincipalAdmin}
               onChange={(e) => setSelectedEmail(e.target.value)}
-              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-slate-100 disabled:text-slate-500"
             >
               {PREDEFINED_ADMIN_ACCOUNTS.map((acc) => (
                 <option key={acc.id} value={acc.email}>
@@ -839,6 +845,11 @@ function PasswordResetCard() {
                 </option>
               ))}
             </select>
+            {!isPrincipalAdmin && (
+              <span className="text-[10px] text-slate-500 italic mt-0.5 block">
+                Non-Principal admins can only change their own account password.
+              </span>
+            )}
           </div>
 
           <div>

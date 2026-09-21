@@ -1115,10 +1115,10 @@ export function getAdminPassword(email: string): string {
   const cleanEmail = email.trim().toLowerCase();
   if (typeof window !== "undefined") {
     try {
+      // Clean up legacy global password override if present
+      localStorage.removeItem("admin_pass_global");
       const raw = localStorage.getItem(`admin_pass_${cleanEmail}`);
       if (raw) return raw;
-      const globalPass = localStorage.getItem("admin_pass_global");
-      if (globalPass) return globalPass;
     } catch (_) {}
   }
   return DEFAULT_PASSWORDS[cleanEmail] || "admin123";
@@ -1128,8 +1128,9 @@ export async function updateAdminPassword(email: string, newPass: string): Promi
   if (!email || !newPass || typeof window === "undefined") return;
   const cleanEmail = email.trim().toLowerCase();
   try {
+    // Remove legacy global password key so it cannot contaminate other accounts
+    localStorage.removeItem("admin_pass_global");
     localStorage.setItem(`admin_pass_${cleanEmail}`, newPass);
-    localStorage.setItem("admin_pass_global", newPass);
     DEFAULT_PASSWORDS[cleanEmail] = newPass;
 
     // Call Backend Password Change API Endpoint
@@ -1151,15 +1152,7 @@ export function verifyAdminPassword(email: string, inputPass: string): boolean {
   if (!inputPass) return false;
   const cleanEmail = (email || "").trim().toLowerCase();
   const currentPass = getAdminPassword(cleanEmail);
-  if (currentPass === inputPass) return true;
-
-  if (typeof window !== "undefined") {
-    try {
-      const globalPass = localStorage.getItem("admin_pass_global");
-      if (globalPass && globalPass === inputPass) return true;
-    } catch (_) {}
-  }
-  return false;
+  return currentPass === inputPass;
 }
 
 export function getCurrentAdminUser(): import("../types").AdminUser {

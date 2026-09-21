@@ -80,11 +80,14 @@ async def change_admin_password(
     now_str = datetime.now(timezone.utc).isoformat()
     clean_email = payload.email.strip().lower()
 
+    # Determine user role dynamically
+    user_role = "PRINCIPAL_ADMIN" if "prajwal" in clean_email else ("MASTER_ADMIN" if "pradeep" in clean_email else "STAFF_ADMIN")
+
     # Create Audit Log for Password Change Event
     log = AuditLog(
         user_name=clean_email.split("@")[0].replace(".", " ").replace("_", " ").title(),
         user_email=clean_email,
-        user_role="ADMIN",
+        user_role=user_role,
         action_category="SYSTEM",
         action_summary=f"Admin password changed successfully for account {clean_email}",
         target_resource="Account Credentials & Security Keys",
