@@ -3,16 +3,30 @@
 import { useState, useEffect } from "react";
 import { FAQItem } from "@/types";
 import { getFAQ, fetchAPI } from "@/lib/api-client";
-import { HelpCircle, Plus, Trash2, Loader2 } from "lucide-react";
+import { HelpCircle, Plus, Trash2, Edit3, Loader2, X } from "lucide-react";
 
 export default function AdminFAQPage() {
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [category, setCategory] = useState("General");
+
+  const FAQ_CATEGORIES = [
+    "General",
+    "Services & Rituals",
+    "Courses & Classes",
+    "Workshops",
+    "Live Events",
+    "Payments & Fees",
+    "Booking & Enquiries",
+    "Online Sessions",
+  ];
 
   useEffect(() => {
     loadFAQ();
@@ -29,30 +43,49 @@ export default function AdminFAQPage() {
     }
   };
 
+  const handleEdit = (item: FAQItem) => {
+    setEditingId(item.id ?? null);
+    setQuestion(item.question || "");
+    setAnswer(item.answer || "");
+    setCategory(item.category || "General");
+    setIsEditing(true);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    const payload = {
+      question,
+      answer,
+      category,
+      display_order: 0,
+    };
     try {
-      await fetchAPI("/faq", {
-        method: "POST",
-        headers: { Authorization: "Bearer mock-admin-token" },
-        body: JSON.stringify({
-          question,
-          answer,
-          category,
-          display_order: 0,
-        }),
-      });
-      setQuestion("");
-      setAnswer("");
-      setIsEditing(false);
+      if (editingId) {
+        await fetchAPI(`/faq/${editingId}`, {
+          method: "PUT",
+          headers: { Authorization: "Bearer mock-admin-token" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetchAPI("/faq", {
+          method: "POST",
+          headers: { Authorization: "Bearer mock-admin-token" },
+          body: JSON.stringify(payload),
+        });
+      }
+      resetForm();
       loadFAQ();
     } catch (err: any) {
       alert("Error saving FAQ: " + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this FAQ?")) return;
+    setDeletingId(id);
     try {
       await fetchAPI(`/faq/${id}`, {
         method: "DELETE",
@@ -61,7 +94,17 @@ export default function AdminFAQPage() {
       loadFAQ();
     } catch (err: any) {
       alert("Error deleting FAQ: " + err.message);
+    } finally {
+      setDeletingId(null);
     }
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setQuestion("");
+    setAnswer("");
+    setCategory("General");
+    setIsEditing(false);
   };
 
   return (
@@ -73,7 +116,7 @@ export default function AdminFAQPage() {
             <span>Manage FAQ Items</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Add or remove questions &amp; answers displayed on the public FAQ page.
+            Add, edit, or remove questions &amp; answers displayed on the public FAQ page.
           </p>
         </div>
         {!isEditing && (
@@ -89,16 +132,26 @@ export default function AdminFAQPage() {
 
       {isEditing && (
         <form onSubmit={handleSave} className="p-6 bg-white rounded-2xl border border-slate-200 shadow-md space-y-4">
-          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">Add FAQ Question</h2>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-base font-bold text-slate-900">
+              {editingId ? "Edit FAQ Question" : "Add FAQ Question"}
+            </h2>
+            <button type="button" onClick={resetForm} className="p-1 text-slate-400 hover:text-slate-700 rounded-lg">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
 
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">Category</label>
-            <input
-              type="text"
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
-            />
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+            >
+              {FAQ_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -106,6 +159,7 @@ export default function AdminFAQPage() {
             <input
               type="text"
               required
+              placeholder="e.g. How do I book a pooja service?"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
@@ -117,6 +171,7 @@ export default function AdminFAQPage() {
             <textarea
               rows={4}
               required
+              placeholder="Provide a clear and helpful answer..."
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
@@ -126,16 +181,24 @@ export default function AdminFAQPage() {
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => setIsEditing(false)}
+              onClick={resetForm}
               className="px-4 py-2 border border-slate-300 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
             >
-              Save FAQ
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <span>{editingId ? "Update FAQ" : "Save FAQ"}</span>
+              )}
             </button>
           </div>
         </form>
@@ -149,17 +212,34 @@ export default function AdminFAQPage() {
       ) : (
         <div className="space-y-4">
           {faqs.map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex items-start justify-between">
-              <div className="space-y-2">
+            <div key={item.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex items-start justify-between gap-4">
+              <div className="space-y-2 flex-1 min-w-0">
                 <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-semibold text-[10px]">
                   {item.category || "General"}
                 </span>
                 <h3 className="font-serif font-bold text-base text-slate-900">Q: {item.question}</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">A: {item.answer}</p>
               </div>
-              <button onClick={() => item.id && handleDelete(item.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg shrink-0">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  onClick={() => handleEdit(item)}
+                  className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  title="Edit this FAQ"
+                >
+                  <Edit3 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => item.id && handleDelete(item.id)}
+                  disabled={deletingId === item.id}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50 transition-colors"
+                >
+                  {deletingId === item.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
           ))}
         </div>

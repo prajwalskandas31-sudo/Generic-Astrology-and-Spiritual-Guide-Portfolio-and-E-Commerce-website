@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { ClassItem } from "@/types";
 import { getClasses, fetchAPI, saveLocalClass, deleteLocalClass } from "@/lib/api-client";
-import { GraduationCap, Plus, Trash2, Edit3, Loader2 } from "lucide-react";
+import MediaLibraryModal from "@/components/MediaLibraryModal";
+import { GraduationCap, Plus, Trash2, Edit3, Loader2, FolderOpen } from "lucide-react";
 
 export default function AdminClassesPage() {
   const [classesList, setClassesList] = useState<ClassItem[]>([]);
@@ -20,6 +21,9 @@ export default function AdminClassesPage() {
   const [hasPayment, setHasPayment] = useState(true);
   const [paymentMode, setPaymentMode] = useState<"RAZORPAY" | "CUSTOM_LINK" | "FREE">("RAZORPAY");
   const [customPaymentLink, setCustomPaymentLink] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  const [status, setStatus] = useState<"Active" | "Upcoming" | "Completed">("Active");
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
 
   useEffect(() => {
     loadClasses();
@@ -47,6 +51,8 @@ export default function AdminClassesPage() {
     setPrice(item.price || 0);
     setPaymentMode(item.payment_mode || ((item.price || 0) > 0 ? "RAZORPAY" : "FREE"));
     setCustomPaymentLink(item.custom_payment_link || "");
+    setCoverImage((item as any).cover_image || "");
+    setStatus(((item as any).status as any) || "Active");
     setIsEditing(true);
   };
 
@@ -61,6 +67,8 @@ export default function AdminClassesPage() {
     setHasPayment(true);
     setPaymentMode("RAZORPAY");
     setCustomPaymentLink("");
+    setCoverImage("");
+    setStatus("Active");
     setIsEditing(false);
   };
 
@@ -77,7 +85,8 @@ export default function AdminClassesPage() {
       has_payment: hasPayment,
       payment_mode: hasPayment ? paymentMode : "FREE",
       custom_payment_link: hasPayment && paymentMode === "CUSTOM_LINK" ? customPaymentLink : null,
-      status: "Active",
+      cover_image: coverImage,
+      status,
     };
 
     saveLocalClass(payload);
@@ -167,6 +176,33 @@ export default function AdminClassesPage() {
                 <option value="Offline">Offline Only</option>
               </select>
             </div>
+          </div>
+
+          {/* Cover Image */}
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Cover Image</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Paste image URL or select from Media Library..."
+                value={coverImage}
+                onChange={(e) => setCoverImage(e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setIsMediaModalOpen(true)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 shrink-0"
+              >
+                <FolderOpen className="w-4 h-4 text-amber-700" />
+                <span>Media Library</span>
+              </button>
+            </div>
+            {coverImage && (
+              <div className="mt-2 relative rounded-xl overflow-hidden border border-slate-200 h-28 bg-slate-50">
+                <img src={coverImage} alt="Preview" className="w-full h-full object-contain" />
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -271,6 +307,19 @@ export default function AdminClassesPage() {
             />
           </div>
 
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Status</label>
+            <select
+              value={status}
+              onChange={(e: any) => setStatus(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+            >
+              <option value="Active">Active (Enrolling Now)</option>
+              <option value="Upcoming">Upcoming (Not Yet Started)</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
@@ -320,6 +369,12 @@ export default function AdminClassesPage() {
           ))}
         </div>
       )}
+
+      <MediaLibraryModal
+        isOpen={isMediaModalOpen}
+        onClose={() => setIsMediaModalOpen(false)}
+        onSelectMedia={(url) => setCoverImage(url)}
+      />
     </div>
   );
 }

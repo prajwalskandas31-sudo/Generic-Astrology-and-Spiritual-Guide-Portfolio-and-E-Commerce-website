@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Blog } from "@/types";
 import { getBlogs, fetchAPI } from "@/lib/api-client";
 import MediaLibraryModal from "@/components/MediaLibraryModal";
-import { FileText, Plus, Trash2, Edit3, Loader2, FolderOpen } from "lucide-react";
+import { FileText, Plus, Trash2, Edit3, Loader2, FolderOpen, X, Search } from "lucide-react";
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -21,6 +21,22 @@ export default function AdminBlogsPage() {
   const [author, setAuthor] = useState("Veda Brahma Shri Pradeep Nadig");
   const [category, setCategory] = useState("Vedic Traditions");
   const [content, setContent] = useState("");
+  const [publishDate, setPublishDate] = useState(new Date().toISOString().split("T")[0]);
+  const [tags, setTags] = useState("");
+  const [seoTitle, setSeoTitle] = useState("");
+  const [seoDescription, setSeoDescription] = useState("");
+
+  const BLOG_CATEGORIES = [
+    "Vedic Traditions",
+    "Astrology & Jyotish",
+    "Rituals & Poojas",
+    "Festivals & Ceremonies",
+    "Meditation & Spirituality",
+    "Vedic Science",
+    "Ayurveda & Wellness",
+    "Stories & Legends",
+    "Announcements",
+  ];
 
   useEffect(() => {
     loadBlogs();
@@ -44,12 +60,12 @@ export default function AdminBlogsPage() {
       slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
       cover_image: coverImage,
       author,
-      publish_date: new Date().toISOString().split("T")[0],
+      publish_date: publishDate || new Date().toISOString().split("T")[0],
       category,
-      tags: [category],
+      tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [category],
       content,
-      seo_title: title,
-      seo_description: content.substring(0, 150),
+      seo_title: seoTitle || title,
+      seo_description: seoDescription || content.substring(0, 150),
     };
 
     setIsSubmitting(true);
@@ -84,6 +100,10 @@ export default function AdminBlogsPage() {
     setAuthor(blog.author || "Veda Brahma Shri Pradeep Nadig");
     setCategory(blog.category || "Vedic Traditions");
     setContent(blog.content || "");
+    setPublishDate((blog as any).publish_date || new Date().toISOString().split("T")[0]);
+    setTags(((blog as any).tags || []).join(", "));
+    setSeoTitle((blog as any).seo_title || "");
+    setSeoDescription((blog as any).seo_description || "");
     setIsEditing(true);
   };
 
@@ -111,6 +131,10 @@ export default function AdminBlogsPage() {
     setAuthor("Veda Brahma Shri Pradeep Nadig");
     setCategory("Vedic Traditions");
     setContent("");
+    setPublishDate(new Date().toISOString().split("T")[0]);
+    setTags("");
+    setSeoTitle("");
+    setSeoDescription("");
     setIsEditing(false);
   };
 
@@ -139,9 +163,14 @@ export default function AdminBlogsPage() {
 
       {isEditing && (
         <form onSubmit={handleSave} className="p-6 bg-white rounded-2xl border border-slate-200 shadow-md space-y-4">
-          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
-            {editingId ? "Edit Blog Post" : "Publish New Blog Post"}
-          </h2>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-base font-bold text-slate-900">
+              {editingId ? "Edit Blog Post" : "Publish New Blog Post"}
+            </h2>
+            <button type="button" onClick={resetForm} className="p-1 text-slate-400 hover:text-slate-700 rounded-lg">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -167,7 +196,7 @@ export default function AdminBlogsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">Author Name *</label>
               <input
@@ -179,10 +208,22 @@ export default function AdminBlogsPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">Category *</label>
-              <input
-                type="text"
+              <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+              >
+                {BLOG_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Publish Date</label>
+              <input
+                type="date"
+                value={publishDate}
+                onChange={(e) => setPublishDate(e.target.value)}
                 className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
               />
             </div>
@@ -209,6 +250,17 @@ export default function AdminBlogsPage() {
           </div>
 
           <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Tags (comma-separated)</label>
+            <input
+              type="text"
+              placeholder="e.g. Vedic, Astrology, Jyotish"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm"
+            />
+          </div>
+
+          <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">Article Content *</label>
             <textarea
               rows={8}
@@ -217,6 +269,34 @@ export default function AdminBlogsPage() {
               onChange={(e) => setContent(e.target.value)}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-sans"
             />
+          </div>
+
+          {/* SEO Fields */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Search className="w-3.5 h-3.5 text-amber-700" />
+              SEO Settings
+            </h3>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">SEO Title <span className="text-slate-400 font-normal">(leave blank to use article title)</span></label>
+              <input
+                type="text"
+                placeholder={title}
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">Meta Description <span className="text-slate-400 font-normal">(leave blank to auto-generate from content)</span></label>
+              <textarea
+                rows={2}
+                placeholder="A short description for search engines (150-160 chars)..."
+                value={seoDescription}
+                onChange={(e) => setSeoDescription(e.target.value)}
+                className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm bg-white"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
