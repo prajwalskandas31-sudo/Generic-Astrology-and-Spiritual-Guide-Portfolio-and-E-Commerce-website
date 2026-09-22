@@ -1,6 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.session import get_db
+from app.services.requests_service import create_request
+from app.core.config import settings
+import uuid
 
 router = APIRouter()
 
@@ -8,6 +13,10 @@ class AgendaItem(BaseModel):
     time: str
     title: str
     description: str
+
+class FAQItemSchema(BaseModel):
+    question: str
+    answer: str
 
 class LiveEventSchema(BaseModel):
     id: int
@@ -26,10 +35,20 @@ class LiveEventSchema(BaseModel):
     payment_mode: str = "RAZORPAY"
     custom_payment_link: Optional[str] = None
     cover_image: str
+    images: Optional[List[str]] = []
     featured: bool = True
     status: str = "Upcoming"
     pandits_count: Optional[int] = 11
-    agenda: List[AgendaItem]
+    agenda: Optional[List[AgendaItem]] = []
+    vidhi_details: Optional[str] = None
+    who_benefits: Optional[str] = None
+    who_should_attend: Optional[str] = None
+    when_performed: Optional[str] = None
+    where_performed: Optional[str] = None
+    samagri_highlights: Optional[List[str]] = []
+    faq: Optional[List[FAQItemSchema]] = []
+    seo_title: Optional[str] = None
+    seo_description: Optional[str] = None
 
 LIVE_EVENTS_DATA: List[dict] = [
     {
@@ -321,5 +340,90 @@ def delete_live_event(event_id: int):
     return {"message": "Live Event deleted successfully"}
 
 @router.post("/{event_id}/register")
-def register_live_event(event_id: int, payload: dict):
-    return {"registration_id": 201, "message": "Sankalpa registration successful"}
+async def register_live_event(
+    event_id: int,
+    payload: dict,
+    db: AsyncSession = Depends(get_db)
+):
+    # Find matching event title
+    event_title = f"Live Event #{event_id}"
+    event_date = "Upcoming"
+    event_time = "Scheduled"
+    for e in LIVE_EVENTS_DATA:
+        if e.get("id") == event_id:
+            event_title = e.get("title", event_title)
+            event_date = e.get("event_date", event_date)
+            event_time = e.get("event_time", event_time)
+            break
+
+    amount = float(payload.get("amount", payload.get("price", 0)))
+    pass_type = payload.get("pass_type", "Virtual Pass")
+    is_paid = amount > 0 and pass_type != "Virtual Pass"
+    payment_mode = payload.get("payment_mode", "RAZORPAY") if is_paid else "FREE"
+
+    order_id = f"order_{uuid.uuid4().hex[:12]}"
+    is_real_order = False
+    rzp_key = settings.RAZORPAY_KEY_ID.strip() if settings.RAZORPAY_KEY_ID else None
+    rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
+
+    if is_paid and payment_mode == "RAZORPAY" and rzp_key and rzp_secret:
+        try:
+            import razorpay
+            client = razorpay.Client(auth=(rzp_key, rzp_secret))
+            order_data = {
+                "amount": int(amount * 100),
+                "currency": "INR",
+                "receipt": f"evt_{uuid.uuid4().hex[:8]}",
+                "notes": {
+                    "event_id": str(event_id),
+                    "event_title": event_title,
+                    "customer_name": payload.get("name"),
+                    "customer_mobile": payload.get("mobile"),
+                    "pass_type": pass_type
+                }
+            }
+            rzp_order = client.order.create(data=order_data)
+            order_id = rzp_order.get("id", order_id)
+            is_real_order = True
+        except Exception as e:
+            print(f"[Razorpay Live Event Order Creation Warning]: {e}")
+
+    # Build Sankalpa details notes
+    notes_parts = [f"Pass Type: {pass_type}"]
+    if payload.get("gothra"):
+        notes_parts.append(f"Gothra: {payload.get('gothra')}")
+    if payload.get("nakshatra"):
+        notes_parts.append(f"Nakshatra: {payload.get('nakshatra')}")
+    if payload.get("rashi"):
+        notes_parts.append(f"Rashi: {payload.get('rashi')}")
+    if payload.get("sankalpa_wish"):
+        notes_parts.append(f"Sankalpa Wish: {payload.get('sankalpa_wish')}")
+    if payload.get("notes"):
+        notes_parts.append(payload.get("notes"))
+    
+    combined_notes = " | ".join(notes_parts)
+
+    req_obj = await create_request(
+        request_type="Live Event",
+        name=payload.get("name", "Devotee"),
+        phone=payload.get("mobile", payload.get("phone", "")),
+        email=payload.get("email"),
+        service_name=event_title,
+        preferred_date=event_date,
+        preferred_time=event_time,
+        notes=combined_notes,
+        amount=amount if is_paid else 0.0,
+        payment_status="Pending" if is_paid else "Paid",
+        razorpay_order_id=order_id if is_paid else None,
+        db=db
+    )
+
+    return {
+        "registration_id": req_obj.id,
+        "request_id": req_obj.request_id,
+        "message": "Sankalpa registration received and stored successfully!",
+        "razorpay_order_id": order_id if is_paid else None,
+        "is_real_order": is_real_order,
+        "key_id": rzp_key,
+        "amount": int(amount * 100) if is_paid else 0
+    }

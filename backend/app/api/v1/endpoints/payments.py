@@ -21,8 +21,75 @@ async def verify_payment(
 ):
     registration = await db.get(WorkshopRegistration, data.registration_id)
     if not registration:
-        raise HTTPException(status_code=404, detail="Registration record not found")
-    
+        # Check if registration_id corresponds to a Request (Live Event, Course, Service Booking)
+        # or search Request by razorpay_order_id
+        req_obj = await db.get(RequestModel, data.registration_id)
+        if not req_obj and data.razorpay_order_id:
+            req_res = await db.execute(
+                select(RequestModel).where(RequestModel.razorpay_order_id == data.razorpay_order_id).order_by(RequestModel.id.desc())
+            )
+            req_obj = req_res.scalars().first()
+
+        if not req_obj:
+            raise HTTPException(status_code=404, detail="Registration or Request record not found")
+
+        if req_obj.payment_status == "Paid":
+            return MessageResponse(message="Payment already verified and confirmed")
+
+        # Verification check: If real credentials set, verify Razorpay HMAC signature
+        rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
+        if rzp_secret:
+            generated_signature = hmac.new(
+                rzp_secret.encode(),
+                f"{data.razorpay_order_id}|{data.razorpay_payment_id}".encode(),
+                hashlib.sha256
+            ).hexdigest()
+            if generated_signature != data.razorpay_signature:
+                req_obj.payment_status = "Failed"
+                await db.commit()
+                raise HTTPException(status_code=400, detail="Invalid Razorpay payment signature")
+
+        # Signature valid! Update Request to Paid
+        req_obj.payment_status = "Paid"
+        req_obj.razorpay_payment_id = data.razorpay_payment_id
+        req_obj.razorpay_signature = data.razorpay_signature
+        req_obj.status = "CONFIRMED"
+
+        from app.models.models import Customer
+        customer = await db.get(Customer, req_obj.customer_id) if req_obj.customer_id else None
+        cust_name = customer.name if customer else "Devotee"
+        cust_phone = customer.phone if customer else None
+
+        pay_log = MessageLog(
+            request_id=req_obj.id,
+            customer_id=req_obj.customer_id,
+            direction="INBOUND",
+            channel="ADMIN",
+            message_type="PAYMENT_CONFIRMED",
+            message_content=f"Payment of ₹{req_obj.amount} verified for {req_obj.request_id} ({req_obj.request_type}). Payment ID: {data.razorpay_payment_id}",
+            action_id=f"req:{req_obj.request_id}:PAYMENT"
+        )
+        db.add(pay_log)
+        await db.commit()
+
+        # Dispatch WhatsApp confirmation
+        if cust_phone:
+            confirm_text = (
+                f"🙏 Namaste {cust_name},\n\n"
+                f"Your booking and payment have been successfully confirmed!\n\n"
+                f"🌸 {req_obj.request_type}: {req_obj.service_name or req_obj.request_type}\n"
+                f"📋 Request ID: {req_obj.request_id}\n"
+                f"💳 Amount Paid: ₹{req_obj.amount}\n"
+                f"🔑 Payment Reference: {data.razorpay_payment_id}\n\n"
+                f"May the divine blessings be with you and your family."
+            )
+            try:
+                await send_whatsapp_message(to_phone=cust_phone, text=confirm_text)
+            except Exception as e:
+                print(f"[WhatsApp Confirmation Notice Error]: {e}")
+
+        return MessageResponse(message=f"Payment verification successful. {req_obj.request_type} confirmed!")
+
     if registration.payment_status == "Paid":
         return MessageResponse(message="Payment already verified and registration confirmed")
 

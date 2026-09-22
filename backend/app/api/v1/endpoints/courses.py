@@ -1,6 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.session import get_db
+from app.services.requests_service import create_request
+from app.core.config import settings
+import uuid
 
 router = APIRouter()
 
@@ -142,5 +147,73 @@ def delete_course(course_id: int):
     return {"message": "Course deleted successfully"}
 
 @router.post("/{course_id}/register")
-def register_course(course_id: int, payload: dict):
-    return {"registration_id": 101, "message": "Enrollment successful"}
+async def register_course(
+    course_id: int,
+    payload: dict,
+    db: AsyncSession = Depends(get_db)
+):
+    course_title = f"Course #{course_id}"
+    for c in COURSES_DATA:
+        if c.get("id") == course_id:
+            course_title = c.get("title", course_title)
+            break
+
+    amount = float(payload.get("amount", payload.get("price", 0)))
+    is_paid = amount > 0
+    payment_mode = payload.get("payment_mode", "RAZORPAY") if is_paid else "FREE"
+
+    order_id = f"order_{uuid.uuid4().hex[:12]}"
+    is_real_order = False
+    rzp_key = settings.RAZORPAY_KEY_ID.strip() if settings.RAZORPAY_KEY_ID else None
+    rzp_secret = settings.RAZORPAY_SECRET.strip() if settings.RAZORPAY_SECRET else None
+
+    if is_paid and payment_mode == "RAZORPAY" and rzp_key and rzp_secret:
+        try:
+            import razorpay
+            client = razorpay.Client(auth=(rzp_key, rzp_secret))
+            order_data = {
+                "amount": int(amount * 100),
+                "currency": "INR",
+                "receipt": f"crs_{uuid.uuid4().hex[:8]}",
+                "notes": {
+                    "course_id": str(course_id),
+                    "course_title": course_title,
+                    "customer_name": payload.get("name"),
+                    "customer_mobile": payload.get("mobile")
+                }
+            }
+            rzp_order = client.order.create(data=order_data)
+            order_id = rzp_order.get("id", order_id)
+            is_real_order = True
+        except Exception as e:
+            print(f"[Razorpay Course Order Creation Warning]: {e}")
+
+    notes_parts = []
+    if payload.get("preferred_batch"):
+        notes_parts.append(f"Preferred Batch: {payload.get('preferred_batch')}")
+    if payload.get("additional_notes"):
+        notes_parts.append(payload.get("additional_notes"))
+    combined_notes = " | ".join(notes_parts) if notes_parts else None
+
+    req_obj = await create_request(
+        request_type="Course",
+        name=payload.get("name", "Student"),
+        phone=payload.get("mobile", payload.get("phone", "")),
+        email=payload.get("email"),
+        service_name=course_title,
+        notes=combined_notes,
+        amount=amount if is_paid else 0.0,
+        payment_status="Pending" if is_paid else "Paid",
+        razorpay_order_id=order_id if is_paid else None,
+        db=db
+    )
+
+    return {
+        "registration_id": req_obj.id,
+        "request_id": req_obj.request_id,
+        "message": "Course enrollment received and stored successfully!",
+        "razorpay_order_id": order_id if is_paid else None,
+        "is_real_order": is_real_order,
+        "key_id": rzp_key,
+        "amount": int(amount * 100) if is_paid else 0
+    }
