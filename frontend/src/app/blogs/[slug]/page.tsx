@@ -295,7 +295,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <Link
                 href={
                   blog.related_offering_type === "Consultation"
-                    ? "/consultations"
+                    ? (blog.related_offering_slug ? `/services/${blog.related_offering_slug}` : "/services#consultations")
                     : blog.related_offering_type === "Workshop"
                     ? `/workshops/${blog.related_offering_slug}`
                     : blog.related_offering_type === "Course"

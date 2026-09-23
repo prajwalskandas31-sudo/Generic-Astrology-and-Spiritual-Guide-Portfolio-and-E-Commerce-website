@@ -10,25 +10,25 @@ const nextConfig: NextConfig = {
         destination: "/events",
         permanent: true,
       },
-      {
-        source: "/services/vedic-astrology-consultation",
-        destination: "/consultations/vedic-astrology-consultation",
-        permanent: true,
-      },
-      // Singular /consultation route canonical mapping
+      // Redirect consultations routes to /services (services & consultations unified)
       {
         source: "/consultation",
-        destination: "/consultations",
+        destination: "/services#consultations",
+        permanent: true,
+      },
+      {
+        source: "/consultations",
+        destination: "/services#consultations",
         permanent: true,
       },
       {
         source: "/consultation/:slug",
-        destination: "/consultations/:slug",
+        destination: "/services/:slug",
         permanent: true,
       },
       {
-        source: "/services/consultations",
-        destination: "/consultations",
+        source: "/consultations/:slug",
+        destination: "/services/:slug",
         permanent: true,
       },
       {

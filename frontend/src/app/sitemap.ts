@@ -18,12 +18,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/consultations`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/events`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -135,23 +129,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     blogsList = await getBlogs();
   } catch (_) {}
 
-  const serviceRoutes: MetadataRoute.Sitemap = offeringsList
-    .filter((item) => item.type === "Service" || item.type === "Pooja")
-    .map((item) => ({
-      url: `${baseUrl}/services/${item.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    }));
-
-  const consultationRoutes: MetadataRoute.Sitemap = offeringsList
-    .filter((item) => item.type === "Consultation")
-    .map((item) => ({
-      url: `${baseUrl}/consultations/${item.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    }));
+  const serviceRoutes: MetadataRoute.Sitemap = offeringsList.map((item) => ({
+    url: `${baseUrl}/services/${item.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
 
   const workshopRoutes: MetadataRoute.Sitemap = workshopsList.map((item) => ({
     url: `${baseUrl}/workshops/${item.slug}`,
@@ -184,7 +167,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticRoutes,
     ...serviceRoutes,
-    ...consultationRoutes,
     ...workshopRoutes,
     ...courseRoutes,
     ...liveEventRoutes,

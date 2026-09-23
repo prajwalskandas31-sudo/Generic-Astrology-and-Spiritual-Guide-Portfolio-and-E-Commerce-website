@@ -113,8 +113,7 @@ export function buildServiceSchema(service: {
   slug: string;
   type?: string;
 }) {
-  const isConsultation = service.type === "Consultation" || service.slug.includes("astrology") || service.slug.includes("consultation");
-  const baseUrl = isConsultation ? "https://pradeepnadig.in/consultations" : "https://pradeepnadig.in/services";
+  const baseUrl = "https://pradeepnadig.in/services";
   const url = `${baseUrl}/${service.slug}`;
 
   return {

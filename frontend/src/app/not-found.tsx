@@ -52,7 +52,7 @@ export default function NotFound() {
             </Link>
 
             <Link
-              href="/consultations"
+              href="/services#consultations"
               className="flex items-start gap-4 p-4 rounded-2xl bg-amber-50/60 hover:bg-amber-100/70 border border-amber-200/60 transition-all group"
             >
               <div className="p-2.5 bg-amber-900 text-amber-100 rounded-xl group-hover:scale-105 transition-transform">

@@ -264,7 +264,7 @@ export default function ServicesClient({ services, poojas, consultations }: Serv
                   <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-slate-500">1-on-1 Session</span>
                     <Link
-                      href={`/consultations/${item.slug}`}
+                      href={`/services/${item.slug}`}
                       className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs rounded-xl shadow-xs transition-colors"
                     >
                       <span>Book Consultation</span>
