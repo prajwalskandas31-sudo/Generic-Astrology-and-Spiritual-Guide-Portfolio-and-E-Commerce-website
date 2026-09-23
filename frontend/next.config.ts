@@ -15,29 +15,15 @@ const nextConfig: NextConfig = {
         destination: "/consultations/vedic-astrology-consultation",
         permanent: true,
       },
+      // Singular /consultation route canonical mapping
       {
-        source: "/consultations/janma-kundali-birth-chart-reading",
-        destination: "/consultations/vedic-astrology-consultation",
+        source: "/consultation",
+        destination: "/consultations",
         permanent: true,
       },
       {
-        source: "/consultations/marriage-matching-kundali-milan",
-        destination: "/consultations/vedic-astrology-consultation",
-        permanent: true,
-      },
-      {
-        source: "/consultations/career-business-astrology",
-        destination: "/consultations/vedic-astrology-consultation",
-        permanent: true,
-      },
-      {
-        source: "/consultations/gemstone-rudraksha-recommendation",
-        destination: "/consultations/vedic-astrology-consultation",
-        permanent: true,
-      },
-      {
-        source: "/consultations/prashna-marga-horary-astrology",
-        destination: "/consultations/vedic-astrology-consultation",
+        source: "/consultation/:slug",
+        destination: "/consultations/:slug",
         permanent: true,
       },
       {
@@ -61,13 +47,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/workshops/meditation",
-        destination: "/workshops/simple-meditation-mindfulness-workshop",
-        permanent: true,
-      },
-      {
-        source: "/workshops/vedic-chanting-suktas-recitation-workshop",
-        destination: "/workshops/vedic-chanting-sukta-recitation-workshop",
+        source: "/meditation",
+        destination: "/workshops/meditation",
         permanent: true,
       },
       {
@@ -87,6 +68,27 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/services/events",
+        destination: "/events",
+        permanent: true,
+      },
+      // Legacy live-events & test URLs discovered by Googlebot
+      {
+        source: "/live-events/vedic-chanting-suktas-recitation-workshop",
+        destination: "/workshops/vedic-chanting-suktas-recitation-workshop",
+        permanent: true,
+      },
+      {
+        source: "/live-events/vedic-chant-mastery-august-2026",
+        destination: "/courses/sacred-vedic-chanting-mastery",
+        permanent: true,
+      },
+      {
+        source: "/live-events/ganesha-idol-making-workshop-2026",
+        destination: "/events",
+        permanent: true,
+      },
+      {
+        source: "/live-events/test-workshop",
         destination: "/events",
         permanent: true,
       },

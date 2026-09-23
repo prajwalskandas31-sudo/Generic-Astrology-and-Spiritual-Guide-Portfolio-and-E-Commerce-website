@@ -299,6 +299,117 @@ export const FALLBACK_OFFERINGS: Offering[] = [
       { question: "Are remedial solutions (Parihara) included in the session?", answer: "Yes, practical remedies including specific mantra chanting, gemstone/rudraksha recommendations, and targeted poojas are provided." }
     ]
   },
+  {
+    id: 14,
+    type: "Consultation",
+    title: "Janma Kundali & Birth Chart Reading",
+    slug: "janma-kundali-birth-chart-reading",
+    who_benefits: "Anyone seeking clarity on life purpose, strengths, challenges, upcoming planetary cycles, and spiritual direction.",
+    where_performed: "In-person at Shaankari Kendra Bengaluru or via online HD Zoom consultation.",
+    when_performed: "Ideal during birthdays, new life milestones, or when experiencing challenging life phases.",
+    who_should_attend: "Individual seeking chart analysis, parents, or family members.",
+    vidhi_details: "Full natal chart casting, Graha Bala evaluation, Vimshottari Dasha assessment, Gochara (transits) analysis, and specific Vedic Parihara recommendations.",
+    short_description: "Comprehensive Janma Kundali analysis examining Lagna, Navamsha (D9), planetary placements, and Dasha-Bhukti timelines.",
+    full_description: "Detailed 1-on-1 horoscope and birth chart (Janma Kundali) reading by Veda Brahma Shri Pradeep Nadig. In-depth analysis of your ascendant (Lagna), planetary strengths, Raja Yogas, Doshas, and personalized Vedic remedies.",
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
+    display_order: 14,
+    status: "Published",
+    seo_title: "Janma Kundali & Birth Chart Reading Bangalore | Pradeep Nadig",
+    seo_description: "Book authentic Janma Kundali & birth chart reading with Veda Brahma Shri Pradeep Nadig. Accurate Vedic horoscope analysis, Dasha timeline, and remedies.",
+    faq: [
+      { question: "What birth details are needed for Janma Kundali analysis?", answer: "Exact Date of Birth, Time of Birth, and Place of Birth are required." },
+      { question: "Is Janma Kundali reading available online for NRIs?", answer: "Yes, online consultations are conducted via HD Zoom with digital horoscopes shared on screen." },
+      { question: "Are remedies suggested during the session?", answer: "Yes, practical Vedic remedies including specific Japa, Stotras, and charitable offerings are prescribed." }
+    ]
+  },
+  {
+    id: 15,
+    type: "Consultation",
+    title: "Career & Business Astrology Consultation",
+    slug: "career-business-astrology",
+    who_benefits: "Working professionals, entrepreneurs, startup founders, business owners, and graduates navigating career choices.",
+    where_performed: "In-person in Bengaluru or online via Zoom.",
+    when_performed: "Before launching a business, signing contracts, changing jobs, investing capital, or resolving workplace hurdles.",
+    who_should_attend: "Business owners, founders, professionals, and students.",
+    vidhi_details: "10th & 11th Bhava analysis, Dashamsha (D10) chart verification, planetary strength of Sun, Saturn, and Mercury, business Muhurtha selection, and Vastu/Parihara guidance.",
+    short_description: "Strategic astrological guidance for career milestones, promotions, job transitions, business ventures, and financial investments.",
+    full_description: "Expert Vedic career and business horoscope reading by Veda Brahma Shri Pradeep Nadig. Analysis of the 10th house (Karma Bhava), Dashamsha (D10) chart, favorable investment periods, partnership compatibility, and financial growth remedies.",
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
+    display_order: 15,
+    status: "Published",
+    seo_title: "Career & Business Astrology Consultation Bangalore | Pradeep Nadig",
+    seo_description: "Unlock career success and business growth with Vedic Astrology. Consult Shri Pradeep Nadig for job change, startup timing, and financial remedies.",
+    faq: [
+      { question: "Can astrology help decide between job and business?", answer: "Yes, analyzing the 6th vs 7th & 10th houses indicates whether employment or independent business yields greater prosperity." },
+      { question: "Can you evaluate business partnership compatibility?", answer: "Yes, comparing horoscopes of business partners reveals mutual trust, financial synergy, and long-term viability." }
+    ]
+  },
+  {
+    id: 16,
+    type: "Consultation",
+    title: "Marriage Matching & Kundali Milan",
+    slug: "marriage-matching-kundali-milan",
+    who_benefits: "Prospective brides, grooms, and parents planning matrimony.",
+    where_performed: "In-person at Bengaluru office or via online Zoom call.",
+    when_performed: "Prior to fixing engagement dates or finalizing marriage alliances.",
+    who_should_attend: "Parents, prospective bride and groom.",
+    vidhi_details: "36 Guna Ashta Koota Milan, Navamsha (D9) comparative chart analysis, Kuja/Manglik Dosha evaluation, Dasha Sandhi verification, and vivaha remedies.",
+    short_description: "Comprehensive Ashta Koota matching, Manglik (Kuja) Dosha analysis, and relationship compatibility evaluation for brides and grooms.",
+    full_description: "Authentic Vedic Kundali Milan and marriage compatibility consultation by Veda Brahma Shri Pradeep Nadig. Goes beyond simple point counting (Ashta Koota) to deeply evaluate emotional harmony, longevity (Ayushya), progeny (Santana), financial stability, and Kuja Dosha neutralization.",
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
+    display_order: 16,
+    status: "Published",
+    seo_title: "Marriage Matching & Kundali Milan Bangalore | Pradeep Nadig",
+    seo_description: "Comprehensive Vedic horoscope matching for marriage. Ashta Koota, Manglik Dosha, and emotional compatibility consultation with Shri Pradeep Nadig.",
+    faq: [
+      { question: "Is 18+ score enough for marriage matching?", answer: "No, a high score alone is insufficient. Planetary placements, mental wavelength (Maithri), longevity, and D9 chart harmony must also be thoroughly checked." },
+      { question: "What if one chart has Manglik (Kuja) Dosha?", answer: "Vedic astrology provides specific cancellations and remedies for Kuja Dosha depending on planetary placements." }
+    ]
+  },
+  {
+    id: 17,
+    type: "Consultation",
+    title: "Gemstone & Rudraksha Recommendation",
+    slug: "gemstone-rudraksha-recommendation",
+    who_benefits: "Individuals seeking physical vitality, mental focus, financial upliftment, and planetary shielding.",
+    where_performed: "In-person in Bengaluru or online via Zoom.",
+    when_performed: "During major planetary transitions, Dasha changes, or to amplify auspicious chart placements.",
+    who_should_attend: "Anyone interested in genuine, energised gemstones and Rudraksha.",
+    vidhi_details: "Horoscope planetary analysis, identification of Anukul and Pratikul Grahas, precise carat/ratti calculation, finger & metal selection, and Vedic Pranapratishtha ritual guidelines.",
+    short_description: "Scientific Vedic recommendation of natural certified gemstones and sacred Rudraksha beads aligned with your birth chart.",
+    full_description: "Personalized gemstone (Ratna) and Rudraksha consultation by Veda Brahma Shri Pradeep Nadig. Accurate identification of Yogakaraka and benefic planets to empower, suitable metals, wearing days, consecration (Prana Pratishtha) vidhi, and cautions against wearing harmful stones.",
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
+    display_order: 17,
+    status: "Published",
+    seo_title: "Gemstone & Rudraksha Consultation Bangalore | Pradeep Nadig",
+    seo_description: "Discover your ideal Vedic gemstone and sacred Rudraksha. Accurate astrological recommendation and consecration guidance by Shri Pradeep Nadig.",
+    faq: [
+      { question: "How do you determine which gemstone suits me?", answer: "Only gemstones representing functional benefic planets (Yogakarakas) are recommended to avoid amplifying negative energies." },
+      { question: "Do gemstones require energisation before wearing?", answer: "Yes, Prana Pratishtha with Vedic Beeja Mantras is essential for a gemstone or Rudraksha to yield divine benefits." }
+    ]
+  },
+  {
+    id: 18,
+    type: "Consultation",
+    title: "Prashna Marga (Horary Astrology) Consultation",
+    slug: "prashna-marga-horary-astrology",
+    who_benefits: "Anyone with an urgent specific question or people who do not have accurate birth time details.",
+    where_performed: "In-person in Bengaluru, via phone, or online Zoom call.",
+    when_performed: "When facing immediate dilemma, lost property, legal decision, or critical crossroads.",
+    who_should_attend: "Anyone seeking clear, prompt astrological answers.",
+    vidhi_details: "Aroodha Lagna determination, Tamboola (betel leaf) Nimitta evaluation, planetary alignments at the query moment, and direct diagnostic outcome.",
+    short_description: "Instant accurate answers to urgent, specific life questions based on the exact moment the query is asked.",
+    full_description: "Ancient Prashna Shastra consultation with Veda Brahma Shri Pradeep Nadig. When birth time is unknown, disputed, or when facing immediate dilemmas regarding lost items, legal disputes, medical diagnoses, or travels, Prashna Marga reveals divine guidance.",
+    images: ["/images/services/vedic-astrology-consultation.jpg"],
+    display_order: 18,
+    status: "Published",
+    seo_title: "Prashna Marga Horary Astrology Bangalore | Pradeep Nadig",
+    seo_description: "Accurate answers to urgent questions without birth details. Experience profound Prashna Marga horary astrology with Veda Brahma Shri Pradeep Nadig.",
+    faq: [
+      { question: "Can I consult if I don't know my birth date or time?", answer: "Yes! Prashna Marga is specifically designed to answer pressing questions based on the exact cosmic time you ask." },
+      { question: "What kind of questions can Prashna Marga answer?", answer: "Questions regarding job offers, property purchase, missing items, health recovery, legal cases, and marriage proposals." }
+    ]
+  },
 
   // --- SACRED POOJAS & HOLY PARAYANAS (Poojas) ---
   {
@@ -1129,6 +1240,29 @@ export const FALLBACK_LIVE_EVENTS: LiveEvent[] = [
 export const FALLBACK_WORKSHOPS: Workshop[] = [
   {
     id: 1,
+    title: "Vedic Chanting & Suktas Recitation Workshop",
+    slug: "vedic-chanting-suktas-recitation-workshop",
+    mode: "Hybrid",
+    start_date: "2026-09-20",
+    end_date: "2026-09-22",
+    timings: "07:00 AM - 09:00 AM IST",
+    location: "Online Zoom & Shaankari Kendra, Bengaluru",
+    price: 3500,
+    seats_limit: 30,
+    status: "Published",
+    seo_title: "Vedic Chanting & Suktas Recitation Workshop | Pradeep Nadig",
+    seo_description: "Master authentic Sanskrit Swara chanting, Purusha Sukta, Sri Sukta, and Durga Sukta in 3-day intensive workshop.",
+    description: "Learn authentic Vedic Swara pronunciation (Udatta, Anudatta, Svarita) and master core Suktas under the direct tutelage of Veda Brahma Shri Pradeep Nadig.",
+    short_description: "3-day intensive workshop on authentic Vedic Swara pronunciation and Sukta chanting.",
+    images: ["/images/courses/sacred-vedic-chanting-mastery.jpg"],
+    cover_image: "/images/courses/sacred-vedic-chanting-mastery.jpg",
+    faq: [
+      { question: "Are prior Sanskrit skills required?", answer: "No, the workshop teaches basic phonetics, mouth positions, and accent marks step by step." },
+      { question: "Will practice audio recordings be provided?", answer: "Yes, all participants receive downloadable high-definition audio tracks and Sanskrit text PDFs." }
+    ]
+  },
+  {
+    id: 101,
     title: "Vedic Chanting & Sukta Recitation Workshop",
     slug: "vedic-chanting-sukta-recitation-workshop",
     mode: "Hybrid",
@@ -1176,6 +1310,28 @@ export const FALLBACK_WORKSHOPS: Workshop[] = [
     id: 3,
     title: "Simple Meditation & Mindfulness Workshop",
     slug: "simple-meditation-mindfulness-workshop",
+    mode: "Online Live",
+    start_date: "2026-10-10",
+    end_date: "2026-10-11",
+    timings: "06:30 AM - 08:30 AM IST",
+    location: "HD Zoom Video Live Stream",
+    price: 1500,
+    seats_limit: 50,
+    status: "Published",
+    seo_title: "Simple Meditation & Mindfulness Workshop | Pradeep Nadig",
+    seo_description: "Learn gentle Pranayama, guided Dhyana, stress relief, and daily meditation routines for inner calm.",
+    description: "Discover simple yet powerful meditation and Pranayama techniques designed for daily life. Clear mental clutter, relieve stress, build emotional resilience, and achieve deep tranquility.",
+    short_description: "2-day experiential workshop on gentle breathwork, guided mindfulness, and daily meditation routines.",
+    images: ["/images/courses/simple-meditation-classes.jpg"],
+    cover_image: "/images/courses/simple-meditation-classes.jpg",
+    faq: [
+      { question: "Is this suitable for absolute beginners?", answer: "Yes, the meditation practices are designed specifically for beginners and busy individuals seeking mental peace." }
+    ]
+  },
+  {
+    id: 102,
+    title: "Simple Meditation & Mindfulness Workshop",
+    slug: "meditation",
     mode: "Online Live",
     start_date: "2026-10-10",
     end_date: "2026-10-11",
