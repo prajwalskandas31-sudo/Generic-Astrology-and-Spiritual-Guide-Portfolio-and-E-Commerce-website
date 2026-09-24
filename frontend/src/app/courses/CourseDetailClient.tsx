@@ -40,6 +40,8 @@ export default function CourseDetailClient({ course: initialCourse }: CourseDeta
 
   const coursePrice = course.price || 0;
   const isPaid = course.has_payment !== false && coursePrice > 0;
+  const rawImg = course.cover_image || course.images?.[0];
+  const courseImg = Array.isArray(rawImg) ? rawImg[0] : (rawImg || "/images/courses/sacred-vedic-chanting-mastery.jpg");
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -57,6 +59,16 @@ export default function CourseDetailClient({ course: initialCourse }: CourseDeta
 
         {/* Hero Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
+          {courseImg && (
+            <div className="relative aspect-video sm:aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-xs mb-2">
+              <img
+                src={courseImg}
+                alt={course.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             <span className="px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full uppercase tracking-wider">
               {course.level} Level

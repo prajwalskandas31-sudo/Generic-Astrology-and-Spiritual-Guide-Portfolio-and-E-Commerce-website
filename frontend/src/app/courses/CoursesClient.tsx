@@ -89,22 +89,38 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
 
         {/* Course Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {filteredCourses.map((course) => (
-            <div
-              key={course.id}
-              className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group"
-            >
-              <div className="p-6 sm:p-8 space-y-6">
-                {/* Header Tags */}
-                <div className="flex items-center justify-between gap-2">
-                  <span className="px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full uppercase tracking-wider">
-                    {course.level}
-                  </span>
-                  <span className="text-xs text-amber-800 font-semibold flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {course.duration}
-                  </span>
+          {filteredCourses.map((course) => {
+            const rawImg = course.cover_image || course.images?.[0];
+            const courseImg = Array.isArray(rawImg) ? rawImg[0] : (rawImg || "/images/courses/sacred-vedic-chanting-mastery.jpg");
+
+            return (
+              <div
+                key={course.id}
+                className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group"
+              >
+                {/* Top Image Banner */}
+                <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={courseImg}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+                  
+                  {/* Floating Header Badges */}
+                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
+                    <span className="px-3 py-1 bg-white/95 backdrop-blur-md text-amber-950 text-xs font-bold rounded-full uppercase tracking-wider shadow-sm">
+                      {course.level} Level
+                    </span>
+                    <span className="px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-medium rounded-full shadow-sm flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      {course.duration}
+                    </span>
+                  </div>
                 </div>
+
+                <div className="p-6 sm:p-8 space-y-6">
 
                 <div className="space-y-2">
                   <h2 className="text-2xl font-serif font-bold text-slate-900 group-hover:text-amber-800 transition-colors">
@@ -162,7 +178,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </div>
 

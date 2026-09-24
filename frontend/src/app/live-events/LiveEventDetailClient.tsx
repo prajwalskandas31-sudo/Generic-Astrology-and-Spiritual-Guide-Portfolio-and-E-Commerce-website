@@ -45,6 +45,8 @@ export default function LiveEventDetailClient({ event: initialEvent }: LiveEvent
 
   const isPaid = event.has_payment !== false && event.price > 0;
   const isManagement = event.category === "Event Management";
+  const rawImg = (event as any).image || (event as any).images?.[0] || (event as any).cover_image;
+  const eventImage = Array.isArray(rawImg) ? rawImg[0] : (rawImg || "/images/services/ganapathi-homa.jpg");
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
@@ -72,6 +74,16 @@ export default function LiveEventDetailClient({ event: initialEvent }: LiveEvent
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
+              {eventImage && (
+                <div className="relative aspect-video sm:aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-xs mb-4">
+                  <img
+                    src={eventImage}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full uppercase tracking-wider">
                   {isManagement ? (

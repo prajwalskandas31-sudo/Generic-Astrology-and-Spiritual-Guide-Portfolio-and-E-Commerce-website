@@ -174,16 +174,27 @@ export default function EventsClient({ initialEvents }: EventsClientProps) {
             {filteredEvents.map((event) => {
               const isPaid = event.has_payment !== false && event.price > 0;
               const isManagement = event.category === "Event Management";
+              const rawImg = (event as any).image || (event as any).images?.[0] || (event as any).cover_image;
+              const eventImage = Array.isArray(rawImg) ? rawImg[0] : (rawImg || "/images/services/ganapathi-homa.jpg");
 
               return (
                 <div
                   key={event.id}
                   className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group"
                 >
-                  <div className="p-6 sm:p-8 space-y-6">
-                    {/* Header Badges */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full uppercase tracking-wider">
+                  {/* Top Image Banner */}
+                  <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+                    <img
+                      src={eventImage}
+                      alt={event.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+                    
+                    {/* Floating Header Badges */}
+                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/95 backdrop-blur-md text-amber-950 text-xs font-bold rounded-full uppercase tracking-wider shadow-sm">
                         {isManagement ? (
                           <>
                             <Flower2 className="w-3.5 h-3.5 text-amber-700" />
@@ -196,10 +207,13 @@ export default function EventsClient({ initialEvents }: EventsClientProps) {
                           </>
                         )}
                       </span>
-                      <span className="text-xs text-slate-500 font-medium">
+                      <span className="px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-medium rounded-full shadow-sm">
                         {event.venue_type}
                       </span>
                     </div>
+                  </div>
+
+                  <div className="p-6 sm:p-8 space-y-6">
 
                     <div className="space-y-2">
                       <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 group-hover:text-amber-800 transition-colors">

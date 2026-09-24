@@ -72,21 +72,23 @@ export default async function WorkshopsPage() {
               {upcomingWorkshops.map((ws) => {
                 const totalRemaining = (ws.batches || []).reduce((sum, b) => sum + b.remaining_seats, 0);
                 const isFull = totalRemaining <= 0;
+                const wsImg = ws.cover_image || (ws.images && ws.images[0]);
+
                 return (
                   <div
                     key={ws.id}
                     className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
                   >
                     <div className="h-60 overflow-hidden bg-slate-950 relative flex items-center justify-center">
-                      {ws.cover_image ? (
+                      {wsImg ? (
                         <>
                           <img
-                            src={ws.cover_image}
+                            src={wsImg}
                             alt=""
                             className="absolute inset-0 w-full h-full object-cover blur-md opacity-35 scale-110"
                           />
                           <img
-                            src={ws.cover_image}
+                            src={wsImg}
                             alt={ws.title}
                             className="relative z-10 max-w-full max-h-full object-contain p-1 group-hover:scale-105 transition-transform duration-500"
                           />
