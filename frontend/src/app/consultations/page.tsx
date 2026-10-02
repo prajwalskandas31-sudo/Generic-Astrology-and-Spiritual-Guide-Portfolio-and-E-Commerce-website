@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function ConsultationsPage() {
-  redirect("/services#consultations");
+  redirect("/services");
 }

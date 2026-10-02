@@ -11,14 +11,15 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       // Redirect consultations routes to /services (services & consultations unified)
+      // NOTE: Google ignores URL fragments (#), so redirect to /services directly
       {
         source: "/consultation",
-        destination: "/services#consultations",
+        destination: "/services",
         permanent: true,
       },
       {
         source: "/consultations",
-        destination: "/services#consultations",
+        destination: "/services",
         permanent: true,
       },
       {
@@ -90,6 +91,12 @@ const nextConfig: NextConfig = {
       {
         source: "/live-events/test-workshop",
         destination: "/events",
+        permanent: true,
+      },
+      // Legacy routes discovered by Googlebot — proper 301 redirects
+      {
+        source: "/reviews",
+        destination: "/feedback",
         permanent: true,
       },
     ];

@@ -193,9 +193,6 @@ const jsonLd = {
       ],
       sameAs: [
         "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097",
-        "https://facebook.com",
-        "https://instagram.com",
-        "https://youtube.com",
       ],
     },
     {
@@ -207,11 +204,6 @@ const jsonLd = {
         "Official website of Veda Brahma Shri Pradeep Nadig. Explore authentic Vedic rituals, Kannada purohit services near me, astrology consultations, chant workshops, and classes.",
       publisher: {
         "@id": "https://pradeepnadig.in/#person",
-      },
-      potentialAction: {
-        "@type": "SearchAction",
-        target: "https://pradeepnadig.in/services?q={search_term_string}",
-        "query-input": "required name=search_term_string",
       },
     },
   ],
@@ -234,22 +226,6 @@ export default function RootLayout({
         <meta name="geo.position" content="13.0903;77.5458" />
         <meta name="ICBM" content="13.0903, 77.5458" />
 
-        {/* Google Tag (gtag.js) */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-
-              gtag('config', '${GA_MEASUREMENT_ID}');
-            `,
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

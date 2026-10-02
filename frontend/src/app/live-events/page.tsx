@@ -1,35 +1,22 @@
-import PublicLayout from "@/components/PublicLayout";
-import EventsClient from "@/app/events/EventsClient";
-import { getSettings, getLiveEvents } from "@/lib/api-client";
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Event Management & Sacred Samskaras | Veda Brahma Shri Pradeep Nadig",
-  description:
-    "Participate in live stream Vedic rituals and book end-to-end Event Management for Marriage, Upanayana, Griha Pravesha in Bengaluru.",
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: "https://pradeepnadig.in/events",
   },
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-export default async function LiveEventsPage() {
-  let settings: Record<string, any> = {};
-  let events: import("@/types").LiveEvent[] = [];
-
-  try {
-    settings = await getSettings();
-  } catch (_) {}
-
-  try {
-    events = await getLiveEvents();
-  } catch (_) {}
-
-  return (
-    <PublicLayout settings={settings}>
-      <EventsClient initialEvents={events} />
-    </PublicLayout>
-  );
+/**
+ * /live-events parent route redirects to /events.
+ * Individual event pages at /live-events/[slug] still serve content.
+ * The redirect in next.config.ts handles this at the edge,
+ * but this acts as a fallback.
+ */
+export default function LiveEventsPage() {
+  redirect("/events");
 }

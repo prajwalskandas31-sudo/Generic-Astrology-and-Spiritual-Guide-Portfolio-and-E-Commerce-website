@@ -291,9 +291,6 @@ export function buildLocalBusinessSchema() {
     ],
     sameAs: [
       "https://maps.google.com/?q=Pradeep+Nadig+Asharaya+layout+Vaderahalli+KG+Vaderahalli+Karnataka+560097",
-      "https://facebook.com",
-      "https://instagram.com",
-      "https://youtube.com",
     ],
   };
 }
