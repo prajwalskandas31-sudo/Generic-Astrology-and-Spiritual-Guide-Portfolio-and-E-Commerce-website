@@ -61,16 +61,46 @@ async def get_whatsapp_credentials() -> tuple[Optional[str], Optional[str]]:
 
 
 async def get_admin_whatsapp_phone() -> str:
-    admin_phone = getattr(settings, "ADMIN_WHATSAPP_PHONE", "919844042068")
+    """
+    Resolves the Admin WhatsApp phone number for Mr. Pradeep (919844042068).
+    Note: Must return Mr. Pradeep's personal mobile number, NOT the WABA Meta API sender number.
+    """
+    env_admin = getattr(settings, "ADMIN_WHATSAPP_PHONE", None)
+    if env_admin and str(env_admin).strip():
+        formatted = format_whatsapp_phone(str(env_admin))
+        if formatted and formatted != "919901843857":
+            return formatted
+
     try:
         async with AsyncSessionLocal() as session:
-            res = await session.execute(select(Setting).where(Setting.key == "whatsapp_number"))
-            setting_obj = res.scalar_one_or_none()
-            if setting_obj and setting_obj.value:
-                return format_whatsapp_phone(str(setting_obj.value))
+            res = await session.execute(
+                select(Setting).where(Setting.key.in_(["admin_phone", "admin_whatsapp_phone", "contact_mobile"]))
+            )
+            settings_map = {s.key: s.value for s in res.scalars().all() if s.value}
+            val = settings_map.get("admin_phone") or settings_map.get("admin_whatsapp_phone") or settings_map.get("contact_mobile")
+            if val:
+                formatted = format_whatsapp_phone(str(val))
+                if formatted and formatted != "919901843857":
+                    return formatted
     except Exception:
         pass
-    return format_whatsapp_phone(admin_phone)
+
+    try:
+        async with SQLiteSessionLocal() as session:
+            res = await session.execute(
+                select(Setting).where(Setting.key.in_(["admin_phone", "admin_whatsapp_phone", "contact_mobile"]))
+            )
+            settings_map = {s.key: s.value for s in res.scalars().all() if s.value}
+            val = settings_map.get("admin_phone") or settings_map.get("admin_whatsapp_phone") or settings_map.get("contact_mobile")
+            if val:
+                formatted = format_whatsapp_phone(str(val))
+                if formatted and formatted != "919901843857":
+                    return formatted
+    except Exception:
+        pass
+
+    return "919844042068"
+
 
 
 async def send_whatsapp_message(to_phone: str, text: str):
