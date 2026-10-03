@@ -210,7 +210,7 @@ async def create_request(
 
     # Dispatch WhatsApp Utility Templates if requested (bypasses 24-hour session window for both Client & Admin)
     if send_whatsapp:
-        # 1. Send Template to Customer
+        # 1. Send Template to Customer (or fallback to interactive buttons if template is in review)
         try:
             tmpl_res = await send_whatsapp_template(
                 to_phone=customer.phone,
@@ -219,10 +219,19 @@ async def create_request(
                 header_text="Veda Brahma Shri Pradeep Nadig"
             )
             print(f"[WhatsApp Customer Template Sent] Phone: {customer.phone} | Result: {tmpl_res}")
+            if not tmpl_res or "error" in tmpl_res or "messages" not in tmpl_res:
+                print(f"[WhatsApp Customer Fallback] Template in review. Attempting interactive session buttons for {customer.phone}...")
+                fb_cust_res = await send_whatsapp_buttons(
+                    to_phone=customer.phone,
+                    body_text=f"🙏 Namaste {customer.name}!\n\nWe have received your request regarding {item_name}.\n\nPlease tap below to view your full booking details & options:",
+                    buttons=[{"id": f"client_view_details_{req_id}", "title": "VIEW DETAILS"}],
+                    header_text="Veda Brahma Shri Pradeep Nadig"
+                )
+                print(f"[WhatsApp Customer Fallback Result]: {fb_cust_res}")
         except Exception as e:
             print(f"[WhatsApp Customer Template Error]: {e}")
 
-        # 2. Send Template to Admin (Mr. Pradeep: 919844042068)
+        # 2. Send Template to Admin (Mr. Pradeep: 919844042068) (or fallback to interactive buttons if template is in review)
         try:
             admin_phone = await get_admin_whatsapp_phone()
             if admin_phone and admin_phone != customer.phone:
@@ -233,6 +242,15 @@ async def create_request(
                     header_text="Veda Brahma Shri Pradeep Nadig"
                 )
                 print(f"[WhatsApp Admin Template Sent] Phone: {admin_phone} | Result: {admin_tmpl_res}")
+                if not admin_tmpl_res or "error" in admin_tmpl_res or "messages" not in admin_tmpl_res:
+                    print(f"[WhatsApp Admin Fallback] Template in review. Attempting interactive session buttons for Admin {admin_phone}...")
+                    fb_admin_res = await send_whatsapp_buttons(
+                        to_phone=admin_phone,
+                        body_text=f"🙏 Namaste Pradeep Ji!\n\nA new client request regarding {item_name} has been received.\n\nPlease tap below to view full details & options:",
+                        buttons=[{"id": f"admin_view_details_{req_id}", "title": "VIEW DETAILS"}],
+                        header_text="Veda Brahma Shri Pradeep Nadig"
+                    )
+                    print(f"[WhatsApp Admin Fallback Result]: {fb_admin_res}")
         except Exception as aerr:
             print(f"[WhatsApp Admin Template Error]: {aerr}")
 
