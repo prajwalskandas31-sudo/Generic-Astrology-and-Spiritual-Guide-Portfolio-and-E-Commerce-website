@@ -224,7 +224,7 @@ async def create_request(
                 fb_cust_res = await send_whatsapp_buttons(
                     to_phone=customer.phone,
                     body_text=f"🙏 Namaste {customer.name}!\n\nWe have received your request regarding {item_name}.\n\nPlease tap below to view your full booking details & options:",
-                    buttons=[{"id": f"client_view_details_{req_id}", "title": "VIEW DETAILS"}],
+                    buttons=[{"id": f"req:{req_id}:VIEW_DETAILS", "title": "VIEW DETAILS"}],
                     header_text="Veda Brahma Shri Pradeep Nadig"
                 )
                 print(f"[WhatsApp Customer Fallback Result]: {fb_cust_res}")
@@ -247,7 +247,7 @@ async def create_request(
                     fb_admin_res = await send_whatsapp_buttons(
                         to_phone=admin_phone,
                         body_text=f"🙏 Namaste Pradeep Ji!\n\nA new client request regarding {item_name} has been received.\n\nPlease tap below to view full details & options:",
-                        buttons=[{"id": f"admin_view_details_{req_id}", "title": "VIEW DETAILS"}],
+                        buttons=[{"id": f"req:{req_id}:VIEW_DETAILS_ADMIN", "title": "VIEW DETAILS"}],
                         header_text="Veda Brahma Shri Pradeep Nadig"
                     )
                     print(f"[WhatsApp Admin Fallback Result]: {fb_admin_res}")
@@ -288,7 +288,55 @@ async def execute_request_action(
     cust = req.customer
     act = action_name.upper().strip()
 
-    if act in ["ACCEPT", "CONFIRM_REQUEST", "ADMIN_ACCEPTED"]:
+    if act in ["VIEW_DETAILS", "VIEW_DETAILS_ADMIN", "VIEW_REQUEST_DETAILS", "VIEW"]:
+        item_lbl = req.service_name or req.workshop_name or req.request_type
+        if sender_channel == "ADMIN" or act == "VIEW_DETAILS_ADMIN":
+            admin_phone = await get_admin_whatsapp_phone()
+            admin_body_text = (
+                f"🔔 CLIENT REQUEST DETAILS:\n\n"
+                f"📋 Request ID: {req.request_id}\n"
+                f"👤 Client: {cust.name} (+{cust.phone})\n"
+                f"🌸 Service: {item_lbl}\n"
+                f"📅 Date: {req.preferred_date or 'To be confirmed'}\n"
+                f"⏰ Time: {req.preferred_time or 'To be confirmed'}\n"
+                f"📊 Status: {req.status}\n\n"
+                f"Tap below to take action:"
+            )
+            admin_buttons = [
+                {"id": f"req:{req.request_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
+                {"id": f"req:{req.request_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
+                {"id": f"req:{req.request_id}:CANCEL_REQUEST", "title": "CANCEL"}
+            ]
+            await send_whatsapp_buttons(
+                to_phone=admin_phone,
+                body_text=admin_body_text,
+                buttons=admin_buttons,
+                header_text="Admin Control"
+            )
+        else:
+            cust_body_text = (
+                f"🙏 Namaste {cust.name},\n\n"
+                f"Your request details for Request ID {req.request_id}:\n\n"
+                f"🌸 Service: {item_lbl}\n"
+                f"📅 Date: {req.preferred_date or 'To be confirmed'}\n"
+                f"⏰ Time: {req.preferred_time or 'To be confirmed'}\n"
+                f"📊 Status: {req.status}\n\n"
+                f"We will review your request and confirm it shortly."
+            )
+            buttons = [
+                {"id": f"req:{req.request_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
+                {"id": f"req:{req.request_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
+                {"id": f"req:{req.request_id}:CANCEL_REQUEST", "title": "CANCEL"}
+            ]
+            await send_whatsapp_buttons(
+                to_phone=cust.phone,
+                body_text=cust_body_text,
+                buttons=buttons,
+                header_text="Veda Brahma Shri Pradeep Nadig"
+            )
+        return req
+
+    elif act in ["ACCEPT", "CONFIRM_REQUEST", "ADMIN_ACCEPTED"]:
         if not validate_status_transition(req.status, "CONFIRMED"):
             raise ValueError(f"Cannot confirm request in current status '{req.status}'")
 
