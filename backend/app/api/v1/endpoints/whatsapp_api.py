@@ -48,7 +48,7 @@ async def get_whatsapp_status(
         "config_id": CONFIG_ID,
         "meta_app_id": settings.META_APP_ID or "",
         "feature_type": "whatsapp_business_app_onboarding",
-        "waba_id": onboarding_data.get("waba_id", ""),
+        "waba_id": onboarding_data.get("waba_id") or settings.WHATSAPP_BUSINESS_ACCOUNT_ID or "",
         "phone_number_id": onboarding_data.get("phone_number_id") or settings.WHATSAPP_PHONE_ID or "",
         "display_phone_number": onboarding_data.get("display_phone_number") or "+91 98440 42068",
         "business_name": onboarding_data.get("business_name") or "Veda Brahma Shri Pradeep Nadig",
@@ -137,7 +137,7 @@ async def complete_embedded_signup(
     # Step 3: Save connection state to DB Settings table
     onboarding_record = {
         "status": "CONNECTED",
-        "waba_id": waba_id or "1516112060284880",
+        "waba_id": waba_id or settings.WHATSAPP_BUSINESS_ACCOUNT_ID or "1516112060284880",
         "phone_number_id": phone_number_id or settings.WHATSAPP_PHONE_ID or "919844042068",
         "display_phone_number": display_phone_number,
         "business_name": business_name,

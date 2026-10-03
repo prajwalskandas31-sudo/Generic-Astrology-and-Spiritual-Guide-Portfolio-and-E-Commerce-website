@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     # WhatsApp Cloud API & Meta Embedded Signup
     WHATSAPP_TOKEN: Optional[str] = None
     WHATSAPP_PHONE_ID: Optional[str] = None
+    WHATSAPP_BUSINESS_ACCOUNT_ID: Optional[str] = None
     WHATSAPP_VERIFY_TOKEN: Optional[str] = None
     META_APP_ID: Optional[str] = None
     META_APP_SECRET: Optional[str] = None
