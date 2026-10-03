@@ -361,7 +361,7 @@ async def send_whatsapp_template(
                 safe_print(f"[WHATSAPP TEMPLATE API RESPONSE] Status: {res.status_code} | Body: {res.text}")
                 res_data = res.json()
 
-                # If language mismatch ('en' vs 'en_US'), retry with alternate code
+                # 1. If language mismatch ('en' vs 'en_US'), retry with alternate code
                 if res.status_code in [400, 404] and "does not exist in" in res.text:
                     alt_code = "en" if language_code == "en_US" else "en_US"
                     payload["template"]["language"]["code"] = alt_code
@@ -370,10 +370,26 @@ async def send_whatsapp_template(
                     if alt_res.status_code == 200:
                         return alt_res.json()
 
+                    # 2. Instant Fail-Safe Fallback to pre-approved 'hello_world' while custom template is in review
+                    fallback_payload = {
+                        "messaging_product": "whatsapp",
+                        "to": clean_phone,
+                        "type": "template",
+                        "template": {
+                            "name": "hello_world",
+                            "language": {"code": "en_US"}
+                        }
+                    }
+                    fb_res = await client.post(url, json=fallback_payload, headers=headers)
+                    safe_print(f"[WHATSAPP PRE-APPROVED FALLBACK] Status: {fb_res.status_code} | Body: {fb_res.text}")
+                    if fb_res.status_code == 200:
+                        return fb_res.json()
+
                 return res_data
             except Exception as e:
                 safe_print(f"[WHATSAPP TEMPLATE API ERROR]: {e}")
                 return None
+
 
 
     return {"status": "mock_sent", "to": clean_phone, "template": template_name, "params": body_parameters}
