@@ -60,6 +60,19 @@ async def get_whatsapp_credentials() -> tuple[Optional[str], Optional[str]]:
     return token, phone_id
 
 
+async def get_admin_whatsapp_phone() -> str:
+    admin_phone = getattr(settings, "ADMIN_WHATSAPP_PHONE", "919844042068")
+    try:
+        async with AsyncSessionLocal() as session:
+            res = await session.execute(select(Setting).where(Setting.key == "whatsapp_number"))
+            setting_obj = res.scalar_one_or_none()
+            if setting_obj and setting_obj.value:
+                return format_whatsapp_phone(str(setting_obj.value))
+    except Exception:
+        pass
+    return format_whatsapp_phone(admin_phone)
+
+
 async def send_whatsapp_message(to_phone: str, text: str):
     """
     Sends a text WhatsApp message via WhatsApp Cloud API.

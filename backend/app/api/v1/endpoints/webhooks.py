@@ -8,7 +8,7 @@ from app.db.session import get_db
 from app.models.models import Customer, Request as RequestModel, MessageLog
 from app.schemas.schemas import MessageResponse
 from app.core.config import settings
-from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list
+from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list, get_admin_whatsapp_phone, format_whatsapp_phone
 from app.services.requests_service import execute_request_action
 
 router = APIRouter()
@@ -94,6 +94,7 @@ async def process_whatsapp_webhook(
             return MessageResponse(message=f"Duplicate event '{wa_msg_id}' ignored.")
 
     action_taken = "Processed"
+    admin_phone = await get_admin_whatsapp_phone()
 
     # SCENARIO 1: Interactive Button / List Click (Carries req:<request_id>:<action_name>)
     if interactive_action_id and interactive_action_id.startswith("req:"):
@@ -101,6 +102,7 @@ async def process_whatsapp_webhook(
         if len(parts) >= 3:
             req_id_str = parts[1]
             act_name = parts[2]
+            is_admin_sender = (clean_sender == admin_phone)
             
             try:
                 updated_req = await execute_request_action(
@@ -108,14 +110,14 @@ async def process_whatsapp_webhook(
                     action_name=act_name,
                     action_payload={"selected_time": message_text if "TIME_" in act_name else None},
                     db=db,
-                    sender_channel="WHATSAPP"
+                    sender_channel="ADMIN" if is_admin_sender else "WHATSAPP"
                 )
                 if wa_msg_id and updated_req:
                     btn_log = MessageLog(
                         request_id=updated_req.id,
                         customer_id=updated_req.customer_id,
                         direction="INBOUND",
-                        channel="WHATSAPP",
+                        channel="ADMIN" if is_admin_sender else "WHATSAPP",
                         message_type=f"BUTTON_REPLY_{act_name}",
                         message_content=message_text,
                         message_id=wa_msg_id,
@@ -124,13 +126,91 @@ async def process_whatsapp_webhook(
                     db.add(btn_log)
                     await db.commit()
 
-                action_taken = f"Executed interactive action '{act_name}' for Request '{req_id_str}'"
+                # If action was clicked by Admin, send immediate feedback to Admin
+                if is_admin_sender and updated_req:
+                    admin_notice = (
+                        f"✅ Admin Action Executed Successfully!\n\n"
+                        f"📋 Request ID: {req_id_str}\n"
+                        f"📊 New Status: {updated_req.status}\n"
+                        f"👤 Client: {updated_req.customer.name} (+{updated_req.customer.phone})\n\n"
+                        f"Client has been automatically notified via WhatsApp."
+                    )
+                    await send_whatsapp_message(to_phone=admin_phone, text=admin_notice)
+
+                action_taken = f"Executed interactive action '{act_name}' for Request '{req_id_str}' (by {'Admin' if is_admin_sender else 'Customer'})"
                 return MessageResponse(message=f"Success: {action_taken}")
             except Exception as e:
+                if is_admin_sender:
+                    await send_whatsapp_message(to_phone=admin_phone, text=f"⚠️ Action failed for Request {req_id_str}: {str(e)}")
                 return MessageResponse(message=f"Action execution error: {str(e)}")
 
-    # SCENARIO 2: Free-text WhatsApp Customer Reply
+    # SCENARIO 2: Free-text WhatsApp Reply
     if clean_sender:
+        # Check if sender is Admin
+        if clean_sender == admin_phone:
+            words = message_text.split()
+            first_word = words[0].upper() if words else ""
+
+            # Look for request ID in message text (e.g. CONSULT-2026-00042)
+            target_req_id = None
+            for w in words:
+                clean_w = w.upper().strip().strip(":,.;!")
+                if "-" in clean_w and any(p in clean_w for p in ["CONSULT", "SERVICE", "WORKSHOP", "CLASS", "REQ"]):
+                    target_req_id = clean_w
+                    break
+
+            # Command 1: Status / List Overview
+            if first_word in ["STATUS", "PENDING", "LIST", "SUMMARY"]:
+                req_res = await db.execute(
+                    select(RequestModel)
+                    .options(selectinload(RequestModel.customer))
+                    .where(RequestModel.status.in_(["NEW", "PENDING", "RESCHEDULE_REQUESTED"]))
+                    .order_by(RequestModel.id.desc())
+                    .limit(5)
+                )
+                active_list = req_res.scalars().all()
+                if not active_list:
+                    await send_whatsapp_message(to_phone=admin_phone, text="✅ No pending or new requests at the moment.")
+                else:
+                    msg = "📋 ACTIVE CLIENT REQUESTS:\n\n"
+                    for r in active_list:
+                        msg += f"• {r.request_id}: {r.service_name or r.request_type} ({r.customer.name} - +{r.customer.phone}) [{r.status}]\n"
+                    await send_whatsapp_message(to_phone=admin_phone, text=msg)
+                return MessageResponse(message="Sent active requests summary to Admin")
+
+            # Command 2: Explicit Action on Request ID (e.g. "Confirm CONSULT-2026-00042")
+            if target_req_id:
+                act = "CONFIRM_REQUEST" if first_word in ["CONFIRM", "ACCEPT", "APPROVED", "CONFIRMED"] else ("CANCEL_REQUEST" if first_word in ["REJECT", "CANCEL", "DECLINE", "REJECTED"] else None)
+                if act:
+                    try:
+                        updated_req = await execute_request_action(
+                            request_id_str=target_req_id,
+                            action_name=act,
+                            action_payload={},
+                            db=db,
+                            sender_channel="ADMIN"
+                        )
+                        await send_whatsapp_message(
+                            to_phone=admin_phone,
+                            text=f"✅ Request {target_req_id} updated to {updated_req.status}. Client (+{updated_req.customer.phone}) notified."
+                        )
+                        return MessageResponse(message=f"Admin action executed for {target_req_id}")
+                    except Exception as e:
+                        await send_whatsapp_message(to_phone=admin_phone, text=f"⚠️ Error executing action on {target_req_id}: {str(e)}")
+                        return MessageResponse(message=f"Error: {str(e)}")
+
+            # Fallback Admin Guidance
+            help_msg = (
+                "🙏 Hari Om Shri Pradeep Ji!\n\n"
+                "Admin WhatsApp Commands:\n"
+                "• Type 'Status' to view active client requests\n"
+                "• Type 'Confirm <Request-ID>' to confirm a request\n"
+                "• Type 'Reject <Request-ID>' to reject a request\n\n"
+                "Or tap the interactive buttons on incoming notification messages."
+            )
+            await send_whatsapp_message(to_phone=admin_phone, text=help_msg)
+            return MessageResponse(message="Processed admin text message.")
+
         # Step A: Locate Customer
         cust_res = await db.execute(select(Customer).where(Customer.phone == clean_sender))
         customer = cust_res.scalar_one_or_none()
@@ -231,3 +311,4 @@ async def process_whatsapp_webhook(
             action_taken = f"Sent interactive disambiguation menu for {len(active_requests)} active requests."
 
     return MessageResponse(message=f"WhatsApp webhook processed. Action: {action_taken}")
+

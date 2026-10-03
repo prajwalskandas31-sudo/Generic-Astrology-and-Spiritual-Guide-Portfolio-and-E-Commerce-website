@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     WHATSAPP_VERIFY_TOKEN: Optional[str] = None
     META_APP_ID: Optional[str] = None
     META_APP_SECRET: Optional[str] = None
+    ADMIN_WHATSAPP_PHONE: str = "919844042068"
     
     # Google Calendar
     GOOGLE_CLIENT_ID: Optional[str] = None
