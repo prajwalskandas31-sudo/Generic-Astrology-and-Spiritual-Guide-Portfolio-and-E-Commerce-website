@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.models.models import Customer, Request, MessageLog, Offering, Workshop, Enquiry
-from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list, get_admin_whatsapp_phone
+from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list, send_whatsapp_template, get_admin_whatsapp_phone
 from app.services.calendar_service import create_google_calendar_event
 
 
@@ -208,55 +208,34 @@ async def create_request(
     db.add(msg_log)
     await db.commit()
 
-    # Dispatch WhatsApp Interactive Buttons if requested
+    # Dispatch WhatsApp Utility Templates if requested (bypasses 24-hour session window for both Client & Admin)
     if send_whatsapp:
-        buttons = [
-            {"id": f"req:{req_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
-            {"id": f"req:{req_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
-            {"id": f"req:{req_id}:CANCEL_REQUEST", "title": "CANCEL"}
-        ]
-
-        # 1. Send to Customer
+        # 1. Send Template to Customer
         try:
-            res = await send_whatsapp_buttons(
+            tmpl_res = await send_whatsapp_template(
                 to_phone=customer.phone,
-                body_text=body_text,
-                buttons=buttons,
+                template_name="client_request_greeting",
+                body_parameters=[customer.name, item_name],
                 header_text="Veda Brahma Shri Pradeep Nadig"
             )
-            print(f"[WhatsApp Customer Dispatch Sent] Phone: {customer.phone} | Result: {res}")
+            print(f"[WhatsApp Customer Template Sent] Phone: {customer.phone} | Result: {tmpl_res}")
         except Exception as e:
-            print(f"[WhatsApp Customer Dispatch Error]: {e}")
+            print(f"[WhatsApp Customer Template Error]: {e}")
 
-        # 2. Intimate Admin (Mr. Pradeep)
+        # 2. Send Template to Admin (Mr. Pradeep: 919844042068)
         try:
             admin_phone = await get_admin_whatsapp_phone()
             if admin_phone and admin_phone != customer.phone:
-                admin_body_text = (
-                    f"🔔 NEW CLIENT REQUEST RECEIVED!\n\n"
-                    f"📋 Request ID: {req_id}\n"
-                    f"👤 Client: {customer.name} (+{customer.phone})\n"
-                    f"🌸 Service: {item_name}\n"
-                    f"📅 Date: {preferred_date or 'To be confirmed'}\n"
-                    f"⏰ Time: {preferred_time or 'To be confirmed'}\n"
-                    f"🌐 Language: {language}\n"
-                    f"📝 Notes: {notes or 'None'}\n\n"
-                    f"Tap below to take quick action:"
-                )
-                admin_buttons = [
-                    {"id": f"req:{req_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
-                    {"id": f"req:{req_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
-                    {"id": f"req:{req_id}:CANCEL_REQUEST", "title": "CANCEL"}
-                ]
-                admin_res = await send_whatsapp_buttons(
+                admin_tmpl_res = await send_whatsapp_template(
                     to_phone=admin_phone,
-                    body_text=admin_body_text,
-                    buttons=admin_buttons,
-                    header_text="Admin Intimation"
+                    template_name="admin_request_greeting",
+                    body_parameters=[item_name],
+                    header_text="Veda Brahma Shri Pradeep Nadig"
                 )
-                print(f"[WhatsApp Admin Intimation Sent] Phone: {admin_phone} | Result: {admin_res}")
+                print(f"[WhatsApp Admin Template Sent] Phone: {admin_phone} | Result: {admin_tmpl_res}")
         except Exception as aerr:
-            print(f"[WhatsApp Admin Intimation Error]: {aerr}")
+            print(f"[WhatsApp Admin Template Error]: {aerr}")
+
 
     # Reload with relations
     res = await db.execute(

@@ -159,8 +159,8 @@ async def process_whatsapp_webhook(
                     target_req_id = clean_w
                     break
 
-            # Command 1: Status / List Overview
-            if first_word in ["STATUS", "PENDING", "LIST", "SUMMARY"]:
+            # Command 1: Status / List Overview / VIEW DETAILS
+            if first_word in ["STATUS", "PENDING", "LIST", "SUMMARY"] or "VIEW DETAILS" in message_text.upper():
                 req_res = await db.execute(
                     select(RequestModel)
                     .options(selectinload(RequestModel.customer))
@@ -172,11 +172,30 @@ async def process_whatsapp_webhook(
                 if not active_list:
                     await send_whatsapp_message(to_phone=admin_phone, text="✅ No pending or new requests at the moment.")
                 else:
-                    msg = "📋 ACTIVE CLIENT REQUESTS:\n\n"
-                    for r in active_list:
-                        msg += f"• {r.request_id}: {r.service_name or r.request_type} ({r.customer.name} - +{r.customer.phone}) [{r.status}]\n"
-                    await send_whatsapp_message(to_phone=admin_phone, text=msg)
-                return MessageResponse(message="Sent active requests summary to Admin")
+                    latest_req = active_list[0]
+                    admin_body_text = (
+                        f"🔔 CLIENT REQUEST DETAILS:\n\n"
+                        f"📋 Request ID: {latest_req.request_id}\n"
+                        f"👤 Client: {latest_req.customer.name} (+{latest_req.customer.phone})\n"
+                        f"🌸 Service: {latest_req.service_name or latest_req.workshop_name or latest_req.request_type}\n"
+                        f"📅 Date: {latest_req.preferred_date or 'To be confirmed'}\n"
+                        f"⏰ Time: {latest_req.preferred_time or 'To be confirmed'}\n"
+                        f"📊 Status: {latest_req.status}\n\n"
+                        f"Tap below to take action:"
+                    )
+                    admin_buttons = [
+                        {"id": f"req:{latest_req.request_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
+                        {"id": f"req:{latest_req.request_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
+                        {"id": f"req:{latest_req.request_id}:CANCEL_REQUEST", "title": "CANCEL"}
+                    ]
+                    await send_whatsapp_buttons(
+                        to_phone=admin_phone,
+                        body_text=admin_body_text,
+                        buttons=admin_buttons,
+                        header_text="Admin Control"
+                    )
+                return MessageResponse(message="Sent active request details to Admin")
+
 
             # Command 2: Explicit Action on Request ID (e.g. "Confirm CONSULT-2026-00042")
             if target_req_id:
@@ -246,7 +265,29 @@ async def process_whatsapp_webhook(
             target_req = active_requests[0]
             
             first_word = message_text.split()[0].capitalize() if message_text else ""
-            if first_word in ["Confirm", "Accepted"]:
+            if "VIEW DETAILS" in message_text.upper():
+                cust_body_text = (
+                    f"🙏 Namaste {customer.name},\n\n"
+                    f"Your request details for Request ID {target_req.request_id}:\n\n"
+                    f"🌸 Service: {target_req.service_name or target_req.workshop_name or target_req.request_type}\n"
+                    f"📅 Date: {target_req.preferred_date or 'To be confirmed'}\n"
+                    f"⏰ Time: {target_req.preferred_time or 'To be confirmed'}\n"
+                    f"📊 Status: {target_req.status}\n\n"
+                    f"We will review your request and confirm it shortly."
+                )
+                buttons = [
+                    {"id": f"req:{target_req.request_id}:CONFIRM_REQUEST", "title": "CONFIRM"},
+                    {"id": f"req:{target_req.request_id}:CHANGE_REQUEST_TIME", "title": "CHANGE TIME"},
+                    {"id": f"req:{target_req.request_id}:CANCEL_REQUEST", "title": "CANCEL"}
+                ]
+                await send_whatsapp_buttons(
+                    to_phone=clean_sender,
+                    body_text=cust_body_text,
+                    buttons=buttons,
+                    header_text="Veda Brahma Shri Pradeep Nadig"
+                )
+                action_taken = f"Sent interactive details to customer for {target_req.request_id}"
+            elif first_word in ["Confirm", "Accepted"]:
                 await execute_request_action(target_req.request_id, "CONFIRM_REQUEST", {}, db, sender_channel="WHATSAPP")
                 action_taken = f"Confirmed active request {target_req.request_id}"
             elif first_word in ["Reject", "Cancel", "Declined"]:
@@ -272,6 +313,7 @@ async def process_whatsapp_webhook(
                     text=f"Hari Om {customer.name}! Message received regarding Request {target_req.request_id}. We will get back to you shortly."
                 )
                 action_taken = f"Logged message against request {target_req.request_id}"
+
 
         else:
             # Multiple active requests -> Disambiguate without using AI!

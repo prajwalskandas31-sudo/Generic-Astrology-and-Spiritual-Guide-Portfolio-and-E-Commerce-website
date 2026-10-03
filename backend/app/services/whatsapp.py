@@ -307,3 +307,75 @@ async def send_whatsapp_image(to_phone: str, image_url: str, caption: Optional[s
 
     return {"status": "mock_sent", "to": clean_phone, "image_url": image_url, "caption": caption}
 
+
+async def send_whatsapp_template(
+    to_phone: str,
+    template_name: str,
+    body_parameters: List[str],
+    header_text: Optional[str] = "Veda Brahma Shri Pradeep Nadig",
+    language_code: str = "en_US"
+):
+    """
+    Sends an approved Meta WhatsApp Utility Template message.
+    Bypasses 24-hour customer service session window restrictions for both Clients & Admin.
+    """
+    clean_phone = format_whatsapp_phone(to_phone)
+    safe_print(f"[WHATSAPP OUTBOUND TEMPLATE] To: +{clean_phone} | Template: {template_name} | Params: {body_parameters}")
+
+    wa_token, wa_phone_id = await get_whatsapp_credentials()
+
+    if wa_token and wa_phone_id:
+        url = f"https://graph.facebook.com/v20.0/{wa_phone_id}/messages"
+        headers = {
+            "Authorization": f"Bearer {wa_token}",
+            "Content-Type": "application/json"
+        }
+
+        components = []
+        if header_text:
+            components.append({
+                "type": "header",
+                "parameters": [{"type": "text", "text": header_text}]
+            })
+
+        if body_parameters:
+            components.append({
+                "type": "body",
+                "parameters": [{"type": "text", "text": str(p)} for p in body_parameters]
+            })
+
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": clean_phone,
+            "type": "template",
+            "template": {
+                "name": template_name,
+                "language": {"code": language_code},
+                "components": components
+            }
+        }
+
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            try:
+                res = await client.post(url, json=payload, headers=headers)
+                safe_print(f"[WHATSAPP TEMPLATE API RESPONSE] Status: {res.status_code} | Body: {res.text}")
+                res_data = res.json()
+
+                # If language mismatch ('en' vs 'en_US'), retry with alternate code
+                if res.status_code in [400, 404] and "does not exist in" in res.text:
+                    alt_code = "en" if language_code == "en_US" else "en_US"
+                    payload["template"]["language"]["code"] = alt_code
+                    alt_res = await client.post(url, json=payload, headers=headers)
+                    safe_print(f"[WHATSAPP TEMPLATE RETRY ({alt_code})] Status: {alt_res.status_code} | Body: {alt_res.text}")
+                    if alt_res.status_code == 200:
+                        return alt_res.json()
+
+                return res_data
+            except Exception as e:
+                safe_print(f"[WHATSAPP TEMPLATE API ERROR]: {e}")
+                return None
+
+
+    return {"status": "mock_sent", "to": clean_phone, "template": template_name, "params": body_parameters}
+
+
