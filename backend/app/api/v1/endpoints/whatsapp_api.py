@@ -214,9 +214,33 @@ async def send_test_whatsapp_message(
 ) -> Dict[str, Any]:
     """
     Admin endpoint to trigger a trial WhatsApp message to test Meta Cloud API configuration.
+    Uses approved Meta Utility template (client_request_greeting) to guarantee delivery
+    regardless of the 24-hour customer window.
     """
-    from app.services.whatsapp import send_whatsapp_message
-    res = await send_whatsapp_message(to_phone=payload.phone, text=payload.message)
+    from app.services.whatsapp import send_whatsapp_template, send_whatsapp_message
+
+    # First attempt approved live template (bypasses 24h restriction)
+    res = await send_whatsapp_template(
+        to_phone=payload.phone,
+        template_name="client_request_greeting",
+        body_parameters=["Devotee", "Vedic Astrology Consultation"],
+        language_code="en_US",
+        button_payload="req:TRIAL-TEST:VIEW_DETAILS"
+    )
+
+    # If template fails or not recognized, try hello_world or standard message
+    if not res or "error" in res or "messages" not in res:
+        res_hw = await send_whatsapp_template(
+            to_phone=payload.phone,
+            template_name="hello_world",
+            body_parameters=[],
+            language_code="en_US"
+        )
+        if res_hw and "messages" in res_hw:
+            res = res_hw
+        else:
+            res = await send_whatsapp_message(to_phone=payload.phone, text=payload.message)
+
     return {
         "success": True,
         "phone": payload.phone,
