@@ -69,6 +69,10 @@ async def process_whatsapp_webhook(
                     elif i_type == "list_reply":
                         interactive_action_id = interactive_obj.get("list_reply", {}).get("id")
                         message_text = interactive_obj.get("list_reply", {}).get("title", "")
+                elif m_type == "button":
+                    btn_obj = msg.get("button", {})
+                    interactive_action_id = btn_obj.get("payload")
+                    message_text = btn_obj.get("text", "")
 
     # Fallback parsing for custom webhook payloads
     elif "message" in body or "action_id" in body:

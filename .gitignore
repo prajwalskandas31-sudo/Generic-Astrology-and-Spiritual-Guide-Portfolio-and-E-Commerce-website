@@ -28,3 +28,7 @@ Thumbs.db
 # Databases
 *.db
 *.sqlite3
+
+# Scratch
+scratch/
+backend/scratch/

@@ -312,15 +312,16 @@ async def send_whatsapp_template(
     to_phone: str,
     template_name: str,
     body_parameters: List[str],
-    header_text: Optional[str] = "Veda Brahma Shri Pradeep Nadig",
-    language_code: str = "en_US"
+    header_text: Optional[str] = None,
+    language_code: str = "en_US",
+    button_payload: Optional[str] = None
 ):
     """
     Sends an approved Meta WhatsApp Utility Template message.
     Bypasses 24-hour customer service session window restrictions for both Clients & Admin.
     """
     clean_phone = format_whatsapp_phone(to_phone)
-    safe_print(f"[WHATSAPP OUTBOUND TEMPLATE] To: +{clean_phone} | Template: {template_name} | Params: {body_parameters}")
+    safe_print(f"[WHATSAPP OUTBOUND TEMPLATE] To: +{clean_phone} | Template: {template_name} | Params: {body_parameters} | Button: {button_payload}")
 
     wa_token, wa_phone_id = await get_whatsapp_credentials()
 
@@ -342,6 +343,16 @@ async def send_whatsapp_template(
             components.append({
                 "type": "body",
                 "parameters": [{"type": "text", "text": str(p)} for p in body_parameters]
+            })
+
+        if button_payload:
+            components.append({
+                "type": "button",
+                "sub_type": "quick_reply",
+                "index": "0",
+                "parameters": [
+                    {"type": "payload", "payload": button_payload}
+                ]
             })
 
         payload = {

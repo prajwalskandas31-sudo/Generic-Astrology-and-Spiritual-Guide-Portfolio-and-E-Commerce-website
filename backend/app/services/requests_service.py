@@ -98,9 +98,20 @@ async def get_or_create_customer(
         return customer
 
     # Create new customer
-    count_res = await db.execute(select(Customer))
-    total_cust = len(count_res.scalars().all())
-    cust_code = f"CUST-{datetime.datetime.utcnow().year}-{total_cust + 1:05d}"
+    year = datetime.datetime.utcnow().year
+    pattern = f"CUST-{year}-%"
+    highest_res = await db.execute(
+        select(Customer.customer_id).where(Customer.customer_id.like(pattern)).order_by(Customer.id.desc()).limit(1)
+    )
+    last_cid = highest_res.scalar_one_or_none()
+    if last_cid:
+        try:
+            next_num = int(last_cid.split("-")[-1]) + 1
+        except Exception:
+            next_num = 1
+    else:
+        next_num = 1
+    cust_code = f"CUST-{year}-{next_num:05d}"
 
     customer = Customer(
         customer_id=cust_code,
@@ -216,7 +227,8 @@ async def create_request(
                 to_phone=customer.phone,
                 template_name="client_request_greeting",
                 body_parameters=[customer.name, item_name],
-                header_text="Veda Brahma Shri Pradeep Nadig"
+                header_text=None,
+                button_payload=f"req:{req_id}:VIEW_DETAILS"
             )
             print(f"[WhatsApp Customer Template Sent] Phone: {customer.phone} | Result: {tmpl_res}")
             if not tmpl_res or "error" in tmpl_res or "messages" not in tmpl_res:
@@ -239,7 +251,8 @@ async def create_request(
                     to_phone=admin_phone,
                     template_name="admin_request_greeting",
                     body_parameters=[item_name],
-                    header_text="Veda Brahma Shri Pradeep Nadig"
+                    header_text=None,
+                    button_payload=f"req:{req_id}:VIEW_DETAILS_ADMIN"
                 )
                 print(f"[WhatsApp Admin Template Sent] Phone: {admin_phone} | Result: {admin_tmpl_res}")
                 if not admin_tmpl_res or "error" in admin_tmpl_res or "messages" not in admin_tmpl_res:
