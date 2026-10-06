@@ -17,7 +17,9 @@ def format_whatsapp_phone(phone: str) -> str:
     if not phone:
         return ""
     clean = phone.replace("+", "").replace(" ", "").replace("-", "").replace("(", "").replace(")", "").strip()
-    if len(clean) == 10 and clean[0] in ["6", "7", "8", "9"]:
+    if clean.startswith("0") and len(clean) == 11 and clean[1] in ["6", "7", "8", "9"]:
+        clean = "91" + clean[1:]
+    elif len(clean) == 10 and clean[0] in ["6", "7", "8", "9"]:
         clean = "91" + clean
     return clean
 

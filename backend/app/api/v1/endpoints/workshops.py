@@ -180,7 +180,7 @@ async def register_for_workshop(
         amount=actual_amount,
         payment_status=initial_payment_status,
         razorpay_order_id=order_id,
-        send_whatsapp=True if not has_payment else False,
+        send_whatsapp=True,
         db=db
     )
     

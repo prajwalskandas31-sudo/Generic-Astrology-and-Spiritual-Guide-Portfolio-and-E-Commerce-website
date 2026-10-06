@@ -83,7 +83,7 @@ export default function CourseRegistrationModal({
       const waMsg = encodeURIComponent(
         `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${data.name}\nMobile: ${data.mobile}\nEmail: ${data.email}\nBatch: ${data.preferred_batch || 'Default'}\nFee Status: ${isPaid ? `Paid (₹${course.price})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
       );
-      const waUrl = `https://wa.me/919844000000?text=${waMsg}`;
+      const waUrl = `https://wa.me/919844042068?text=${waMsg}`;
 
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
@@ -208,7 +208,7 @@ export default function CourseRegistrationModal({
 
               <div className="pt-2 space-y-2">
                 <a
-                  href={`https://wa.me/919844000000?text=${encodeURIComponent(
+                  href={`https://wa.me/919844042068?text=${encodeURIComponent(
                     `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${submittedName || 'Devotee'}\nCourse: ${course.title}\nFee Status: ${coursePrice > 0 ? `Paid (₹${coursePrice})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
                   )}`}
                   target="_blank"

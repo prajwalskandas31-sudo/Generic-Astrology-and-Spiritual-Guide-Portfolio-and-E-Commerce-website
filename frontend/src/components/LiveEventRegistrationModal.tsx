@@ -84,7 +84,7 @@ export default function LiveEventRegistrationModal({
       const waMsg = encodeURIComponent(
         `Namaste Shri Pradeep Nadig Ji!\nI have registered Sankalpa for "${event.title}".\n\nName: ${data.name}\nGothra: ${data.gothra || 'N/A'}\nNakshatra: ${data.nakshatra || 'N/A'}\nRashi: ${data.rashi || 'N/A'}\nPass Type: ${data.pass_type}\nWish: ${data.sankalpa_wish || 'Lokah Samastah Sukhino Bhavantu'}\nFee Status: ${isPaid ? `Paid (₹${event.price})` : 'Free Registration'}\n\nPlease share the live stream joining details.`
       );
-      const waUrl = `https://wa.me/919844000000?text=${waMsg}`;
+      const waUrl = `https://wa.me/919844042068?text=${waMsg}`;
 
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
@@ -207,7 +207,7 @@ export default function LiveEventRegistrationModal({
 
               <div className="pt-2 space-y-2">
                 <a
-                  href={`https://wa.me/919844000000?text=${encodeURIComponent(
+                  href={`https://wa.me/919844042068?text=${encodeURIComponent(
                     `Namaste Shri Pradeep Nadig Ji!\nI have registered Sankalpa for "${event.title}".\n\nName: ${submittedData?.name || 'Devotee'}\nGothra: ${submittedData?.gothra || 'N/A'}\nNakshatra: ${submittedData?.nakshatra || 'N/A'}\nRashi: ${submittedData?.rashi || 'N/A'}\nPass Type: ${submittedData?.pass_type || 'Standard'}\nWish: ${submittedData?.sankalpa_wish || 'Lokah Samastah Sukhino Bhavantu'}\n\nPlease share the live stream joining details.`
                   )}`}
                   target="_blank"
