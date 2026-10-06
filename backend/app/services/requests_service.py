@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.models.models import Customer, Request, MessageLog, Offering, Workshop, Enquiry
-from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list, send_whatsapp_template, get_admin_whatsapp_phone
+from app.services.whatsapp import send_whatsapp_message, send_whatsapp_buttons, send_whatsapp_list, send_whatsapp_template, get_admin_whatsapp_phone, format_whatsapp_phone
 from app.services.calendar_service import create_google_calendar_event
 
 
