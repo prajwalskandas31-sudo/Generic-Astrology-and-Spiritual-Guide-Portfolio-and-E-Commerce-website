@@ -80,11 +80,6 @@ export default function CourseRegistrationModal({
         amount: isPaid ? coursePrice : 0,
       });
 
-      const waMsg = encodeURIComponent(
-        `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${data.name}\nMobile: ${data.mobile}\nEmail: ${data.email}\nBatch: ${data.preferred_batch || 'Default'}\nFee Status: ${isPaid ? `Paid (₹${course.price})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
-      );
-      const waUrl = `https://wa.me/919844042068?text=${waMsg}`;
-
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
         setIsSuccess(true);
@@ -115,11 +110,9 @@ export default function CourseRegistrationModal({
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 });
-                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } catch (_) {
-                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } finally {
@@ -149,7 +142,6 @@ export default function CourseRegistrationModal({
       }
 
       // Default Free or fallback success
-      window.open(waUrl, "_blank");
       setIsSuccess(true);
       reset();
     } catch (err: any) {
@@ -196,34 +188,22 @@ export default function CourseRegistrationModal({
         <div className="p-6">
           {isSuccess ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-10 h-10" />
+              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+                <CheckCircle2 className="w-10 h-10 text-emerald-600" />
               </div>
               <h4 className="text-2xl font-serif font-bold text-slate-900">
                 Enrollment Confirmed!
               </h4>
               <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you for enrolling in <strong className="text-slate-900">{course.title}</strong>. Shri Pradeep Nadig’s team will contact you via WhatsApp with your class access link and study materials.
+                Thank you for enrolling in <strong className="text-slate-900">{course.title}</strong>. Our automated WhatsApp service has sent your course confirmation and class details directly to your mobile phone.
               </p>
 
-              <div className="pt-2 space-y-2">
-                <a
-                  href={`https://wa.me/919844042068?text=${encodeURIComponent(
-                    `Hari Om Shri Pradeep Nadig Ji!\nI have enrolled in "${course.title}".\n\nName: ${submittedName || 'Devotee'}\nCourse: ${course.title}\nFee Status: ${coursePrice > 0 ? `Paid (₹${coursePrice})` : 'Free Registration'}\n\nPlease share the class batch joining details.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Open WhatsApp Confirmation Message &rarr;</span>
-                </a>
-
+              <div className="pt-3">
                 <button
                   onClick={handleClose}
-                  className="w-full py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition-colors"
+                  className="w-full py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl text-sm transition-colors shadow-md"
                 >
-                  Close &amp; Return
+                  Done
                 </button>
               </div>
             </div>

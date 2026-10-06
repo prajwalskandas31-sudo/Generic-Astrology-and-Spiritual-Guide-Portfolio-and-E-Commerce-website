@@ -373,15 +373,35 @@ export default function WorkshopAdminDetailModal({
                         >
                           {reg.payment_status}
                         </span>
+                        <a
+                          href={`tel:+${reg.mobile.replace(/[^0-9]/g, "")}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors border border-blue-200 flex items-center justify-center"
+                          title="Call participant directly"
+                        >
+                          <Phone className="w-3 h-3" />
+                        </a>
+                        <a
+                          href={`https://wa.me/${reg.mobile.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                            `Hari Om ${reg.name} ji! This is Shri Pradeep Nadig regarding ${workshop.title}.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition-colors border border-emerald-200 flex items-center justify-center"
+                          title="Message personally on WhatsApp"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                        </a>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedPhones([reg.mobile]);
                           }}
-                          className="p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition-colors flex items-center gap-1"
-                          title="Direct WhatsApp Message"
+                          className="p-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[10px] font-bold transition-colors flex items-center gap-1"
+                          title="Select for Automated Broadcast"
                         >
-                          <MessageSquare className="w-3 h-3" />
+                          <Send className="w-3 h-3" />
                         </button>
                         <button
                           onClick={(e) => handleSingleDelete(reg.id, e)}

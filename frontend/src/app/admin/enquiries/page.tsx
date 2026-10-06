@@ -551,15 +551,41 @@ export default function AdminRequestsPage() {
                       {reg.created_at ? new Date(reg.created_at).toLocaleDateString() : "N/A"}
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDeleteRegistration(reg.id, reg.name)}
-                        disabled={isPerformingAction}
-                        className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition-colors inline-flex items-center gap-1 font-semibold text-xs"
-                        title="Delete Registration"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete</span>
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {reg.mobile && (
+                          <>
+                            <a
+                              href={`tel:+${reg.mobile.replace(/[^0-9]/g, "")}`}
+                              className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center gap-1 font-semibold text-xs"
+                              title="Call Participant"
+                            >
+                              <Phone className="w-3.5 h-3.5" />
+                              <span>Call</span>
+                            </a>
+                            <a
+                              href={`https://wa.me/${reg.mobile.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                                `Hari Om ${reg.name} ji! This is Shri Pradeep Nadig regarding your workshop registration.`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors inline-flex items-center gap-1 font-semibold text-xs"
+                              title="Message Personally on WhatsApp"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" />
+                              <span>Message</span>
+                            </a>
+                          </>
+                        )}
+                        <button
+                          onClick={() => handleDeleteRegistration(reg.id, reg.name)}
+                          disabled={isPerformingAction}
+                          className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition-colors inline-flex items-center gap-1 font-semibold text-xs"
+                          title="Delete Registration"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                   );
@@ -748,17 +774,30 @@ export default function AdminRequestsPage() {
 
               {/* Action Buttons Bar */}
               <div className="bg-slate-50/70 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
-                <a
-                  href={`https://wa.me/${(req.customer?.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-                    "Hari Om " + (req.customer?.name || "Devotee") + "!\nRegarding your " + req.request_type + " (" + req.service_name + "):\nRequest ID: " + req.request_id + "\nStatus: " + req.status + "\n\nShri Pradeep Nadig's team is pleased to connect with you."
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span>WhatsApp Intimation</span>
-                </a>
+                {req.customer?.phone && (
+                  <>
+                    <a
+                      href={`tel:+${(req.customer.phone || "").replace(/[^0-9]/g, "")}`}
+                      className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                      title="Call devotee directly"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Call</span>
+                    </a>
+                    <a
+                      href={`https://wa.me/${(req.customer.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                        "Hari Om " + (req.customer?.name || "Devotee") + " ji!\nThis is Shri Pradeep Nadig regarding your " + req.request_type + " (" + (req.service_name || "request") + ").\nRequest ID: " + req.request_id
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-xs"
+                      title="Message devotee personally on WhatsApp"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>Message Personally</span>
+                    </a>
+                  </>
+                )}
 
                 {req.status !== "CONFIRMED" && req.status !== "COMPLETED" && req.status !== "CANCELLED" && (
                   <button

@@ -81,11 +81,6 @@ export default function LiveEventRegistrationModal({
         amount: isPaid ? event.price : 0,
       });
 
-      const waMsg = encodeURIComponent(
-        `Namaste Shri Pradeep Nadig Ji!\nI have registered Sankalpa for "${event.title}".\n\nName: ${data.name}\nGothra: ${data.gothra || 'N/A'}\nNakshatra: ${data.nakshatra || 'N/A'}\nRashi: ${data.rashi || 'N/A'}\nPass Type: ${data.pass_type}\nWish: ${data.sankalpa_wish || 'Lokah Samastah Sukhino Bhavantu'}\nFee Status: ${isPaid ? `Paid (₹${event.price})` : 'Free Registration'}\n\nPlease share the live stream joining details.`
-      );
-      const waUrl = `https://wa.me/919844042068?text=${waMsg}`;
-
       if (isPaid && payMode === "CUSTOM_LINK" && customLink) {
         window.open(customLink, "_blank");
         setIsSuccess(true);
@@ -116,11 +111,9 @@ export default function LiveEventRegistrationModal({
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 });
-                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } catch (_) {
-                window.open(waUrl, "_blank");
                 setIsSuccess(true);
                 reset();
               } finally {
@@ -149,7 +142,6 @@ export default function LiveEventRegistrationModal({
         }
       }
 
-      window.open(waUrl, "_blank");
       setIsSuccess(true);
       reset();
     } catch (err: any) {
@@ -195,34 +187,22 @@ export default function LiveEventRegistrationModal({
         <div className="p-6">
           {isSuccess ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
-                <Sparkles className="w-10 h-10 text-amber-700" />
+              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-sm">
+                <CheckCircle2 className="w-10 h-10 text-emerald-600" />
               </div>
               <h4 className="text-2xl font-serif font-bold text-slate-900">
                 Sankalpa Registered!
               </h4>
               <p className="text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Your Sankalpa registration for <strong className="text-slate-900">{event.title}</strong> has been received. Shri Pradeep Nadig will chant your name during the sacred ritual.
+                Your Sankalpa registration for <strong className="text-slate-900">{event.title}</strong> has been received. Our automated WhatsApp service has dispatched your confirmation and live stream link directly to your mobile phone.
               </p>
 
-              <div className="pt-2 space-y-2">
-                <a
-                  href={`https://wa.me/919844042068?text=${encodeURIComponent(
-                    `Namaste Shri Pradeep Nadig Ji!\nI have registered Sankalpa for "${event.title}".\n\nName: ${submittedData?.name || 'Devotee'}\nGothra: ${submittedData?.gothra || 'N/A'}\nNakshatra: ${submittedData?.nakshatra || 'N/A'}\nRashi: ${submittedData?.rashi || 'N/A'}\nPass Type: ${submittedData?.pass_type || 'Standard'}\nWish: ${submittedData?.sankalpa_wish || 'Lokah Samastah Sukhino Bhavantu'}\n\nPlease share the live stream joining details.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Open WhatsApp Sankalpa Pass Confirmation &rarr;</span>
-                </a>
-
+              <div className="pt-3">
                 <button
                   onClick={handleClose}
-                  className="w-full py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition-colors"
+                  className="w-full py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl text-sm transition-colors shadow-md"
                 >
-                  Close &amp; Return
+                  Done
                 </button>
               </div>
             </div>

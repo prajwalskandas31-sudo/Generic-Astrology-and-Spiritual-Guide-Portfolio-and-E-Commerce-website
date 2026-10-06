@@ -20,6 +20,7 @@ import {
   GraduationCap,
   Users,
   TrendingUp,
+  Phone,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -277,17 +278,41 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-slate-500 text-center py-6">No recent enquiries.</p>
             ) : (
               stats.recent_enquiries.map((enq) => (
-                <div key={enq.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1">
+                <div key={enq.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">{enq.name}</span>
                     <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-medium text-[10px]">
                       {enq.status}
                     </span>
                   </div>
-                  <div className="text-slate-500 flex justify-between">
+                  <div className="text-slate-500 flex justify-between items-center">
                     <span>{enq.category}</span>
-                    <span>{enq.mobile}</span>
+                    <span className="font-mono">+{enq.mobile}</span>
                   </div>
+                  {enq.mobile && (
+                    <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-slate-200/60">
+                      <a
+                        href={`tel:+${enq.mobile.replace(/[^0-9]/g, "")}`}
+                        className="px-2 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] inline-flex items-center gap-1 border border-blue-200"
+                        title="Call devotee directly"
+                      >
+                        <Phone className="w-2.5 h-2.5" />
+                        <span>Call</span>
+                      </a>
+                      <a
+                        href={`https://wa.me/${enq.mobile.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                          `Hari Om ${enq.name} ji! This is Shri Pradeep Nadig regarding your enquiry.`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] inline-flex items-center gap-1 border border-emerald-200"
+                        title="Message personally on WhatsApp"
+                      >
+                        <MessageSquare className="w-2.5 h-2.5" />
+                        <span>Message Personally</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
               ))
             )}
@@ -343,7 +368,7 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-slate-500 text-center py-6">No registrations recorded yet.</p>
             ) : (
               stats.recent_registrations.map((reg) => (
-                <div key={reg.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1">
+                <div key={reg.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">{reg.name}</span>
                     <span
@@ -356,10 +381,34 @@ export default function AdminDashboardPage() {
                       {reg.payment_status}
                     </span>
                   </div>
-                  <div className="text-slate-500 flex justify-between">
-                    <span>{reg.mobile} ({reg.city})</span>
-                    <span>₹{reg.amount}</span>
+                  <div className="text-slate-500 flex justify-between items-center">
+                    <span>{reg.mobile} {reg.city ? `(${reg.city})` : ""}</span>
+                    <span className="font-bold text-amber-900">₹{reg.amount}</span>
                   </div>
+                  {reg.mobile && (
+                    <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-slate-200/60">
+                      <a
+                        href={`tel:+${reg.mobile.replace(/[^0-9]/g, "")}`}
+                        className="px-2 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] inline-flex items-center gap-1 border border-blue-200"
+                        title="Call participant directly"
+                      >
+                        <Phone className="w-2.5 h-2.5" />
+                        <span>Call</span>
+                      </a>
+                      <a
+                        href={`https://wa.me/${reg.mobile.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                          `Hari Om ${reg.name} ji! This is Shri Pradeep Nadig regarding your registration.`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] inline-flex items-center gap-1 border border-emerald-200"
+                        title="Message personally on WhatsApp"
+                      >
+                        <MessageSquare className="w-2.5 h-2.5" />
+                        <span>Message Personally</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
               ))
             )}

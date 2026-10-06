@@ -424,15 +424,25 @@ export default function AdminAcceptedPage() {
 
                     <td className="p-4">
                       <span className="font-bold text-slate-900 block">{item.customer_name}</span>
-                      <div className="flex items-center gap-1 text-slate-600 font-mono text-[11px]">
+                      <div className="flex items-center gap-1.5 text-slate-600 font-mono text-[11px] mt-0.5">
                         <span>+{item.customer_phone}</span>
+                        <a
+                          href={`tel:+${item.customer_phone}`}
+                          className="ml-1 text-blue-600 hover:text-blue-700 font-sans font-bold text-[10px] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 inline-flex items-center gap-0.5"
+                          title="Call devotee directly"
+                        >
+                          <Phone className="w-2.5 h-2.5" />
+                          <span>Call</span>
+                        </a>
                         <a
                           href={`https://wa.me/${item.customer_phone}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="ml-1 text-emerald-600 hover:text-emerald-700 font-sans font-bold text-[10px] underline"
+                          className="text-emerald-600 hover:text-emerald-700 font-sans font-bold text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 inline-flex items-center gap-0.5"
+                          title="Message personally on WhatsApp"
                         >
-                          WhatsApp
+                          <MessageSquare className="w-2.5 h-2.5" />
+                          <span>Message Personally</span>
                         </a>
                       </div>
                       {item.location && <span className="text-slate-400 text-[10px] block">{item.location}</span>}
@@ -576,15 +586,26 @@ export default function AdminAcceptedPage() {
                     <div className="flex items-center gap-2 font-mono text-[11px]">
                       <Phone className="w-3.5 h-3.5 text-amber-700 shrink-0" />
                       <span>+{item.customer_phone}</span>
-                      <a
-                        href={`https://wa.me/${item.customer_phone}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-auto text-emerald-700 hover:text-emerald-800 font-sans font-bold text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1"
-                      >
-                        <MessageSquare className="w-3 h-3" />
-                        <span>Chat WhatsApp</span>
-                      </a>
+                      <div className="ml-auto flex items-center gap-1.5">
+                        <a
+                          href={`tel:+${item.customer_phone}`}
+                          className="text-blue-700 hover:text-blue-800 font-sans font-bold text-[10px] bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1"
+                          title="Call devotee directly"
+                        >
+                          <Phone className="w-3 h-3" />
+                          <span>Call</span>
+                        </a>
+                        <a
+                          href={`https://wa.me/${item.customer_phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-700 hover:text-emerald-800 font-sans font-bold text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1"
+                          title="Message personally on WhatsApp"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                          <span>Message Personally</span>
+                        </a>
+                      </div>
                     </div>
 
                     {item.customer_email && (
