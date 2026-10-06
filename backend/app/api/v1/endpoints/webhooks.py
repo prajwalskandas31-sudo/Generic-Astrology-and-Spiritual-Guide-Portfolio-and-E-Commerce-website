@@ -234,8 +234,15 @@ async def process_whatsapp_webhook(
             await send_whatsapp_message(to_phone=admin_phone, text=help_msg)
             return MessageResponse(message="Processed admin text message.")
 
-        # Step A: Locate Customer
-        cust_res = await db.execute(select(Customer).where(Customer.phone == clean_sender))
+        # Step A: Locate Customer by checking standard number variants (e.g. 6362612641 vs 916362612641)
+        phone_variants = [clean_sender]
+        if clean_sender.startswith("91") and len(clean_sender) == 12:
+            raw_10 = clean_sender[2:]
+            phone_variants.extend([raw_10, f"0{raw_10}", f"+{clean_sender}", f"+91 {raw_10}"])
+        elif len(clean_sender) == 10:
+            phone_variants.extend([f"91{clean_sender}", f"+91{clean_sender}", f"0{clean_sender}"])
+
+        cust_res = await db.execute(select(Customer).where(Customer.phone.in_(phone_variants)))
         customer = cust_res.scalar_one_or_none()
 
         if not customer:

@@ -75,9 +75,16 @@ async def get_or_create_customer(
     """
     Finds existing customer by phone number or creates a new customer record.
     """
-    clean_phone = phone.replace("+", "").replace(" ", "").replace("-", "").strip()
+    formatted_phone = format_whatsapp_phone(phone)
+    raw_clean = phone.replace("+", "").replace(" ", "").replace("-", "").strip()
+    
+    variants = [formatted_phone, raw_clean]
+    if raw_clean.startswith("91") and len(raw_clean) == 12:
+        variants.append(raw_clean[2:])
+    elif len(raw_clean) == 10:
+        variants.append(f"91{raw_clean}")
 
-    res = await db.execute(select(Customer).where(Customer.phone == clean_phone))
+    res = await db.execute(select(Customer).where(Customer.phone.in_(variants)))
     customer = res.scalar_one_or_none()
 
     if customer:
@@ -116,7 +123,7 @@ async def get_or_create_customer(
     customer = Customer(
         customer_id=cust_code,
         name=name.strip() if name else "Valued Client",
-        phone=clean_phone,
+        phone=formatted_phone,
         email=email.strip() if email else None,
         preferred_language=language
     )
