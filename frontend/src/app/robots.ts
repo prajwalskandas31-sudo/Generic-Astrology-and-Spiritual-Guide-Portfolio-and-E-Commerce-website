@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/*", "/api/*", "/reviews"],
+        disallow: ["/admin", "/admin/*", "/api/*"],
       },
     ],
     sitemap: "https://pradeepnadig.in/sitemap.xml",

@@ -6,9 +6,6 @@ export const metadata: Metadata = {
     index: false,
     follow: true,
   },
-  alternates: {
-    canonical: "https://pradeepnadig.in/events",
-  },
 };
 
 /**

@@ -43,9 +43,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Pradeep Nadig", url: "https://pradeepnadig.in" }],
   creator: "Pradeep Nadig",
   publisher: "Shaankari",
-  alternates: {
-    canonical: "./",
-  },
   openGraph: {
     title: "Veda Brahma Shri Pradeep Nadig | Authentic Kannada Purohit & Astrologer near me",
     description:
