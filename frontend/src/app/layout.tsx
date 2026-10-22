@@ -223,6 +223,9 @@ export default function RootLayout({
         <meta name="geo.position" content="13.0903;77.5458" />
         <meta name="ICBM" content="13.0903, 77.5458" />
 
+        {/* Google Preferred Sources Publisher Library */}
+        <script async src="https://news.google.com/swg/js/v1/publisher.js" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

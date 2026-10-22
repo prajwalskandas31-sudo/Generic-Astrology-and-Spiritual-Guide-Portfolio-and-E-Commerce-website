@@ -7,6 +7,7 @@ import { Metadata } from "next";
 
 import { buildBreadcrumbSchema } from "@/lib/seo";
 import { Blog } from "@/types";
+import { GooglePreferredSourceBanner } from "@/components/GooglePreferredSource";
 
 export const revalidate = 60;
 
@@ -308,6 +309,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </Link>
             </div>
           )}
+
+          {/* Google Preferred Source Discovery Banner */}
+          <GooglePreferredSourceBanner />
 
           {/* Frequently Asked Questions (FAQ) */}
           {blog.faq && blog.faq.length > 0 && (
