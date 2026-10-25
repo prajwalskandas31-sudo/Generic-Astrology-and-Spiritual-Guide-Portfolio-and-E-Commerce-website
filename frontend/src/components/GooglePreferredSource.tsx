@@ -78,77 +78,34 @@ interface GooglePreferredSourceButtonProps {
 }
 
 /**
- * Google's Standard Interactive Preferred Sources Button with graceful fallback
+ * Google Preferred Sources Button with graceful fallback and no layout overflow
  */
 export function GooglePreferredSourceButton({
   theme = "light",
-  lang = "en",
-  showFallbackLink = false,
   className = "",
 }: GooglePreferredSourceButtonProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [hasGoogleWidget, setHasGoogleWidget] = useState(false);
-
-  useEffect(() => {
-    // Check if Google's script has populated the container with an iframe or button
-    const checkTimer = setTimeout(() => {
-      if (containerRef.current && containerRef.current.children.length > 0) {
-        setHasGoogleWidget(true);
-      }
-    }, 1500);
-
-    return () => clearTimeout(checkTimer);
-  }, []);
-
   return (
-    <div className={`inline-flex flex-col sm:flex-row items-start sm:items-center gap-2.5 ${className}`}>
-      {/* Official Google interactive widget target */}
-      <div
-        ref={containerRef}
-        {...{ "google-add-preferred-source-btn": "" }}
-        data-theme={theme}
-        data-lang={lang}
-        className="inline-flex items-center min-h-[36px]"
-      />
-
-      {/* Fallback & Enhanced Direct Action Button (visible when Google widget hasn't rendered or as complementary action) */}
-      {!hasGoogleWidget && (
-        <a
-          href={PREFERRED_SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => {
-            // Attempt native modal first, then fallback
-            if (window.PREFERRED_SOURCE && window.PREFERRED_SOURCE.length > 0) {
-              e.preventDefault();
-              triggerPreferredSourceModal();
-            }
-          }}
-          className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-xs transition-all border ${
-            theme === "dark"
-              ? "bg-slate-900 hover:bg-slate-800 text-white border-slate-700"
-              : "bg-white hover:bg-amber-50/80 text-slate-800 border-amber-300/80 hover:border-amber-400"
-          }`}
-          title="Add pradeepnadig.in as a Preferred Source in Google Search"
-        >
-          <GoogleIcon className="w-4 h-4 shrink-0" />
-          <span>Add to Preferred Sources</span>
-          <ExternalLink className="w-3 h-3 text-slate-400 ml-0.5" />
-        </a>
-      )}
-
-      {showFallbackLink && (
-        <a
-          href={PREFERRED_SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[11px] text-amber-900/80 hover:text-amber-950 underline underline-offset-2 inline-flex items-center gap-1 font-medium"
-        >
-          <span>Direct Google Link</span>
-          <ExternalLink className="w-2.5 h-2.5" />
-        </a>
-      )}
-    </div>
+    <a
+      href={PREFERRED_SOURCE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => {
+        if (typeof window !== "undefined" && window.PREFERRED_SOURCE && window.PREFERRED_SOURCE.length > 0) {
+          e.preventDefault();
+          triggerPreferredSourceModal();
+        }
+      }}
+      className={`group inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-all border ${
+        theme === "dark"
+          ? "bg-slate-900 hover:bg-slate-800 text-white border-slate-700"
+          : "bg-white hover:bg-amber-50/90 text-slate-800 border-amber-300 hover:border-amber-400"
+      } ${className}`}
+      title="Add pradeepnadig.in as a Preferred Source in Google Search"
+    >
+      <GoogleIcon className="w-4 h-4 shrink-0" />
+      <span className="truncate">Add to Preferred Sources</span>
+      <ExternalLink className="w-3 h-3 text-slate-400 shrink-0 group-hover:text-amber-800 transition-colors" />
+    </a>
   );
 }
 
@@ -205,20 +162,18 @@ export function GooglePreferredSourceBanner({ className = "" }: { className?: st
 
         {/* Interactive Action Area */}
         <div className="pt-2 flex flex-wrap items-center gap-3">
-          {/* Official Google Button Widget Container */}
-          <div
-            {...{ "google-add-preferred-source-btn": "" }}
-            data-theme="light"
-            data-lang="en"
-            className="inline-flex items-center min-h-[38px]"
-          />
-
           {/* Direct Deeplink Button for 1-Click Action */}
           <a
             href={PREFERRED_SOURCE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-900 hover:bg-amber-950 text-amber-50 rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all border border-amber-800/80"
+            onClick={(e) => {
+              if (typeof window !== "undefined" && window.PREFERRED_SOURCE && window.PREFERRED_SOURCE.length > 0) {
+                e.preventDefault();
+                triggerPreferredSourceModal();
+              }
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-900 hover:bg-amber-950 text-amber-50 rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all border border-amber-800/80 cursor-pointer"
           >
             <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
             <span>Add via Google Preferences Tool</span>

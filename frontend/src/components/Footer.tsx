@@ -40,21 +40,16 @@ export default function Footer({
               <p className="text-sm text-slate-700 leading-relaxed">
                 Dedicated to preserving authentic Vedic traditions, performing sacred rituals, providing profound astrological guidance, and teaching ancient chanting.
               </p>
-              <div className="pt-1 flex flex-col items-start gap-3">
+              <div className="pt-2 flex flex-col gap-2.5 max-w-[230px] w-full">
                 <button
                   onClick={() => setIsReviewModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-amber-900 hover:bg-amber-950 text-amber-100 rounded-xl text-xs font-bold shadow-sm transition-all border border-amber-700/50 hover:border-amber-500"
+                  className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2.5 bg-amber-900 hover:bg-amber-950 text-amber-100 rounded-xl text-xs font-bold shadow-xs transition-all border border-amber-700/50 hover:border-amber-500 cursor-pointer"
                 >
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
                   <span>Leave a Client Review</span>
                 </button>
 
-                <div className="space-y-1.5 pt-1">
-                  <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">
-                    Google Preferred Source
-                  </span>
-                  <GooglePreferredSourceButton theme="light" />
-                </div>
+                <GooglePreferredSourceButton theme="light" className="w-full" />
               </div>
             </div>
 
