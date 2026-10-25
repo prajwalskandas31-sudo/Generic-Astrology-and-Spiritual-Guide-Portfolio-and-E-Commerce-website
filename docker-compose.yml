@@ -26,6 +26,8 @@ services:
       dockerfile: Dockerfile
     container_name: pradeep_backend
     restart: always
+    environment:
+      - ENVIRONMENT=production
     env_file:
       - path: .env
         required: false

@@ -21,16 +21,42 @@ function getBaseUrl(): string {
   return "http://localhost:8000/api/v1";
 }
 
+export function getAdminToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const token = localStorage.getItem("admin_token");
+    if (token && token !== "mock-admin-token" && !token.startsWith("token_")) {
+      return token;
+    }
+  } catch (_) {}
+  return null;
+}
+
+export function getAdminAuthHeaders(): Record<string, string> {
+  const token = getAdminToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = `${getBaseUrl()}${cleanEndpoint}`;
-  const headers = {
+  
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(options.headers || {}),
+    ...((options.headers as Record<string, string>) || {}),
   };
+
+  // If Authorization header is missing or was hardcoded to a mock token, resolve active JWT
+  const currentAuth = headers["Authorization"] || headers["authorization"];
+  if (!currentAuth || currentAuth === "Bearer mock-admin-token" || currentAuth.startsWith("Bearer token_")) {
+    const realToken = getAdminToken();
+    if (realToken) {
+      headers["Authorization"] = `Bearer ${realToken}`;
+    }
+  }
 
   const { timeoutMs = 15000, ...fetchOptions } = options;
   const controller = new AbortController();
@@ -1171,7 +1197,9 @@ export function setCurrentAdminUser(user: import("../types").AdminUser) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem("admin_user", JSON.stringify(user));
-    localStorage.setItem("admin_token", user.token || "mock-admin-token");
+    if (user.token && user.token !== "mock-admin-token" && !user.token.startsWith("token_")) {
+      localStorage.setItem("admin_token", user.token);
+    }
   } catch (_) {}
 }
 

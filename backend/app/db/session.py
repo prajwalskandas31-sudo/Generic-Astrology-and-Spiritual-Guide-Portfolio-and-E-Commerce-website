@@ -33,8 +33,9 @@ primary_url = format_db_url(settings.DATABASE_URL)
 
 import ssl
 ssl_ctx = ssl.create_default_context()
-ssl_ctx.check_hostname = False
-ssl_ctx.verify_mode = ssl.CERT_NONE
+# SECURITY: Verify server certificate and hostname for database connections
+# ssl_ctx.check_hostname = True  (default)
+# ssl_ctx.verify_mode = ssl.CERT_REQUIRED  (default)
 
 connect_args = {
     "statement_cache_size": 0,

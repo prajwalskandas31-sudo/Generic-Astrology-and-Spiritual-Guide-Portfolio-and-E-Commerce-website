@@ -9,28 +9,7 @@ api_router = APIRouter()
 
 @api_router.get("/", tags=["API v1 Root"])
 async def api_v1_root():
-    return {
-        "version": "v1",
-        "endpoints": [
-            "/offerings",
-            "/workshops",
-            "/classes",
-            "/courses",
-            "/live-events",
-            "/blogs",
-            "/gallery",
-            "/media",
-            "/faq",
-            "/enquiries",
-            "/reviews",
-            "/requests",
-            "/settings",
-            "/payments",
-            "/calendar",
-            "/whatsapp",
-            "/audit-logs"
-        ]
-    }
+    return {"version": "v1", "status": "active"}
 
 api_router.include_router(offerings.router, prefix="/offerings", tags=["Offerings"])
 api_router.include_router(workshops.router, prefix="/workshops", tags=["Workshops"])

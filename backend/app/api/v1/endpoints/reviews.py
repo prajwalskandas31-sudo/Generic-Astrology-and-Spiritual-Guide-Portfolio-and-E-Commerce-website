@@ -20,8 +20,10 @@ async def get_approved_reviews(db: AsyncSession = Depends(get_db)):
     result = await db.execute(query)
     return result.scalars().all()
 
+from app.core.rate_limit import check_review_rate_limit
+
 # Public: Submit a new client review (starts as Pending)
-@router.post("", response_model=ReviewResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ReviewResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(check_review_rate_limit)])
 async def submit_review(
     data: ReviewCreate,
     db: AsyncSession = Depends(get_db)

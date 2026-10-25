@@ -71,7 +71,8 @@ async def get_all_registrations(
 @router.post("/update-password", response_model=PasswordChangeResponse)
 async def change_admin_password(
     payload: PasswordChangeRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
 ):
     """
     API Endpoint to record and execute Admin Password changes.

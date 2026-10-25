@@ -11,7 +11,9 @@ router = APIRouter()
 
 from app.services.requests_service import create_request
 
-@router.post("", response_model=EnquiryResponse, status_code=status.HTTP_201_CREATED)
+from app.core.rate_limit import check_enquiry_rate_limit
+
+@router.post("", response_model=EnquiryResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(check_enquiry_rate_limit)])
 async def create_enquiry(
     data: EnquiryCreate,
     db: AsyncSession = Depends(get_db)
@@ -61,7 +63,11 @@ async def update_enquiry_status(
     enquiry = await db.get(Enquiry, id)
     if not enquiry:
         raise HTTPException(status_code=404, detail="Enquiry not found")
-    
+    enquiry.status = data.status
+    await db.commit()
+    await db.refresh(enquiry)
+    return enquiry
+
 from app.schemas.schemas import BulkDeleteRequest
 
 @router.delete("/{id}", response_model=MessageResponse)

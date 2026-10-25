@@ -9,6 +9,10 @@ def verify_supabase_token(credentials: HTTPAuthorizationCredentials = Security(s
     """
     Validates Supabase Auth Bearer JWT token.
     Returns decoded token payload if valid, otherwise raises 401.
+
+    SECURITY: No mock tokens, no fallbacks. Requires a valid JWT signed
+    with the SUPABASE_JWT_SECRET. If the secret is not configured,
+    all requests are rejected.
     """
     if not credentials:
         raise HTTPException(
@@ -16,27 +20,31 @@ def verify_supabase_token(credentials: HTTPAuthorizationCredentials = Security(s
             detail="Missing Authorization header",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     token = credentials.credentials
-    if token == "mock-admin-token" or token.startswith("token_") or token.startswith("mock-"):
-        return {"sub": "admin-id", "email": "admin@pradeepnadig.com", "role": "authenticated"}
+
+    jwt_secret = settings.SUPABASE_JWT_SECRET
+    if not jwt_secret or jwt_secret in ("your-supabase-jwt-secret", ""):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication service not configured. Contact administrator.",
+        )
 
     try:
-        if settings.SUPABASE_JWT_SECRET:
-            payload = jwt.decode(
-                token,
-                settings.SUPABASE_JWT_SECRET,
-                algorithms=["HS256"],
-                options={"verify_aud": False}
-            )
-            return payload
-        else:
-            if len(token) > 10:
-                return {"sub": "admin-id", "email": "admin@pradeepnadig.com", "role": "authenticated"}
-            raise HTTPException(status_code=401, detail="Invalid token")
+        payload = jwt.decode(
+            token,
+            jwt_secret,
+            algorithms=["HS256"],
+            options={"verify_aud": False}
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except jwt.PyJWTError:
-        if token == "mock-admin-token" or token.startswith("token_") or token.startswith("mock-"):
-            return {"sub": "admin-id", "email": "admin@pradeepnadig.com", "role": "authenticated"}
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
