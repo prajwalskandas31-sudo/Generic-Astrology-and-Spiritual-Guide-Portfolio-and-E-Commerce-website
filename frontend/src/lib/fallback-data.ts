@@ -2317,6 +2317,132 @@ Any mantra recited or homa performed during these celestial windows yields **100
 **Thread Art** is an extraordinary live event experience designed for weddings, milestone birthdays, and grand celebrations. 
 
 Under the guidance of expert instructors, your guests themselves weave vibrant colored threads across a custom wooden pin matrix, collectively crafting a stunning string-art portrait of the birthday child, wedding couple, or host. Book this memorable interactive experience for your upcoming celebration!`
+  },
+  {
+    id: 18,
+    title: "Griha Pravesha Muhurtha 2026-2027 Bangalore: Auspicious Dates, Timings & Vastu Vidhi (ಗೃಹಪ್ರವೇಶ ಶುಭ ಮುಹೂರ್ತಗಳು)",
+    slug: "griha-pravesha-muhurtha-bangalore-dates-guide",
+    category: "Vastu & Housewarming",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-03-28",
+    cover_image: "/images/services/vastu-homa.jpg",
+    images: ["/images/services/vastu-homa.jpg", "/images/services/ganapathi-homa.jpg"],
+    related_offering_slug: "vastu-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Griha Pravesha & Vastu Homa Rituals",
+    status: "Published",
+    tags: ["GrihaPraveshaMuhurtha", "BangaloreHousewarming", "VastuShanti", "ShubhaMuhurtha", "KannadaPurohit", "PradeepNadig"],
+    seo_title: "Griha Pravesha Muhurtha 2026-2027 Bangalore Dates | Pradeep Nadig",
+    seo_description: "Find auspicious Griha Pravesha Muhurtha dates for 2026-2027 in Bangalore. Auspicious Nakshatras, Vastu Homa timings, milk boiling vidhi, and booking with Shri Pradeep Nadig.",
+    faq: [
+      {
+        question: "Which months are most auspicious for Griha Pravesha in Bangalore?",
+        answer: "According to Vastu Shastra, the solar months of Vaisakha, Jyeshtha, Magha, Phalguna, and Kartika are considered most auspicious. The monsoon Chaturmasya period and Pausha month are typically avoided for entering newly constructed homes."
+      },
+      {
+        question: "Can Griha Pravesha be done on rented apartments or only owned properties?",
+        answer: "Yes, moving into a rented home or apartment requires a condensed Vastu Shanthi and Ganapathi-Satyanarayana prayer called 'Apoorva Griha Pravesha' to cleanse the aura left by previous tenants."
+      },
+      {
+        question: "What is the significance of boiling milk (Haalu Ubbisuvudu) during housewarming?",
+        answer: "Boiling fresh milk until it overflows toward the East or North signifies uninterrupted abundance, prosperity, and divine blessings flowing into the household."
+      },
+      {
+        question: "How do we select the exact Muhurtha timing according to our Janma Nakshatra?",
+        answer: "Veda Brahma Shri Pradeep Nadig calculates the custom Shubh Muhurtha by examining the homeowner's birth star (Janma Nakshatra), avoiding Rahu Kaala, Yamaganda, and Durmuhurtha, while aligning with favorable Lagna and Tara Balam."
+      }
+    ],
+    content: `## The Spiritual Significance of Griha Pravesha
+
+Entering a new home is one of the most auspicious milestones in life. In Sanatana Dharma, a newly built house or purchased apartment is considered an empty cosmic shell until it is sanctified by sacred fire (*Agni*), Vedic mantras, and the grace of **Lord Vastu Purusha** and **Goddess Mahalakshmi**.
+
+**ಗೃಹಪ್ರವೇಶ ಮತ್ತು ವಾಸ್ತು ಹೋಮ:** ಮನೆಯನ್ನು ಕೇವಲ ಇಟ್ಟಿಗೆ, ಸಿಮೆಂಟ್‌ಗಳ ಕಟ್ಟಡವಾಗಿ ನೋಡದೆ, ಅಲ್ಲಿ ಸಾತ್ವಿಕ ಶಕ್ತಿ ನೆಲೆಸುವಂತೆ ಮಾಡಲು ಶಾಸ್ತ್ರೋಕ್ತ ಮುಹೂರ್ತದಲ್ಲಿ ಗೃಹಪ್ರವೇಶ ಮಾಡುವುದು ಅತ್ಯಂತ ಫಲಪ್ರದ.
+
+---
+
+## Key Elements of an Auspicious Muhurtha
+
+When selecting a Griha Pravesha date in Bangalore with **Veda Brahma Shri Pradeep Nadig**, five astronomical factors (*Panchanga*) are examined:
+
+1. **Shubha Nakshatras:** Rohini, Mrigashira, Uttara Phalguni, Chitra, Anuradha, Uttara Ashadha, Uttara Bhadrapada, and Revati.
+2. **Shubha Tithis:** Dwitiya, Tritiya, Panchami, Saptami, Dashami, Ekadashi, and Trayodashi.
+3. **Auspicious Days:** Monday, Wednesday, Thursday, and Friday are most favorable.
+4. **Lagna Shuddhi:** Ensuring that the rising sign during the entry hour has no malefic planetary aspects in the 8th house.
+5. **Tara Balam & Chandra Balam:** Matching the day's transit with the head of the household's birth horoscope.
+
+---
+
+## Step-by-Step Griha Pravesha Vidhi
+
+Under Shri Pradeep Nadig's guidance, the ritual unfolds in pristine Vedic order:
+- **Go Pooja (Cow Worship):** Invoking all 33 crore celestial beings by revering a holy cow and calf before threshold entry.
+- **Threshold Consecration:** Breaking of the sacred coconut and offering prayers to *Dwarapalakas*.
+- **Haalu Ubbisuvudu (Milk Boiling):** Boiling fresh cow milk in a new vessel until it overflows toward auspicious directions.
+- **Mahaganapathi Homa:** Clearing unseen construction obstacles and purifying the air.
+- **Vastu Purusha Homa & Digpalaka Bali:** Pacifying directional deities and stabilizing the 16 energy zones.
+- **Navagraha Homa:** Harmonizing planetary influences for all residents.
+- **Satyanarayana Swamy Pooja:** Concluding family prayer with *Sapada Bhakshya* prasadam distribution.
+
+Book your date in advance to secure optimal Brahma Muhurtha timings across Bengaluru.`
+  },
+  {
+    id: 19,
+    title: "Complete Ganapathi Homa Samagri List in Kannada and English: Preparation, Mantras & Ritual Guide",
+    slug: "complete-ganapathi-homa-samagri-list-kannada-english",
+    category: "Vedic Rituals",
+    author: "Veda Brahma Shri Pradeep Nadig",
+    publish_date: "2026-04-02",
+    cover_image: "/images/services/ganapathi-homa.jpg",
+    images: ["/images/services/ganapathi-homa.jpg", "/images/services/satyanarayana-pooja.jpg"],
+    related_offering_slug: "ganapathi-homa",
+    related_offering_type: "Service",
+    related_offering_title: "Mahaganapathi Homa Fire Ritual",
+    status: "Published",
+    tags: ["GanapathiHomaSamagri", "SamagriListKannada", "PoojaItemsList", "PurohitBangalore", "PradeepNadig"],
+    seo_title: "Ganapathi Homa Samagri List in Kannada & English | Pradeep Nadig",
+    seo_description: "Full checklist of Mahaganapathi Homa samagri items in Kannada & English. Learn preparation steps, 108 Ahuti vidhi, and book with Veda Brahma Shri Pradeep Nadig.",
+    faq: [
+      {
+        question: "How many dry coconuts (Kopa) are required for Ganapathi Homa?",
+        answer: "A standard family Ganapathi Homa requires 20 to 25 dried coconut halves (Kopa) for sacred Ahutis. For grand Sankashti or 108 Ahuti rituals, 50 to 108 halves may be used."
+      },
+      {
+        question: "Can we perform Ganapathi Homa in an apartment balcony in Bangalore?",
+        answer: "Yes, Veda Brahma Shri Pradeep Nadig utilizes smoke-efficient brass kundas, dry herbal samithus, and measured ghee oblations specifically formulated for apartment balconies and enclosed halls."
+      },
+      {
+        question: "Does the Purohit bring the Havan Kunda and Veda Samithu?",
+        answer: "Yes! Shri Pradeep Nadig brings the Havan vessel, wooden spoons (Sruk-Sruva), dried coconut halves, pure cow ghee, Ashta Dravya, and sacred woods. The host family only prepares fresh items like fruits, flowers, and milk."
+      }
+    ],
+    content: `## Complete Preparation Guide for Mahaganapathi Homa
+
+Performing **Mahaganapathi Homa** is the ultimate spiritual remedy for removing obstacles, achieving business breakthroughs, and sanctifying homes. One of the most common questions families ask prior to the ceremony is: **What are the exact pooja items and samagri required?**
+
+**ಮಹಾಗಣಪತಿ ಹೋಮದ ಸಂಪೂರ್ಣ ಸಾಮಗ್ರಿ ಪಟ್ಟಿ:** ಪೂಜೆ ಸುಸೂತ್ರವಾಗಿ ನೆರವೇರಲು ಅಗತ್ಯವಿರುವ ವಸ್ತುಗಳನ್ನು ಪುರೋಹಿತರು ತರುವ ಸಾಮಗ್ರಿಗಳು ಹಾಗೂ ಯಜಮಾನರು ಸಿದ್ಧಪಡಿಸಬೇಕಾದ ಸಾಮಗ್ರಿಗಳು ಎಂದು ಎರಡು ಭಾಗಗಳಾಗಿ ವಿಂಗಡಿಸಲಾಗಿದೆ.
+
+---
+
+## Part 1: Items Arranged by Guruji (ಯಜ್ಞ ಸಾಮಗ್ರಿಗಳು)
+- **Dry Coconut Halves (ಒಣಕೊಬ್ಬರಿ ಬಟ್ಟಲು):** 20 to 25 pieces for sacred fire offerings.
+- **Pure Desi Cow Ghee (ಶುದ್ಧ ಹಸುವಿನ ತುಪ್ಪ):** 1.5 kg for continuous Ahuti recitation.
+- **Ashta Dravya Blend (ಅಷ್ಟದ್ರವ್ಯ ಚೂರ್ಣ):** Modaka powder, sugarcane pieces, puffed rice, sesame, jaggery, honey, ghee, and banana.
+- **Sacred Veda Samithu (ಸಮಿತ್ತು ಕಟ್ಟಿಗೆ):** Sacred woods from Arka, Palasa, and Audumbara trees.
+- **Navadhanya (ನವಧಾನ್ಯ):** Nine sacred planetary grains.
+- **Smoke-Free Havan Kunda:** Brass or copper sacred fire vessel with platform matting.
+
+---
+
+## Part 2: Items Prepared by Host Family (ಯಜಮಾನರು ಸಿದ್ಧಪಡಿಸಬೇಕಾದ ವಸ್ತುಗಳು)
+- **Fresh Garike Grass (ತಾಜಾ ಗರಿಕೆ):** 3 to 5 clean bunches (Ganesha's most beloved herb).
+- **Fresh Modakas or Ladoos:** 21 or 108 pieces for Naivedya and sacred fire Ahuti.
+- **Fresh Coconuts:** 5 green/brown coconuts with fiber intact.
+- **Betel Leaves & Betel Nuts (ವೀಳ್ಯದೆಲೆ ಮತ್ತು ಅಡಿಕೆ):** 30 to 40 leaves and 100g nuts.
+- **5 Types of Seasonal Fruits (ಪಂಚ ಫಲಗಳು):** Bananas, apples, pomegranates, sweet lime, oranges.
+- **Flowers & Garlands (ಹೂವು ಮತ್ತು ಹಾರಗಳು):** 500g loose red/yellow flowers and 2 small garlands.
+- **Panchamrutha Ingredients:** Small quantities of milk, curd, honey, sugar, and ghee.
+
+Use our interactive checklist on the service page to tick off items as you shop!`
   }
 ];
 

@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getOfferings, getWorkshops, getCourses, getLiveEvents, getBlogs } from "@/lib/api-client";
+import { BANGALORE_LOCATIONS } from "@/lib/locations-data";
 
 /**
  * Generates the XML sitemap for pradeepnadig.in.
@@ -25,6 +26,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/services`,
+      lastModified: staticLastMod,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/locations`,
       lastModified: staticLastMod,
       changeFrequency: "weekly",
       priority: 0.9,
@@ -170,8 +177,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const locationRoutes: MetadataRoute.Sitemap = BANGALORE_LOCATIONS.map((loc) => ({
+    url: `${baseUrl}/locations/${loc.slug}`,
+    lastModified: staticLastMod,
+    changeFrequency: "weekly",
+    priority: 0.85,
+  }));
+
   return [
     ...staticRoutes,
+    ...locationRoutes,
     ...serviceRoutes,
     ...workshopRoutes,
     ...courseRoutes,

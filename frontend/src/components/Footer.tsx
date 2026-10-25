@@ -105,6 +105,11 @@ export default function Footer({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/locations" className="hover:text-amber-900 transition-colors font-medium text-amber-900">
+                    Areas Served in Bangalore
+                  </Link>
+                </li>
+                <li>
                   <Link href="/gallery" className="hover:text-amber-900 transition-colors">
                     Photo &amp; Video Gallery
                   </Link>
@@ -179,11 +184,43 @@ export default function Footer({
 
           {/* Local SEO Service Areas Footer Banner */}
           <div className="mt-12 pt-8 border-t border-amber-300/60 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950 font-serif">
-              Kannada Purohit &amp; Vadhyar Services in Bangalore (Near Me)
-            </h4>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950 font-serif">
+                Kannada Purohit &amp; Vadhyar Services in Bangalore (Near Me)
+              </h4>
+              <Link
+                href="/locations"
+                className="text-xs font-bold text-amber-800 hover:text-amber-950 underline underline-offset-2 transition-colors"
+              >
+                View All Areas Served &rarr;
+              </Link>
+            </div>
             <p className="text-xs text-slate-700 leading-relaxed">
-              Veda Brahma Shri Pradeep Nadig provides authentic <strong>Kannada Purohit</strong>, <strong>Vedic Vadhyar</strong>, and <strong>Pandit Services</strong> for Griha Pravesha, Ganapathi Homa, Navagraha Homa, Vastu Homa, Mrityunjaya Homa, Naga Shanthi, and Satyanarayana Pooja across Bengaluru including <strong>Vaderahalli, Yelahanka, Vidyaranyapura, Hebbal, Sahakara Nagar, Malleswaram, Rajajinagar, Jayanagar, Indiranagar, and Whitefield</strong>.
+              Veda Brahma Shri Pradeep Nadig provides authentic <strong>Kannada Purohit</strong>, <strong>Vedic Vadhyar</strong>, and <strong>Pandit Services</strong> for Griha Pravesha, Ganapathi Homa, Navagraha Homa, Vastu Homa, Mrityunjaya Homa, Naga Shanthi, and Satyanarayana Pooja across Bengaluru including{" "}
+              <Link href="/locations/yelahanka" className="text-amber-900 font-semibold hover:underline">
+                Yelahanka
+              </Link>
+              ,{" "}
+              <Link href="/locations/vidyaranyapura" className="text-amber-900 font-semibold hover:underline">
+                Vidyaranyapura
+              </Link>
+              ,{" "}
+              <Link href="/locations/hebbal" className="text-amber-900 font-semibold hover:underline">
+                Hebbal &amp; Sahakara Nagar
+              </Link>
+              ,{" "}
+              <Link href="/locations/whitefield" className="text-amber-900 font-semibold hover:underline">
+                Whitefield
+              </Link>
+              ,{" "}
+              <Link href="/locations/malleswaram" className="text-amber-900 font-semibold hover:underline">
+                Malleswaram &amp; Rajajinagar
+              </Link>
+              ,{" "}
+              <Link href="/locations/jayanagar" className="text-amber-900 font-semibold hover:underline">
+                Jayanagar &amp; JP Nagar
+              </Link>
+              , and surrounding neighborhoods.
             </p>
           </div>
 

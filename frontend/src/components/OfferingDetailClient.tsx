@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Offering } from "@/types";
 import EnquiryModal from "./EnquiryModal";
 import ReviewSubmissionModal from "./ReviewSubmissionModal";
+import SamagriChecklist from "./SamagriChecklist";
+import { getSamagriForService } from "@/lib/samagri-data";
 import { Sparkles, CheckCircle2, ChevronDown, MessageSquare, ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
 
@@ -17,6 +19,7 @@ export default function OfferingDetailClient({ offering }: OfferingDetailClientP
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const isService = offering.type === "Service";
+  const samagri = isService ? getSamagriForService(offering.slug) : null;
 
   return (
     <div className="space-y-12">
@@ -118,6 +121,13 @@ export default function OfferingDetailClient({ offering }: OfferingDetailClientP
               <p className="text-slate-600 text-xs leading-relaxed whitespace-pre-line">
                 {offering.vidhi_details}
               </p>
+            </div>
+          )}
+
+          {/* Interactive Pooja Samagri & Preparation Checklist */}
+          {samagri && (
+            <div className="pt-2">
+              <SamagriChecklist samagri={samagri} />
             </div>
           )}
 
