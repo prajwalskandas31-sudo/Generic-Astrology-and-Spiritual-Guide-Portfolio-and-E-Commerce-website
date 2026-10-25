@@ -13,6 +13,10 @@ pradeepnadig.in {
         reverse_proxy 127.0.0.1:8000
     }
 
+    # Block API documentation endpoints in reverse proxy (defense-in-depth)
+    @blocked_docs path /docs* /redoc* /openapi.json* /api/v1/openapi.json*
+    respond @blocked_docs 404
+
     # Route all other web traffic to Next.js frontend container
     handle {
         reverse_proxy 127.0.0.1:3000
@@ -27,7 +31,7 @@ pradeepnadig.in {
         X-XSS-Protection "0"
         Referrer-Policy "strict-origin-when-cross-origin"
         Permissions-Policy "camera=(), microphone=(), geolocation=(), accelerometer=(), gyroscope=(), magnetometer=(), usb=()"
-        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://news.google.com https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://pradeepnadig.in https://api.razorpay.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://api.razorpay.com https://checkout.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://news.google.com https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://pradeepnadig.in https://*.supabase.co https://api.razorpay.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
         -Server
         -X-Powered-By
     }
