@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pradeepnadig.in"),
   title: {
     default: "Veda Brahma Shri Pradeep Nadig | Vedic Scholar & Spiritual Guide",
-    template: "%s | Pradeep Nadig",
+    // Page titles already end with the brand; a "| Pradeep Nadig" template doubled it.
+    template: "%s",
   },
   description:
     "Official website of Veda Brahma Shri Pradeep Nadig. Explore authentic Vedic rituals, astrology consultations, chant workshops, Vedic classes, and spiritual insights.",

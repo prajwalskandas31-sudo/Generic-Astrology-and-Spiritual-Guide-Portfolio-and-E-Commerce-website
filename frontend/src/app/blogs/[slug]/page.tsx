@@ -301,6 +301,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                     ? `/workshops/${blog.related_offering_slug}`
                     : blog.related_offering_type === "Course"
                     ? `/courses/${blog.related_offering_slug}`
+                    : blog.related_offering_type === "Live Event"
+                    ? `/live-events/${blog.related_offering_slug}`
                     : `/services/${blog.related_offering_slug}`
                 }
                 className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-sm whitespace-nowrap"

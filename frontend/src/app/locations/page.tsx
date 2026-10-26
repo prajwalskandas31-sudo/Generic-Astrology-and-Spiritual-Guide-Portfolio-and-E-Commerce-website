@@ -7,7 +7,7 @@ import { Metadata } from "next";
 import { buildBreadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Kannada Purohit & Vedic Pandit Services across Bangalore | Areas Served",
+  title: "Kannada Purohit & Vedic Pandit Services across Bangalore | Areas Served | Pradeep Nadig",
   description:
     "Explore authentic Kannada Purohit, Vadhyar, and Vedic Astrologer services across Bengaluru neighborhoods: Yelahanka, Vidyaranyapura, Hebbal, Whitefield, Malleswaram, Jayanagar & more. Led by Veda Brahma Shri Pradeep Nadig.",
   alternates: {

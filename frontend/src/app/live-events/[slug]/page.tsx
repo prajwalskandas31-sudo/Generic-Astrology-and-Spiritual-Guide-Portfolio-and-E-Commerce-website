@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: LiveEventDetailPageProps): Pr
     const event = await getLiveEventBySlug(slug);
     if (!event) throw new Error("Not found");
 
-    const title = `${event.title} | Live Streaming & Remote Sankalpa`;
+    const title = `${event.title} | Live Streaming & Remote Sankalpa | Pradeep Nadig`;
     const description = event.short_description || event.full_description || `Join live streaming and remote Sankalpa for ${event.title} conducted by Veda Brahma Shri Pradeep Nadig.`;
     const url = `https://pradeepnadig.in/live-events/${slug}`;
     const eventImages = (event as any).images || ((event as any).cover_image ? [(event as any).cover_image] : []);

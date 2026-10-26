@@ -93,6 +93,64 @@ const nextConfig: NextConfig = {
         destination: "/events",
         permanent: true,
       },
+      // 404s reported in Search Console (Oct 2026): live events linked under /services,
+      // workshops linked under /live-events, and fallback-only workshop pages that
+      // duplicate an existing course.
+      {
+        source: "/services/thread-art-live-event",
+        destination: "/live-events/thread-art-live-event",
+        permanent: true,
+      },
+      {
+        source: "/services/solar-eclipse-shanti-pooja",
+        destination: "/live-events/solar-eclipse-shanti-pooja",
+        permanent: true,
+      },
+      {
+        source: "/live-events/vedic-chanting-sukta-recitation-workshop",
+        destination: "/workshops/vedic-chanting-suktas-recitation-workshop",
+        permanent: true,
+      },
+      {
+        source: "/workshops/vedic-chanting-sukta-recitation-workshop",
+        destination: "/workshops/vedic-chanting-suktas-recitation-workshop",
+        permanent: true,
+      },
+      {
+        source: "/:prefix(live-events|workshops)/rangoli-art-design-workshop",
+        destination: "/courses/rangoli-art-sacred-geometry",
+        permanent: true,
+      },
+      {
+        source: "/:prefix(live-events|workshops)/chakra-aura-healing-workshop",
+        destination: "/courses/chakra-aura-healing-certification",
+        permanent: true,
+      },
+      {
+        source: "/workshops/simple-meditation-mindfulness-workshop",
+        destination: "/courses/simple-meditation-mindfulness-practice",
+        permanent: true,
+      },
+      {
+        source: "/workshops/hypnotherapy-reiki-spirit-release-workshop",
+        destination: "/courses/reiki-hypnosis-spirit-release-training",
+        permanent: true,
+      },
+      {
+        source: "/workshops/pendulum-dowsing-energy-diagnostics",
+        destination: "/courses/pendulum-dowsing-radiesthesia-masterclass",
+        permanent: true,
+      },
+      {
+        source: "/workshops/vastu-energy-balancing-workshop",
+        destination: "/courses/vastu-shastra-energy-healing",
+        permanent: true,
+      },
+      {
+        source: "/workshops/ganesha-idol-making-workshop-2026",
+        destination: "/workshops",
+        permanent: true,
+      },
       // Legacy routes discovered by Googlebot — proper 301 redirects
       {
         source: "/reviews",
