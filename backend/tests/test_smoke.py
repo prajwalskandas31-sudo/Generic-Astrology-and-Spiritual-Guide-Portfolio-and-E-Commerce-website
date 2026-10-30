@@ -7,10 +7,10 @@ API = "/api/v1"
 JWT_SECRET = "ci-test-jwt-secret-not-used-in-production"
 
 
-def make_token(secret=JWT_SECRET, expires_in=3600):
+def make_token(secret=JWT_SECRET, expires_in=3600, email="prajwal@pradeepnadig.in"):
     now = int(time.time())
     return jwt.encode(
-        {"sub": "ci-admin", "role": "authenticated", "iat": now, "exp": now + expires_in},
+        {"sub": "ci-admin", "email": email, "role": "authenticated", "iat": now, "exp": now + expires_in},
         secret,
         algorithm="HS256",
     )
@@ -97,3 +97,39 @@ def test_deleting_records_preserves_full_snapshot_in_audit_log(client):
     request_snapshot = deletions[f"/requests/{request_id}"]["details"]["deleted_records"][0]
     assert request_snapshot["request_id"] == request_id
     assert request_snapshot["customer"]["name"] == "Snapshot Test Devotee"
+
+
+def test_valid_session_for_non_admin_account_is_forbidden(client):
+    headers = {"Authorization": f"Bearer {make_token(email='visitor@example.com')}"}
+    res = client.get(f"{API}/admin/audit-logs", headers=headers)
+    assert res.status_code == 403
+
+
+def test_remote_verification_without_jwt_secret(client, monkeypatch):
+    from app.core import security
+
+    monkeypatch.setattr(security.settings, "SUPABASE_JWT_SECRET", None)
+    monkeypatch.setattr(security.settings, "SUPABASE_URL", "https://example.supabase.co")
+    monkeypatch.setattr(security.settings, "SUPABASE_ANON_KEY", "anon-key")
+    security._remote_cache.clear()
+
+    class FakeResponse:
+        def __init__(self, status_code, body=None):
+            self.status_code = status_code
+            self._body = body or {}
+
+        def json(self):
+            return self._body
+
+    def fake_get(url, headers, timeout):
+        assert url == "https://example.supabase.co/auth/v1/user"
+        if headers["Authorization"] == "Bearer good-admin-session":
+            return FakeResponse(200, {"id": "u1", "email": "pradeep@pradeepnadig.in", "role": "authenticated"})
+        return FakeResponse(401)
+
+    monkeypatch.setattr(security.httpx, "get", fake_get)
+
+    ok = client.get(f"{API}/admin/audit-logs", headers={"Authorization": "Bearer good-admin-session"})
+    assert ok.status_code == 200, ok.text
+    bad = client.get(f"{API}/admin/audit-logs", headers={"Authorization": "Bearer stolen-or-expired"})
+    assert bad.status_code == 401

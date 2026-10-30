@@ -12,7 +12,14 @@ class Settings(BaseSettings):
     SUPABASE_URL: Optional[str] = None
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
     SUPABASE_JWT_SECRET: Optional[str] = None
-    
+    # Public project URL + anon key let the backend verify sessions via the Supabase Auth API
+    # when SUPABASE_JWT_SECRET is not set (the frontend's NEXT_PUBLIC_* values are reused).
+    SUPABASE_ANON_KEY: Optional[str] = None
+    NEXT_PUBLIC_SUPABASE_URL: Optional[str] = None
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: Optional[str] = None
+    # Only these accounts may use admin endpoints (comma-separated; empty disables the check)
+    ADMIN_EMAILS: str = "prajwal@pradeepnadig.in,pradeep@pradeepnadig.in,staff@pradeepnadig.in"
+
     # Razorpay
     RAZORPAY_KEY_ID: Optional[str] = None
     RAZORPAY_SECRET: Optional[str] = None
