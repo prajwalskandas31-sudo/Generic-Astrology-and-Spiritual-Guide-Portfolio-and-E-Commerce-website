@@ -82,6 +82,21 @@ def test_login_is_rate_limited(client):
     assert 429 in statuses
 
 
+def test_failed_attempts_from_one_ip_do_not_lock_out_the_admin_elsewhere(client):
+    attacker = {"X-Forwarded-For": "203.0.113.9"}
+    for _ in range(6):
+        client.post(f"{API}/admin/auth/login", headers=attacker, json={"email": ADMIN_EMAIL, "password": "bad-guess"})
+    blocked = client.post(f"{API}/admin/auth/login", headers=attacker,
+                          json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert blocked.status_code == 429
+
+    # Spoofed left-most hop is ignored; the proxy-appended address identifies the client
+    spoofed = {"X-Forwarded-For": "203.0.113.9, 198.51.100.7"}
+    admin = client.post(f"{API}/admin/auth/login", headers=spoofed,
+                        json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert admin.status_code == 200, admin.text
+
+
 def test_admin_stats_with_valid_session(client, admin_headers):
     res = client.get(f"{API}/admin/stats", headers=admin_headers)
     assert res.status_code == 200, res.text

@@ -25,6 +25,18 @@ class InMemoryRateLimiter:
                 del self.records[k]
             self.last_cleanup = now
 
+    def is_blocked(self, key: str) -> bool:
+        """True when `key` already has `burst` events in the window; records nothing."""
+        now = time.time()
+        self._cleanup_old_records(now)
+        timestamps = [t for t in self.records.get(key, []) if now - t < 60.0]
+        if timestamps:
+            self.records[key] = timestamps
+        return len(timestamps) >= self.burst
+
+    def record(self, key: str) -> None:
+        self.records[key].append(time.time())
+
     def is_rate_limited(self, key: str) -> bool:
         now = time.time()
         self._cleanup_old_records(now)
@@ -42,10 +54,13 @@ class InMemoryRateLimiter:
 
 
 def get_client_ip(request: Request) -> str:
-    """Extracts client IP respecting standard reverse-proxy headers (e.g. Caddy)."""
+    """
+    Extracts the client IP behind Caddy. Caddy appends the real peer address as the
+    last X-Forwarded-For hop; earlier hops are client-supplied and spoofable.
+    """
     forwarded = request.headers.get("x-forwarded-for")
     if forwarded:
-        return forwarded.split(",")[0].strip()
+        return forwarded.split(",")[-1].strip()
     real_ip = request.headers.get("x-real-ip")
     if real_ip:
         return real_ip.strip()
@@ -59,6 +74,8 @@ enquiry_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=8)
 review_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=8)
 # Admin sign-in / password checks, keyed separately by IP and by account email
 login_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
+# Failed passwords only, keyed by (account, IP): a bad actor cannot lock out the real admin
+login_failure_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
 
 async def check_enquiry_rate_limit(request: Request):
     ip = get_client_ip(request)

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.core.rate_limit import get_client_ip, login_limiter
+from app.core.rate_limit import get_client_ip, login_failure_limiter, login_limiter
 from app.core.security import (
     hash_password,
     issue_admin_token,
@@ -75,8 +75,15 @@ def _audit(db: AsyncSession, request: Request, email: str, name: str, role: str,
     ))
 
 
+def _failure_key(request: Request, email: str) -> str:
+    return f"{email}|{get_client_ip(request)}"
+
+
 def _check_rate_limit(request: Request, email: str):
-    if login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}") or login_limiter.is_rate_limited(f"email:{email}"):
+    # Per-IP cap on all attempts, plus a cap on failed passwords per (account, IP)
+    if login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}") or login_failure_limiter.is_blocked(
+        _failure_key(request, email)
+    ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many sign-in attempts. Wait a minute and try again.",
@@ -98,6 +105,7 @@ async def login(payload: LoginRequest, request: Request, db: AsyncSession = Depe
     password_ok = verify_password(payload.password, admin.password_hash if admin else _DUMMY_HASH)
 
     if not admin or not admin.is_active or not password_ok:
+        login_failure_limiter.record(_failure_key(request, email))
         _audit(db, request, email, admin.name if admin else email, admin.role if admin else "UNKNOWN",
                "LOGIN", f"Failed admin sign-in attempt for {email}", severity="WARNING")
         await db.commit()
@@ -156,6 +164,7 @@ async def change_password(
     if is_self:
         _check_rate_limit(request, target_email)
         if not payload.current_password or not verify_password(payload.current_password, target.password_hash):
+            login_failure_limiter.record(_failure_key(request, target_email))
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect.")
 
     target.password_hash = hash_password(payload.new_password)
