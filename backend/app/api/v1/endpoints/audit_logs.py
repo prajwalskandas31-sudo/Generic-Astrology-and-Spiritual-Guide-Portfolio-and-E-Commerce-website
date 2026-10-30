@@ -67,9 +67,12 @@ async def create_audit_log(
     auth: dict = Depends(verify_supabase_token)
 ):
     # The acting account is whoever holds the token, not what the client claims
+    token_identity = auth.get("email") or auth.get("sub")
+    if not token_identity:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has no user identity")
     log = AuditLog(
         user_name=payload.user_name,
-        user_email=auth.get("email") or auth.get("sub") or payload.user_email,
+        user_email=token_identity,
         user_role=payload.user_role,
         action_category=payload.action_category,
         action_summary=payload.action_summary,
