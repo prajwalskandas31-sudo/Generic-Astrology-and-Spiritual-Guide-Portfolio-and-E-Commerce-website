@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-import { PREDEFINED_ADMIN_ACCOUNTS, setCurrentAdminUser, logAuditEvent, verifyAdminPassword } from "@/lib/api-client";
+import { PREDEFINED_ADMIN_ACCOUNTS, setCurrentAdminUser, adminLogin, clearAdminSession } from "@/lib/api-client";
 import { AdminUser } from "@/types";
 import { Sparkles, Lock, Mail, Loader2, ArrowLeft, ShieldCheck, UserCheck, Crown, User } from "lucide-react";
 import Link from "next/link";
@@ -28,72 +27,23 @@ export default function AdminLoginPage() {
     setErrorMsg("");
 
     try {
-      // Find matching predefined account or use selected
-      // Copy so a token from an earlier attempt never sticks to the shared account object
-      const matched = {
-        ...(PREDEFINED_ADMIN_ACCOUNTS.find(
-          (a) => a.email.toLowerCase() === email.trim().toLowerCase()
-        ) || selectedAccount),
-      };
+      // The server checks the password against its hashed copy and records the sign-in itself
+      const session = await adminLogin(email, password);
+      const profile =
+        PREDEFINED_ADMIN_ACCOUNTS.find((a) => a.email.toLowerCase() === session.user.email) || selectedAccount;
 
-      // Verify password against active credential store
-      const isValidPassword = verifyAdminPassword(matched.email, password);
-      if (!isValidPassword) {
-        setErrorMsg(`Invalid password for ${matched.email}. Please enter your correct password.`);
-        setIsLoading(false);
-        return;
-      }
-
-      // Supabase Auth is mandatory: the backend rejects every admin API call without its JWT,
-      // so continuing without a session would show empty enquiries/registrations everywhere.
-      let supabaseError = "";
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: matched.email,
-          password,
-        });
-
-        if (data?.session?.access_token) {
-          matched.token = data.session.access_token;
-        } else {
-          supabaseError = error?.message || "No session returned";
-        }
-      } catch (err: any) {
-        supabaseError = err?.message || "Could not reach Supabase";
-      }
-
-      if (!matched.token || matched.token === "mock-admin-token" || matched.token.startsWith("token_")) {
-        setErrorMsg(
-          `Server sign-in failed for ${matched.email} (Supabase: ${supabaseError}). ` +
-          `Without it, enquiries, registrations and calendar data cannot load. ` +
-          `Check that this account exists in Supabase Auth with the same password.`
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      // Set active user state
-      setCurrentAdminUser(matched);
-
-      // Record Audit Event for Login
-      logAuditEvent({
-        action_category: "LOGIN",
-        action_summary: `${matched.name} (${matched.title}) logged into the Admin Portal`,
-        target_resource: "System Authentication",
-        user_name: matched.name,
-        user_email: matched.email,
-        user_role: matched.role,
-        details: {
-          role: matched.role,
-          title: matched.title,
-          auth_method: "Direct Credential Verification",
-        },
-        severity: "INFO",
+      clearAdminSession();
+      setCurrentAdminUser({
+        ...profile,
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role,
+        token: session.access_token,
       });
 
       router.push("/admin");
     } catch (err: any) {
-      setErrorMsg("Authentication failed. Please check credentials.");
+      setErrorMsg(err?.message || "Sign-in failed. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -320,3 +320,20 @@ class AuditLog(Base):
 
 
 
+
+
+class AdminUser(Base):
+    """Admin accounts for the CMS. Passwords are stored only as PBKDF2 hashes."""
+    __tablename__ = "admin_users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    role = Column(String(50), nullable=False)  # PRINCIPAL_ADMIN | MASTER_ADMIN | STAFF_ADMIN
+    password_hash = Column(String(255), nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    # Bumped on every password change; tokens carrying an older version are rejected
+    token_version = Column(Integer, default=1, nullable=False)
+    last_login_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

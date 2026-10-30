@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp, sendWhatsAppTestMessage, getCurrentAdminUser, logAuditEvent, updateAdminPassword, verifyAdminPassword, PREDEFINED_ADMIN_ACCOUNTS } from "@/lib/api-client";
+import { getSettings, fetchAPI, getCalendarStatus, getWhatsAppStatus, completeWhatsAppEmbeddedSignup, disconnectWhatsApp, sendWhatsAppTestMessage, getCurrentAdminUser, updateAdminPassword, verifyOwnPassword, PREDEFINED_ADMIN_ACCOUNTS } from "@/lib/api-client";
 import { Settings as SettingsIcon, Save, Loader2, Calendar, CheckCircle2, AlertCircle, CreditCard, Key, MessageSquare, Smartphone, ExternalLink, ShieldCheck, RefreshCw, Unlink, Send } from "lucide-react";
 
 export default function AdminSettingsPage() {
@@ -761,18 +761,16 @@ function PasswordResetCard() {
       return;
     }
 
-    if (currentPassword) {
-      const isCurrentValid = verifyAdminPassword(targetEmail, currentPassword);
-      if (!isCurrentValid) {
-        setMsgType("error");
-        setMsg("Current password verification failed. Please enter your correct current password.");
-        return;
-      }
+    const isOwnAccount = targetEmail.toLowerCase() === (currentAdmin?.email || "").toLowerCase();
+    if (isOwnAccount && !currentPassword) {
+      setMsgType("error");
+      setMsg("Enter your current password to change your own password.");
+      return;
     }
 
-    if (!newPassword || newPassword.length < 6) {
+    if (!newPassword || newPassword.length < 10) {
       setMsgType("error");
-      setMsg("New password must be at least 6 characters long.");
+      setMsg("New password must be at least 10 characters long.");
       return;
     }
 
@@ -784,20 +782,11 @@ function PasswordResetCard() {
 
     setIsChanging(true);
     try {
-      await updateAdminPassword(targetEmail, newPassword);
-
-      const targetAccount = PREDEFINED_ADMIN_ACCOUNTS.find(a => a.email.toLowerCase() === targetEmail.toLowerCase()) || currentAdmin;
-
-      logAuditEvent({
-        action_category: "SYSTEM",
-        action_summary: `${currentAdmin?.name || "Admin"} updated security password for ${targetAccount?.name || targetEmail}`,
-        target_resource: "Account Security Credentials",
-        details: { target_email: targetEmail, updated_at: new Date().toISOString() },
-        severity: "CRITICAL",
-      });
+      // Server verifies the current password, stores only a hash, and writes the audit entry
+      await updateAdminPassword(targetEmail, newPassword, isOwnAccount ? currentPassword : undefined);
 
       setMsgType("success");
-      setMsg(`✅ Security password changed successfully for ${targetEmail}! The new password is active immediately for your next login.`);
+      setMsg(`✅ Password changed for ${targetEmail}. Any other signed-in sessions for that account were signed out.`);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -809,15 +798,18 @@ function PasswordResetCard() {
     }
   };
 
-  const handleTestVerify = (e: React.FormEvent) => {
+  const handleTestVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!testPassword) return;
-    const targetEmail = isPrincipalAdmin ? selectedEmail : currentAdmin?.email;
-    const isValid = verifyAdminPassword(targetEmail, testPassword);
-    if (isValid) {
-      setTestResult("✅ Password Verified! Your new password matches active system credentials.");
-    } else {
-      setTestResult("❌ Password Verification Failed: Does not match active credentials.");
+    try {
+      const isValid = await verifyOwnPassword(testPassword);
+      setTestResult(
+        isValid
+          ? "✅ Password Verified! It matches your account's current password."
+          : "❌ Password Verification Failed: Does not match your current password."
+      );
+    } catch (err: any) {
+      setTestResult(`❌ Could not verify: ${err.message}`);
     }
   };
 

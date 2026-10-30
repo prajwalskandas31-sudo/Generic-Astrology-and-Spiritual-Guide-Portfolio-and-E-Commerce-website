@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { getCurrentAdminUser, logAuditEvent } from "@/lib/api-client";
-import { supabase } from "@/lib/supabase";
+import {
+  AdminAuthError,
+  clearAdminSession,
+  getAdminSession,
+  getCurrentAdminUser,
+  getValidAdminToken,
+  logAuditEvent,
+  setCurrentAdminUser,
+} from "@/lib/api-client";
 import { AdminUser } from "@/types";
 import {
   LayoutDashboard,
@@ -33,14 +40,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
+  const [isAuthorised, setIsAuthorised] = useState(false);
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
+    if (isLoginPage) return;
+    // No local session → straight to sign-in; otherwise confirm it with the server
+    if (!getValidAdminToken()) {
+      clearAdminSession();
+      router.replace("/admin/login");
+      return;
+    }
     setCurrentUser(getCurrentAdminUser());
-  }, [pathname]);
+    setIsAuthorised(true);
+    getAdminSession()
+      .then((profile) => {
+        const stored = getCurrentAdminUser();
+        if (stored.email !== profile.email || stored.role !== profile.role || stored.name !== profile.name) {
+          const synced = { ...stored, ...profile };
+          setCurrentAdminUser(synced);
+          setCurrentUser(synced);
+        }
+      })
+      .catch((err) => {
+        if (err instanceof AdminAuthError) {
+          clearAdminSession();
+          router.replace("/admin/login");
+        }
+      });
+  }, [pathname, isLoginPage, router]);
 
   // If on login page, render standalone
-  if (pathname === "/admin/login") {
+  if (isLoginPage) {
     return <>{children}</>;
+  }
+
+  if (!isAuthorised) {
+    return <div className="min-h-screen bg-slate-100" />;
   }
 
   const user = currentUser || getCurrentAdminUser();
@@ -78,9 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       target_resource: "System Authentication",
       severity: "INFO",
     });
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_user");
-    supabase.auth.signOut().catch(() => {});
+    clearAdminSession();
     router.push("/admin/login");
   };
 

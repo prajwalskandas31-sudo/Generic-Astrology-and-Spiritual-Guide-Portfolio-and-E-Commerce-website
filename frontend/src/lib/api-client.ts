@@ -1,4 +1,3 @@
-import { supabase } from "./supabase";
 import {
   FALLBACK_SETTINGS,
   FALLBACK_OFFERINGS,
@@ -37,19 +36,33 @@ export function getAdminAuthHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-// Supabase access tokens expire after ~1 hour; the live session auto-refreshes,
-// so prefer it over the token snapshot stored at login time.
-async function resolveAdminToken(): Promise<string | null> {
-  if (typeof window === "undefined") return null;
+// Session token issued by /admin/auth/login; null once it has expired
+export function getValidAdminToken(): string | null {
+  const token = getAdminToken();
+  if (!token) return null;
   try {
-    const { data } = await supabase.auth.getSession();
-    const liveToken = data?.session?.access_token;
-    if (liveToken) {
-      localStorage.setItem("admin_token", liveToken);
-      return liveToken;
-    }
-  } catch (_) {}
-  return getAdminToken();
+    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    if (typeof payload.exp === "number" && payload.exp * 1000 <= Date.now()) return null;
+  } catch (_) {
+    return null;
+  }
+  return token;
+}
+
+async function resolveAdminToken(): Promise<string | null> {
+  return getValidAdminToken();
+}
+
+const SENSITIVE_KEY_PATTERN = /pass|secret|token|otp|signature/i;
+
+function redactSensitive(value: any): any {
+  if (Array.isArray(value)) return value.map(redactSensitive);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, SENSITIVE_KEY_PATTERN.test(k) ? "[REDACTED]" : redactSensitive(v)])
+    );
+  }
+  return value;
 }
 
 // Thrown for 401/403 so admin screens can show "session expired" instead of an empty list
@@ -126,7 +139,12 @@ export async function fetchAPI<T>(
 
   // Automatic Audit Logging for mutating API calls (POST, PUT, DELETE, PATCH)
   const httpMethod = (options.method || "GET").toUpperCase();
-  if (["POST", "PUT", "DELETE", "PATCH"].includes(httpMethod) && !cleanEndpoint.includes("/audit-logs")) {
+  // Auth endpoints are audited server-side and carry passwords, so never mirror them here
+  if (
+    ["POST", "PUT", "DELETE", "PATCH"].includes(httpMethod) &&
+    !cleanEndpoint.includes("/audit-logs") &&
+    !cleanEndpoint.includes("/admin/auth/")
+  ) {
     try {
       let category: import("../types").AuditLog["action_category"] = "CONTENT_EDIT";
       const isDeletion = httpMethod === "DELETE" || cleanEndpoint.includes("bulk-delete");
@@ -139,7 +157,7 @@ export async function fetchAPI<T>(
       let payloadObj: any = null;
       if (options.body && typeof options.body === "string") {
         try {
-          payloadObj = JSON.parse(options.body);
+          payloadObj = redactSensitive(JSON.parse(options.body));
         } catch (_) {}
       }
 
@@ -1163,58 +1181,60 @@ export const PREDEFINED_ADMIN_ACCOUNTS: import("../types").AdminUser[] = [
   },
 ];
 
-const DEFAULT_PASSWORDS: Record<string, string> = {
-  "prajwal@pradeepnadig.in": "prajwal123",
-  "pradeep@pradeepnadig.in": "pradeep123",
-  "staff@pradeepnadig.in": "staff123",
-  "admin@pradeepnadig.com": "admin123",
-  "admin@example.com": "admin123",
-  "pradeep@vedabrahma.com": "admin123",
-};
+// Passwords live only on the server (hashed in Postgres); nothing is checked or stored in the browser.
+export async function adminLogin(email: string, password: string) {
+  return fetchAPI<{
+    access_token: string;
+    expires_at: string;
+    user: { email: string; name: string; role: import("../types").AdminRole };
+  }>("/admin/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+    timeoutMs: 20000,
+  });
+}
 
-export function getAdminPassword(email: string): string {
-  if (!email) return "admin123";
-  const cleanEmail = email.trim().toLowerCase();
-  if (typeof window !== "undefined") {
-    try {
-      // Clean up legacy global password override if present
-      localStorage.removeItem("admin_pass_global");
-      const raw = localStorage.getItem(`admin_pass_${cleanEmail}`);
-      if (raw) return raw;
-    } catch (_) {}
+export async function getAdminSession() {
+  return fetchAPI<{ email: string; name: string; role: import("../types").AdminRole }>("/admin/auth/me", {
+    timeoutMs: 15000,
+  });
+}
+
+export async function updateAdminPassword(email: string, newPass: string, currentPass?: string) {
+  const res = await fetchAPI<{ message: string; access_token?: string }>("/admin/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify({
+      email: email.trim().toLowerCase(),
+      new_password: newPass,
+      current_password: currentPass || undefined,
+    }),
+    timeoutMs: 20000,
+  });
+  // Changing your own password revokes old sessions; keep this tab signed in with the fresh one
+  if (res.access_token && typeof window !== "undefined") {
+    localStorage.setItem("admin_token", res.access_token);
   }
-  return DEFAULT_PASSWORDS[cleanEmail] || "admin123";
+  return res;
 }
 
-export async function updateAdminPassword(email: string, newPass: string): Promise<void> {
-  if (!email || !newPass || typeof window === "undefined") return;
-  const cleanEmail = email.trim().toLowerCase();
+export async function verifyOwnPassword(password: string): Promise<boolean> {
+  const res = await fetchAPI<{ valid: boolean }>("/admin/auth/verify-password", {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+  return res.valid;
+}
+
+export function clearAdminSession() {
+  if (typeof window === "undefined") return;
   try {
-    // Remove legacy global password key so it cannot contaminate other accounts
-    localStorage.removeItem("admin_pass_global");
-    localStorage.setItem(`admin_pass_${cleanEmail}`, newPass);
-    DEFAULT_PASSWORDS[cleanEmail] = newPass;
-
-    // Call Backend Password Change API Endpoint
-    try {
-      await fetchAPI("/admin/change-password", {
-        method: "POST",
-        body: JSON.stringify({ email: cleanEmail, new_password: newPass }),
-      });
-    } catch (_) {}
-
-    // Try Supabase Auth sync if logged in via Supabase
-    try {
-      await supabase.auth.updateUser({ password: newPass });
-    } catch (_) {}
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_user");
+    // Leftovers from the old browser-side password scheme
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("admin_pass_"))
+      .forEach((k) => localStorage.removeItem(k));
   } catch (_) {}
-}
-
-export function verifyAdminPassword(email: string, inputPass: string): boolean {
-  if (!inputPass) return false;
-  const cleanEmail = (email || "").trim().toLowerCase();
-  const currentPass = getAdminPassword(cleanEmail);
-  return currentPass === inputPass;
 }
 
 export function getCurrentAdminUser(): import("../types").AdminUser {

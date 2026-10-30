@@ -57,6 +57,8 @@ def get_client_ip(request: Request) -> str:
 # Rate limiter instances for sensitive public entry points
 enquiry_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=8)
 review_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=8)
+# Admin sign-in / password checks, keyed separately by IP and by account email
+login_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
 
 async def check_enquiry_rate_limit(request: Request):
     ip = get_client_ip(request)
