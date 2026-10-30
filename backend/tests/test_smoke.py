@@ -172,3 +172,12 @@ def test_deleting_records_preserves_full_snapshot_in_audit_log(client, admin_hea
     request_snapshot = deletions[f"/requests/{request_id}"]["details"]["deleted_records"][0]
     assert request_snapshot["request_id"] == request_id
     assert request_snapshot["customer"]["name"] == "Snapshot Test Devotee"
+
+
+def test_distributed_guessing_is_capped_per_account(client):
+    for i in range(20):
+        client.post(f"{API}/admin/auth/login", headers={"X-Forwarded-For": f"198.18.0.{i}"},
+                    json={"email": ADMIN_EMAIL, "password": "bad-guess"})
+    res = client.post(f"{API}/admin/auth/login", headers={"X-Forwarded-For": "198.18.1.1"},
+                      json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert res.status_code == 429

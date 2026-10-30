@@ -76,6 +76,9 @@ review_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=8)
 login_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
 # Failed passwords only, keyed by (account, IP): a bad actor cannot lock out the real admin
 login_failure_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
+# Account-wide failed passwords from any IP: caps distributed guessing. Set high so a
+# single attacker cannot easily lock out the real admin.
+account_failure_limiter = InMemoryRateLimiter(requests_per_minute=20, burst=20)
 
 async def check_enquiry_rate_limit(request: Request):
     ip = get_client_ip(request)

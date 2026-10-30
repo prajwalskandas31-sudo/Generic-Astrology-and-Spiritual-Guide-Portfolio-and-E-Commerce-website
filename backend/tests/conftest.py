@@ -54,10 +54,11 @@ def client():
 
 @pytest.fixture(autouse=True)
 def reset_login_rate_limit():
-    from app.core.rate_limit import login_failure_limiter, login_limiter
+    from app.core.rate_limit import account_failure_limiter, login_failure_limiter, login_limiter
 
     login_limiter.records.clear()
     login_failure_limiter.records.clear()
+    account_failure_limiter.records.clear()
 
 
 def login(client, email=ADMIN_EMAIL, password=ADMIN_PASSWORD):

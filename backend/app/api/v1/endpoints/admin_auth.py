@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.core.rate_limit import get_client_ip, login_failure_limiter, login_limiter
+from app.core.rate_limit import account_failure_limiter, get_client_ip, login_failure_limiter, login_limiter
 from app.core.security import (
     hash_password,
     issue_admin_token,
@@ -79,10 +79,22 @@ def _failure_key(request: Request, email: str) -> str:
     return f"{email}|{get_client_ip(request)}"
 
 
+def _record_failure(db: AsyncSession, request: Request, email: str):
+    login_failure_limiter.record(_failure_key(request, email))
+    account_failure_limiter.record(email)
+    if account_failure_limiter.is_blocked(email):
+        _audit(db, request, email, email, "UNKNOWN", "LOGIN",
+               f"Sign-in for {email} paused for 1 minute after repeated failed passwords from multiple sources",
+               severity="CRITICAL")
+
+
 def _check_rate_limit(request: Request, email: str):
-    # Per-IP cap on all attempts, plus a cap on failed passwords per (account, IP)
-    if login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}") or login_failure_limiter.is_blocked(
-        _failure_key(request, email)
+    # Per-IP cap on all attempts, failed passwords per (account, IP), and failed
+    # passwords per account from anywhere (distributed guessing)
+    if (
+        login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}")
+        or login_failure_limiter.is_blocked(_failure_key(request, email))
+        or account_failure_limiter.is_blocked(email)
     ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -105,7 +117,7 @@ async def login(payload: LoginRequest, request: Request, db: AsyncSession = Depe
     password_ok = verify_password(payload.password, admin.password_hash if admin else _DUMMY_HASH)
 
     if not admin or not admin.is_active or not password_ok:
-        login_failure_limiter.record(_failure_key(request, email))
+        _record_failure(db, request, email)
         _audit(db, request, email, admin.name if admin else email, admin.role if admin else "UNKNOWN",
                "LOGIN", f"Failed admin sign-in attempt for {email}", severity="WARNING")
         await db.commit()
@@ -164,7 +176,8 @@ async def change_password(
     if is_self:
         _check_rate_limit(request, target_email)
         if not payload.current_password or not verify_password(payload.current_password, target.password_hash):
-            login_failure_limiter.record(_failure_key(request, target_email))
+            _record_failure(db, request, target_email)
+            await db.commit()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect.")
 
     target.password_hash = hash_password(payload.new_password)
