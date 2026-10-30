@@ -31,13 +31,14 @@ def record_deletion(
     Must be called before db.delete()/commit so the snapshot commits atomically
     with the delete — deleted customer data then stays recoverable from Audit Logs.
     """
-    email = (auth or {}).get("email") or "unknown"
-    metadata = (auth or {}).get("user_metadata") or {}
+    # Identity comes only from verified claims: user_metadata is user-editable in Supabase
+    email = (auth or {}).get("email") or (auth or {}).get("sub") or "unknown"
+    app_metadata = (auth or {}).get("app_metadata") or {}
     db.add(
         AuditLog(
-            user_name=metadata.get("name") or metadata.get("full_name") or email,
+            user_name=email,
             user_email=email,
-            user_role=metadata.get("role") or "ADMIN",
+            user_role=app_metadata.get("role") or "ADMIN",
             action_category="DELETE",
             action_summary=summary,
             target_resource=target_resource,

@@ -66,9 +66,10 @@ async def create_audit_log(
     db: AsyncSession = Depends(get_db),
     auth: dict = Depends(verify_supabase_token)
 ):
+    # The acting account is whoever holds the token, not what the client claims
     log = AuditLog(
         user_name=payload.user_name,
-        user_email=payload.user_email,
+        user_email=auth.get("email") or auth.get("sub") or payload.user_email,
         user_role=payload.user_role,
         action_category=payload.action_category,
         action_summary=payload.action_summary,
