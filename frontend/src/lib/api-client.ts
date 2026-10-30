@@ -53,7 +53,7 @@ async function resolveAdminToken(): Promise<string | null> {
   return getValidAdminToken();
 }
 
-const SENSITIVE_KEY_PATTERN = /pass|secret|token|otp|signature/i;
+const SENSITIVE_KEY_PATTERN = /password|passwd|passcode|secret|token|otp|signature|api_?key/i;
 
 function redactSensitive(value: any): any {
   if (Array.isArray(value)) return value.map(redactSensitive);
