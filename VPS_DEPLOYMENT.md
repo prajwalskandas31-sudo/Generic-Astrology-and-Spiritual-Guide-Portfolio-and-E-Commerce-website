@@ -161,7 +161,9 @@ Caddy Reverse Proxy (/etc/caddy/Caddyfile)
 
 ## 🚀 Future Deployments & Update Workflow
 
-To deploy new changes pushed to GitHub:
+Deploys are automated: pushing to `main` on the private repo runs CI and deploys via GitHub Actions. See **[CI_CD_RUNBOOK.md](CI_CD_RUNBOOK.md)** for the workflow and troubleshooting.
+
+Manual fallback (only if GitHub Actions is unavailable):
 
 ```bash
 cd /opt/apps/pradeep-platform
