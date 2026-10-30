@@ -24,6 +24,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Older client-side logs recorded deletions as CONTENT_EDIT; recognise them by summary too
+const isDeletionLog = (log: AuditLog) =>
+  log.action_category === "DELETE" ||
+  /^(deleted|bulk-deleted)\b/i.test(log.action_summary || "") ||
+  (log.target_resource || "").includes("bulk-delete");
+
+const isContentChangeLog = (log: AuditLog) =>
+  !isDeletionLog(log) &&
+  ["CREATE", "UPDATE", "SETTINGS", "CONTENT_EDIT", "SYSTEM", "WORKSHOP_ARCHIVE"].includes(log.action_category);
+
+const isWarningLog = (log: AuditLog) =>
+  isDeletionLog(log) || log.severity === "WARNING" || log.severity === "CRITICAL";
+
 export default function AuditLogsPage() {
   const [currentUser, setCurrentUser] = useState(getCurrentAdminUser());
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -95,7 +108,11 @@ export default function AuditLogsPage() {
       log.user_email.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory =
-      categoryFilter === "ALL" || log.action_category === categoryFilter;
+      categoryFilter === "ALL" ||
+      (categoryFilter === "__DELETIONS__" && isDeletionLog(log)) ||
+      (categoryFilter === "__WARNINGS__" && isWarningLog(log)) ||
+      (categoryFilter === "__CONTENT__" && isContentChangeLog(log)) ||
+      log.action_category === categoryFilter;
 
     const matchesRole = roleFilter === "ALL" || log.user_role === roleFilter;
 
@@ -107,12 +124,20 @@ export default function AuditLogsPage() {
   const loginsToday = logs.filter(
     (l) => l.action_category === "LOGIN"
   ).length;
-  const contentUpdates = logs.filter((l) =>
-    ["CREATE", "UPDATE", "SETTINGS"].includes(l.action_category)
-  ).length;
-  const highSeverity = logs.filter(
-    (l) => l.action_category === "DELETE" || l.severity === "WARNING" || l.severity === "CRITICAL"
-  ).length;
+  const contentUpdates = logs.filter(isContentChangeLog).length;
+  const highSeverity = logs.filter(isWarningLog).length;
+
+  const applyCardFilter = (value: string) => {
+    setCategoryFilter((prev) => (prev === value ? "ALL" : value));
+    setSearchQuery("");
+    setRoleFilter("ALL");
+    document.getElementById("audit-timeline")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const cardClass = (value: string) =>
+    `bg-white p-5 rounded-2xl border shadow-xs flex items-center gap-4 text-left w-full transition-all hover:shadow-md hover:border-amber-300 cursor-pointer ${
+      categoryFilter === value ? "border-amber-500 ring-2 ring-amber-300" : "border-slate-200"
+    }`;
 
   // Export to CSV
   const handleExportCSV = () => {
@@ -204,7 +229,7 @@ export default function AuditLogsPage() {
 
       {/* Summary Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4">
+        <button type="button" onClick={() => applyCardFilter("ALL")} className={cardClass("ALL")}>
           <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
             <Activity className="w-6 h-6" />
           </div>
@@ -212,9 +237,9 @@ export default function AuditLogsPage() {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Recorded Logs</div>
             <div className="text-2xl font-bold font-serif text-slate-900 mt-0.5">{totalLogs}</div>
           </div>
-        </div>
+        </button>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4">
+        <button type="button" onClick={() => applyCardFilter("LOGIN")} className={cardClass("LOGIN")}>
           <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
             <ShieldCheck className="w-6 h-6" />
           </div>
@@ -222,9 +247,9 @@ export default function AuditLogsPage() {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Admin Logins</div>
             <div className="text-2xl font-bold font-serif text-slate-900 mt-0.5">{loginsToday}</div>
           </div>
-        </div>
+        </button>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4">
+        <button type="button" onClick={() => applyCardFilter("__CONTENT__")} className={cardClass("__CONTENT__")}>
           <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
             <RefreshCw className="w-6 h-6" />
           </div>
@@ -232,9 +257,9 @@ export default function AuditLogsPage() {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Content Modifications</div>
             <div className="text-2xl font-bold font-serif text-slate-900 mt-0.5">{contentUpdates}</div>
           </div>
-        </div>
+        </button>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4">
+        <button type="button" onClick={() => applyCardFilter("__WARNINGS__")} className={cardClass("__WARNINGS__")}>
           <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-700 flex items-center justify-center shrink-0">
             <ShieldAlert className="w-6 h-6" />
           </div>
@@ -242,7 +267,7 @@ export default function AuditLogsPage() {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Warning &amp; Deletions</div>
             <div className="text-2xl font-bold font-serif text-slate-900 mt-0.5">{highSeverity}</div>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Filter & Search Bar */}
@@ -271,14 +296,16 @@ export default function AuditLogsPage() {
                 className="py-1.5 px-3 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium"
               >
                 <option value="ALL">All Categories</option>
+                <option value="__WARNINGS__">Warnings &amp; Deletions</option>
+                <option value="__DELETIONS__">Deletions only</option>
+                <option value="__CONTENT__">Content Modifications</option>
                 <option value="LOGIN">Auth Logins</option>
                 <option value="LOGOUT">Auth Logouts</option>
-                <option value="CREATE">Creation</option>
-                <option value="UPDATE">Modifications</option>
-                <option value="DELETE">Deletions</option>
+                <option value="CONTENT_EDIT">Content Edits</option>
+                <option value="WORKSHOP_ARCHIVE">Workshop Changes</option>
+                <option value="SYSTEM">Settings / System</option>
                 <option value="BROADCAST">WhatsApp Broadcast</option>
-                <option value="SYNC">Calendar Sync</option>
-                <option value="SETTINGS">Settings Changes</option>
+                <option value="CALENDAR_SYNC">Calendar Sync</option>
               </select>
             </div>
 
@@ -308,7 +335,7 @@ export default function AuditLogsPage() {
       </div>
 
       {/* Activity Timeline Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      <div id="audit-timeline" className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden scroll-mt-6">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-amber-800" />
@@ -375,7 +402,9 @@ export default function AuditLogsPage() {
 
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase ${
-                          log.action_category === "LOGIN"
+                          isDeletionLog(log)
+                            ? "bg-red-100 text-red-800"
+                            : log.action_category === "LOGIN"
                             ? "bg-emerald-100 text-emerald-800"
                             : log.action_category === "LOGOUT"
                             ? "bg-slate-100 text-slate-700"
@@ -385,7 +414,7 @@ export default function AuditLogsPage() {
                             ? "bg-blue-100 text-blue-800"
                             : "bg-amber-100 text-amber-900"
                         }`}>
-                          {log.action_category}
+                          {isDeletionLog(log) ? "DELETE" : log.action_category}
                         </span>
                       </td>
 
@@ -471,9 +500,28 @@ export default function AuditLogsPage() {
 
               <div>
                 <label className="block font-bold text-slate-800 mb-1">
+                  Summary:
+                </label>
+                <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-900">
+                  {selectedLog.action_summary}
+                </div>
+              </div>
+
+              {isDeletionLog(selectedLog) && !selectedLog.details?.deleted_records && (
+                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-800">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>
+                    This deletion was recorded before full record snapshots were enabled, so only the target URL was
+                    captured. Deletions made from now on store the complete deleted record here.
+                  </span>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-bold text-slate-800 mb-1">
                   Raw Details &amp; Payload Diff:
                 </label>
-                <pre className="p-4 bg-slate-950 text-emerald-400 rounded-2xl text-[11px] font-mono overflow-x-auto max-h-60 leading-relaxed border border-slate-800">
+                <pre className="p-4 bg-slate-950 text-emerald-400 rounded-2xl text-[11px] font-mono overflow-auto max-h-96 leading-relaxed whitespace-pre-wrap break-all border border-slate-800">
                   {JSON.stringify(selectedLog.details || {}, null, 2)}
                 </pre>
               </div>

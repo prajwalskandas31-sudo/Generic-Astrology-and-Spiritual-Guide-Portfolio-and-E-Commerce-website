@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.models.models import Enquiry
 from app.schemas.schemas import EnquiryCreate, EnquiryResponse, EnquiryUpdateStatus, MessageResponse
 from app.core.security import verify_supabase_token
+from app.services.audit_service import record_deletion, snapshot_model
 
 router = APIRouter()
 
@@ -79,6 +80,12 @@ async def delete_enquiry(
     enquiry = await db.get(Enquiry, id)
     if not enquiry:
         raise HTTPException(status_code=404, detail="Enquiry not found")
+    record_deletion(
+        db, auth,
+        summary=f"Deleted enquiry #{id} from {enquiry.name} ({enquiry.enquiry_type})",
+        target_resource=f"/enquiries/{id}",
+        records=[snapshot_model(enquiry)],
+    )
     await db.delete(enquiry)
     await db.commit()
     return MessageResponse(message="Enquiry deleted successfully")
@@ -95,6 +102,13 @@ async def bulk_delete_enquiries(
     res = await db.execute(query)
     items = res.scalars().all()
     count = len(items)
+    if items:
+        record_deletion(
+            db, auth,
+            summary=f"Bulk-deleted {count} enquiries",
+            target_resource="/enquiries/bulk-delete",
+            records=[snapshot_model(item) for item in items],
+        )
     for item in items:
         await db.delete(item)
     await db.commit()

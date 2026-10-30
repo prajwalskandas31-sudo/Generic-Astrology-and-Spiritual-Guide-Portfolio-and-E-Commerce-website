@@ -9,6 +9,7 @@ from app.models.models import Request, Customer, MessageLog
 from app.schemas.schemas import RequestCreate, RequestResponse, RequestActionRequest, MessageResponse
 from app.services.requests_service import create_request, execute_request_action
 from app.core.security import verify_supabase_token
+from app.services.audit_service import record_deletion, snapshot_model
 
 router = APIRouter()
 
@@ -160,11 +161,25 @@ async def delete_request_thread(
     if not req:
         raise HTTPException(status_code=404, detail=f"Request '{request_id_str}' not found")
         
-    # Delete associated message logs
     logs_res = await db.execute(select(MessageLog).where(MessageLog.request_id == req.id))
-    for log in logs_res.scalars().all():
+    message_logs = logs_res.scalars().all()
+
+    # Preserve the full thread (customer contact + messages) before it is gone
+    customer = await db.get(Customer, req.customer_id)
+    snapshot = snapshot_model(req)
+    snapshot["customer"] = snapshot_model(customer)
+    snapshot["message_logs"] = [snapshot_model(log) for log in message_logs]
+    record_deletion(
+        db, auth,
+        summary=f"Deleted request thread {request_id_str} ({req.request_type}) for {customer.name if customer else 'unknown customer'}",
+        target_resource=f"/requests/{request_id_str}",
+        records=[snapshot],
+    )
+
+    # Delete associated message logs
+    for log in message_logs:
         await db.delete(log)
-        
+
     await db.delete(req)
     await db.commit()
     

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getCurrentAdminUser, logAuditEvent } from "@/lib/api-client";
+import { supabase } from "@/lib/supabase";
 import { AdminUser } from "@/types";
 import {
   LayoutDashboard,
@@ -79,6 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     });
     localStorage.removeItem("admin_token");
     localStorage.removeItem("admin_user");
+    supabase.auth.signOut().catch(() => {});
     router.push("/admin/login");
   };
 

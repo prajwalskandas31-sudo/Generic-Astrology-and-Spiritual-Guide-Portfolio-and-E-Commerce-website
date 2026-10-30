@@ -36,3 +36,6 @@ Thumbs.db
 # Scratch
 scratch/
 backend/scratch/
+# Database backups (contain customer data)
+backups/
+*.dump

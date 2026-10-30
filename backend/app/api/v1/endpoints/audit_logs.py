@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.session import get_db
 from app.models.models import AuditLog
+from app.core.security import verify_supabase_token
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
@@ -43,8 +44,9 @@ async def list_audit_logs(
     category: Optional[str] = Query(None),
     role: Optional[str] = Query(None),
     user_email: Optional[str] = Query(None),
-    limit: int = Query(100, le=500),
-    db: AsyncSession = Depends(get_db)
+    limit: int = Query(500, le=2000),
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
 ):
     stmt = select(AuditLog).order_by(AuditLog.id.desc())
     if category and category != "ALL":
@@ -61,7 +63,8 @@ async def list_audit_logs(
 @router.post("", response_model=AuditLogResponse, status_code=status.HTTP_201_CREATED)
 async def create_audit_log(
     payload: AuditLogCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    auth: dict = Depends(verify_supabase_token)
 ):
     log = AuditLog(
         user_name=payload.user_name,

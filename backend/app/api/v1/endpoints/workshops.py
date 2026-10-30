@@ -14,6 +14,7 @@ from app.schemas.schemas import (
 from app.services.whatsapp import send_whatsapp_message, send_whatsapp_image
 from app.core.security import verify_supabase_token
 from app.core.config import settings
+from app.services.audit_service import record_deletion, snapshot_model
 import uuid
 
 router = APIRouter()
@@ -283,6 +284,17 @@ async def delete_workshop(
     if not workshop:
         raise HTTPException(status_code=404, detail="Workshop not found")
     
+    # Deleting a workshop wipes all its registrations — preserve them (and the workshop) first
+    regs_res = await db.execute(select(WorkshopRegistration).where(WorkshopRegistration.workshop_id == id))
+    workshop_snapshot = snapshot_model(workshop)
+    workshop_snapshot["registrations"] = [snapshot_model(r) for r in regs_res.scalars().all()]
+    record_deletion(
+        db, auth,
+        summary=f"Deleted workshop '{workshop.title}' with {len(workshop_snapshot['registrations'])} registration(s)",
+        target_resource=f"/workshops/{id}",
+        records=[workshop_snapshot],
+    )
+
     # Clean up linked records prior to deleting workshop
     await db.execute(delete(WorkshopRegistration).where(WorkshopRegistration.workshop_id == id))
     await db.execute(delete(WorkshopBatch).where(WorkshopBatch.workshop_id == id))
@@ -345,7 +357,13 @@ async def delete_workshop_registration(
     reg = await db.get(WorkshopRegistration, reg_id)
     if not reg:
         raise HTTPException(status_code=404, detail=f"Workshop registration #{reg_id} not found")
-        
+
+    record_deletion(
+        db, auth,
+        summary=f"Deleted workshop registration #{reg_id} for {reg.name}",
+        target_resource=f"/workshops/registrations/{reg_id}",
+        records=[snapshot_model(reg)],
+    )
     await db.delete(reg)
     await db.commit()
     return MessageResponse(message=f"Workshop registration #{reg_id} successfully deleted")
@@ -364,7 +382,14 @@ async def bulk_delete_workshop_registrations(
     res = await db.execute(query)
     regs = res.scalars().all()
     count = len(regs)
-    
+
+    if regs:
+        record_deletion(
+            db, auth,
+            summary=f"Bulk-deleted {count} workshop registrations",
+            target_resource="/workshops/registrations/bulk-delete",
+            records=[snapshot_model(r) for r in regs],
+        )
     for r in regs:
         await db.delete(r)
         

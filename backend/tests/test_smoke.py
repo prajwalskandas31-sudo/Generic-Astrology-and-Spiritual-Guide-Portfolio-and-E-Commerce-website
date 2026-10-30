@@ -37,6 +37,9 @@ ADMIN_ROUTES = [
     ("get", "/admin/registrations"),
     ("post", "/offerings"),
     ("post", "/faq"),
+    ("get", "/admin/audit-logs"),
+    ("post", "/admin/audit-logs"),
+    ("get", "/calendar/status"),
 ]
 
 
@@ -63,3 +66,34 @@ def test_admin_stats_with_valid_token(client):
     headers = {"Authorization": f"Bearer {make_token()}"}
     res = client.get(f"{API}/admin/stats", headers=headers)
     assert res.status_code == 200, res.text
+
+
+def test_deleting_records_preserves_full_snapshot_in_audit_log(client):
+    headers = {"Authorization": f"Bearer {make_token()}"}
+    created = client.post(
+        f"{API}/enquiries",
+        json={
+            "enquiry_type": "Consultation",
+            "name": "Snapshot Test Devotee",
+            "mobile": "9000000001",
+            "city": "Bengaluru",
+            "additional_notes": "keep me recoverable",
+        },
+    )
+    assert created.status_code == 201, created.text
+    enquiry_id = created.json()["id"]
+    request_id = created.json()["request_id"]
+
+    assert client.delete(f"{API}/enquiries/{enquiry_id}", headers=headers).status_code == 200
+    assert client.delete(f"{API}/requests/{request_id}", headers=headers).status_code == 200
+
+    logs = client.get(f"{API}/admin/audit-logs", headers=headers).json()
+    deletions = {log["target_resource"]: log for log in logs if log["action_category"] == "DELETE"}
+
+    enquiry_snapshot = deletions[f"/enquiries/{enquiry_id}"]["details"]["deleted_records"][0]
+    assert enquiry_snapshot["mobile"] == "9000000001"
+    assert enquiry_snapshot["additional_notes"] == "keep me recoverable"
+
+    request_snapshot = deletions[f"/requests/{request_id}"]["details"]["deleted_records"][0]
+    assert request_snapshot["request_id"] == request_id
+    assert request_snapshot["customer"]["name"] == "Snapshot Test Devotee"

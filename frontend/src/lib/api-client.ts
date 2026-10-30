@@ -37,6 +37,31 @@ export function getAdminAuthHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+// Supabase access tokens expire after ~1 hour; the live session auto-refreshes,
+// so prefer it over the token snapshot stored at login time.
+async function resolveAdminToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  try {
+    const { data } = await supabase.auth.getSession();
+    const liveToken = data?.session?.access_token;
+    if (liveToken) {
+      localStorage.setItem("admin_token", liveToken);
+      return liveToken;
+    }
+  } catch (_) {}
+  return getAdminToken();
+}
+
+// Thrown for 401/403 so admin screens can show "session expired" instead of an empty list
+export class AdminAuthError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "AdminAuthError";
+    this.status = status;
+  }
+}
+
 export async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit & { timeoutMs?: number } = {}
@@ -52,7 +77,7 @@ export async function fetchAPI<T>(
   // If Authorization header is missing or was hardcoded to a mock token, resolve active JWT
   const currentAuth = headers["Authorization"] || headers["authorization"];
   if (!currentAuth || currentAuth === "Bearer mock-admin-token" || currentAuth.startsWith("Bearer token_")) {
-    const realToken = getAdminToken();
+    const realToken = await resolveAdminToken();
     if (realToken) {
       headers["Authorization"] = `Bearer ${realToken}`;
     }
@@ -93,6 +118,9 @@ export async function fetchAPI<T>(
         }
       }
     } catch (_) {}
+    if (response.status === 401 || response.status === 403) {
+      throw new AdminAuthError(errorMsg, response.status);
+    }
     throw new Error(errorMsg);
   }
 
@@ -101,7 +129,9 @@ export async function fetchAPI<T>(
   if (["POST", "PUT", "DELETE", "PATCH"].includes(httpMethod) && !cleanEndpoint.includes("/audit-logs")) {
     try {
       let category: import("../types").AuditLog["action_category"] = "CONTENT_EDIT";
-      if (cleanEndpoint.includes("/workshops")) category = "WORKSHOP_ARCHIVE";
+      const isDeletion = httpMethod === "DELETE" || cleanEndpoint.includes("bulk-delete");
+      if (isDeletion) category = "DELETE";
+      else if (cleanEndpoint.includes("/workshops")) category = "WORKSHOP_ARCHIVE";
       else if (cleanEndpoint.includes("/settings")) category = "SYSTEM";
       else if (cleanEndpoint.includes("/whatsapp") || cleanEndpoint.includes("/broadcast")) category = "BROADCAST";
       else if (cleanEndpoint.includes("/calendar")) category = "CALENDAR_SYNC";
@@ -125,7 +155,7 @@ export async function fetchAPI<T>(
           endpoint: cleanEndpoint,
           payload: payloadObj,
         },
-        severity: httpMethod === "DELETE" ? "WARNING" : "INFO",
+        severity: isDeletion ? "WARNING" : "INFO",
       });
     } catch (_) {}
   }
@@ -447,8 +477,9 @@ export async function getWorkshopRegistrations() {
     const data = await fetchAPI<import("../types").WorkshopRegistration[]>(`/admin/registrations`, {
       headers: { Authorization: "Bearer mock-admin-token" },
     });
-    if (Array.isArray(data) && data.length > 0) return data;
+    if (Array.isArray(data)) return data;
   } catch (error) {
+    if (error instanceof AdminAuthError) throw error;
     console.warn("Backend API unavailable for getWorkshopRegistrations, attempting /admin/stats fallback...");
   }
 
@@ -532,14 +563,17 @@ export function deleteLocalUserRegistration(requestId: string) {
 
 export async function deleteRequest(requestId: string) {
   deleteLocalUserRegistration(requestId);
+  // Errors propagate (except "not found" for local-only rows): reporting success on a
+  // failed delete hid real failures from the admin
   try {
     return await fetchAPI<{ message: string }>(`/requests/${requestId}`, {
       method: "DELETE",
       headers: { Authorization: "Bearer mock-admin-token" },
-      timeoutMs: 5000,
+      timeoutMs: 15000,
     });
-  } catch (err) {
-    return { message: "Request deleted successfully" };
+  } catch (err: any) {
+    if (/not found/i.test(err?.message || "")) return { message: "Request deleted successfully" };
+    throw err;
   }
 }
 
@@ -587,14 +621,16 @@ export async function getCalendarStatus() {
       details?: Record<string, boolean>;
     }>("/calendar/status", {
       headers: { Authorization: "Bearer mock-admin-token" },
-      timeoutMs: 1500,
+      timeoutMs: 8000,
     });
   } catch (error) {
     return {
       configured: false,
       connected: false,
       mode: "Fallback (One-Click Web Links)",
-      message: "Unable to reach backend calendar status endpoint. Running in local Web Link fallback mode.",
+      message: error instanceof AdminAuthError
+        ? "Your admin session is not authenticated with the server (sign out and sign in again). Calendar status could not be verified."
+        : "Unable to reach backend calendar status endpoint. Running in local Web Link fallback mode.",
     };
   }
 }
@@ -1334,7 +1370,7 @@ export function logAuditEvent(entry: {
 
 export async function getAuditLogs(): Promise<import("../types").AuditLog[]> {
   try {
-    const data = await fetchAPI<import("../types").AuditLog[]>("/admin/audit-logs", { timeoutMs: 3000 });
+    const data = await fetchAPI<import("../types").AuditLog[]>("/admin/audit-logs?limit=2000", { timeoutMs: 10000 });
     if (Array.isArray(data) && data.length > 0) return data;
   } catch (_) {}
 

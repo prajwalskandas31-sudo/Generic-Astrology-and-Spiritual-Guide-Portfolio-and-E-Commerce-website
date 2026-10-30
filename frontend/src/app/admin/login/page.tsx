@@ -29,9 +29,12 @@ export default function AdminLoginPage() {
 
     try {
       // Find matching predefined account or use selected
-      const matched = PREDEFINED_ADMIN_ACCOUNTS.find(
-        (a) => a.email.toLowerCase() === email.trim().toLowerCase()
-      ) || selectedAccount;
+      // Copy so a token from an earlier attempt never sticks to the shared account object
+      const matched = {
+        ...(PREDEFINED_ADMIN_ACCOUNTS.find(
+          (a) => a.email.toLowerCase() === email.trim().toLowerCase()
+        ) || selectedAccount),
+      };
 
       // Verify password against active credential store
       const isValidPassword = verifyAdminPassword(matched.email, password);
@@ -41,7 +44,9 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Try Supabase Auth
+      // Supabase Auth is mandatory: the backend rejects every admin API call without its JWT,
+      // so continuing without a session would show empty enquiries/registrations everywhere.
+      let supabaseError = "";
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: matched.email,
@@ -50,8 +55,22 @@ export default function AdminLoginPage() {
 
         if (data?.session?.access_token) {
           matched.token = data.session.access_token;
+        } else {
+          supabaseError = error?.message || "No session returned";
         }
-      } catch (_) {}
+      } catch (err: any) {
+        supabaseError = err?.message || "Could not reach Supabase";
+      }
+
+      if (!matched.token || matched.token === "mock-admin-token" || matched.token.startsWith("token_")) {
+        setErrorMsg(
+          `Server sign-in failed for ${matched.email} (Supabase: ${supabaseError}). ` +
+          `Without it, enquiries, registrations and calendar data cannot load. ` +
+          `Check that this account exists in Supabase Auth with the same password.`
+        );
+        setIsLoading(false);
+        return;
+      }
 
       // Set active user state
       setCurrentAdminUser(matched);

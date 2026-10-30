@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RequestThread, MessageLog, WorkshopRegistration } from "@/types";
-import { fetchAPI, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration, bulkDeleteWorkshopRegistrations, getLocalUserRegistrations } from "@/lib/api-client";
+import { fetchAPI, AdminAuthError, getWorkshopRegistrations, executeRequestAction, deleteRequest, deleteWorkshopRegistration, bulkDeleteWorkshopRegistrations, getLocalUserRegistrations } from "@/lib/api-client";
 import {
   MessageSquare,
   CheckCircle2,
@@ -31,11 +31,19 @@ import {
   Filter
 } from "lucide-react";
 
+function describeLoadError(err: any): string {
+  if (err instanceof AdminAuthError) {
+    return `The server rejected your admin session (${err.message}). Sign out and sign in again; if this persists, your account's Supabase Auth login is not set up.`;
+  }
+  return `Server error: ${err?.message || "unknown error"}`;
+}
+
 export default function AdminRequestsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "rejected" | "registrations" | "archived">("active");
   const [requests, setRequests] = useState<RequestThread[]>([]);
   const [registrations, setRegistrations] = useState<WorkshopRegistration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedLogsRequest, setSelectedLogsRequest] = useState<RequestThread | null>(null);
@@ -71,6 +79,7 @@ export default function AdminRequestsPage() {
 
   const loadRequests = async () => {
     setIsLoading(true);
+    setLoadError(null);
     let apiRequests: RequestThread[] = [];
     try {
       const data = await fetchAPI<RequestThread[]>(`/requests?tab=${activeTab}`, {
@@ -80,6 +89,7 @@ export default function AdminRequestsPage() {
         apiRequests = data;
       }
     } catch (err: any) {
+      setLoadError(describeLoadError(err));
       console.warn("Failed to load request threads, attempting /admin/stats fallback:", err);
       try {
         const stats = await fetchAPI<any>("/admin/stats", {
@@ -143,10 +153,12 @@ export default function AdminRequestsPage() {
 
   const loadRegistrations = async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
       const data = await getWorkshopRegistrations();
       setRegistrations(data);
     } catch (err: any) {
+      setLoadError(describeLoadError(err));
       console.error("Failed to load workshop registrations:", err);
     } finally {
       setIsLoading(false);
@@ -381,6 +393,16 @@ export default function AdminRequestsPage() {
           </button>
         </div>
       </div>
+
+      {loadError && (
+        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-800">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-bold">Records could not be loaded — the list below is NOT the real data.</div>
+            <div>{loadError}</div>
+          </div>
+        </div>
+      )}
 
       {/* Unified Category Filter Bar (Consistently Available Across All Tabs) */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-2 bg-amber-50/70 rounded-2xl border border-amber-200/80">
