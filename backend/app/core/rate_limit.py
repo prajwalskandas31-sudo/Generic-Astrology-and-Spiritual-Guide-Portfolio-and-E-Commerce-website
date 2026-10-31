@@ -80,6 +80,24 @@ login_failure_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
 # single attacker cannot easily lock out the real admin.
 account_failure_limiter = InMemoryRateLimiter(requests_per_minute=20, burst=20)
 
+# (account, IP) pairs that signed in successfully recently. These skip the account-wide
+# cap, so an attacker tripping it cannot lock the real admin out of their usual device.
+TRUSTED_LOGIN_TTL_SECONDS = 30 * 24 * 3600
+_trusted_logins: Dict[str, float] = {}
+
+
+def mark_trusted_login(key: str) -> None:
+    now = time.time()
+    if len(_trusted_logins) > 1000:
+        for k in [k for k, t in _trusted_logins.items() if now - t > TRUSTED_LOGIN_TTL_SECONDS]:
+            del _trusted_logins[k]
+    _trusted_logins[key] = now
+
+
+def is_trusted_login(key: str) -> bool:
+    seen = _trusted_logins.get(key)
+    return seen is not None and time.time() - seen < TRUSTED_LOGIN_TTL_SECONDS
+
 async def check_enquiry_rate_limit(request: Request):
     ip = get_client_ip(request)
     if enquiry_limiter.is_rate_limited(ip):

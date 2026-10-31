@@ -59,6 +59,9 @@ def reset_login_rate_limit():
     login_limiter.records.clear()
     login_failure_limiter.records.clear()
     account_failure_limiter.records.clear()
+    from app.core import rate_limit
+
+    rate_limit._trusted_logins.clear()
 
 
 def login(client, email=ADMIN_EMAIL, password=ADMIN_PASSWORD):

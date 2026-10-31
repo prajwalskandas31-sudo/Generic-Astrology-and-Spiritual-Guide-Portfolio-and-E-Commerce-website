@@ -175,9 +175,18 @@ def test_deleting_records_preserves_full_snapshot_in_audit_log(client, admin_hea
 
 
 def test_distributed_guessing_is_capped_per_account(client):
+    usual_device = {"X-Forwarded-For": "192.0.2.50"}
+    login_ok = client.post(f"{API}/admin/auth/login", headers=usual_device,
+                           json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert login_ok.status_code == 200
     for i in range(20):
         client.post(f"{API}/admin/auth/login", headers={"X-Forwarded-For": f"198.18.0.{i}"},
                     json={"email": ADMIN_EMAIL, "password": "bad-guess"})
     res = client.post(f"{API}/admin/auth/login", headers={"X-Forwarded-For": "198.18.1.1"},
                       json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     assert res.status_code == 429
+
+    # The admin's previously-used device is not locked out by the attack
+    still_ok = client.post(f"{API}/admin/auth/login", headers=usual_device,
+                           json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert still_ok.status_code == 200, still_ok.text

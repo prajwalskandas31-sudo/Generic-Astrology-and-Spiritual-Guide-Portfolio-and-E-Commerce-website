@@ -6,7 +6,14 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.core.rate_limit import account_failure_limiter, get_client_ip, login_failure_limiter, login_limiter
+from app.core.rate_limit import (
+    account_failure_limiter,
+    get_client_ip,
+    is_trusted_login,
+    login_failure_limiter,
+    login_limiter,
+    mark_trusted_login,
+)
 from app.core.security import (
     hash_password,
     issue_admin_token,
@@ -94,7 +101,7 @@ def _check_rate_limit(request: Request, email: str):
     if (
         login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}")
         or login_failure_limiter.is_blocked(_failure_key(request, email))
-        or account_failure_limiter.is_blocked(email)
+        or (account_failure_limiter.is_blocked(email) and not is_trusted_login(_failure_key(request, email)))
     ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -124,6 +131,7 @@ async def login(payload: LoginRequest, request: Request, db: AsyncSession = Depe
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password.")
 
     token, expires_at = issue_admin_token(admin)
+    mark_trusted_login(_failure_key(request, email))
     admin.last_login_at = datetime.datetime.utcnow()
     _audit(db, request, admin.email, admin.name, admin.role,
            "LOGIN", f"{admin.name} signed in to the Admin Portal")
