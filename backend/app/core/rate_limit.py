@@ -1,7 +1,7 @@
 import time
 from collections import defaultdict
 from fastapi import Request, HTTPException, status
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 class InMemoryRateLimiter:
     """
@@ -81,22 +81,27 @@ login_failure_limiter = InMemoryRateLimiter(requests_per_minute=5, burst=5)
 account_failure_limiter = InMemoryRateLimiter(requests_per_minute=20, burst=20)
 
 # (account, IP) pairs that signed in successfully recently. These skip the account-wide
-# cap, so an attacker tripping it cannot lock the real admin out of their usual device.
-TRUSTED_LOGIN_TTL_SECONDS = 30 * 24 * 3600
-_trusted_logins: Dict[str, float] = {}
+# cap (the per-(account, IP) failure cap still applies), so an attacker tripping it
+# cannot lock the real admin out of their usual device. Trust is bound to the account's
+# token_version, so a password change or deactivation revokes it immediately.
+TRUSTED_LOGIN_TTL_SECONDS = 7 * 24 * 3600
+_trusted_logins: Dict[str, tuple] = {}
 
 
-def mark_trusted_login(key: str) -> None:
+def mark_trusted_login(key: str, token_version: int) -> None:
     now = time.time()
     if len(_trusted_logins) > 1000:
-        for k in [k for k, t in _trusted_logins.items() if now - t > TRUSTED_LOGIN_TTL_SECONDS]:
+        for k in [k for k, (t, _) in _trusted_logins.items() if now - t > TRUSTED_LOGIN_TTL_SECONDS]:
             del _trusted_logins[k]
-    _trusted_logins[key] = now
+    _trusted_logins[key] = (now, token_version)
 
 
-def is_trusted_login(key: str) -> bool:
-    seen = _trusted_logins.get(key)
-    return seen is not None and time.time() - seen < TRUSTED_LOGIN_TTL_SECONDS
+def is_trusted_login(key: str, token_version: Optional[int]) -> bool:
+    entry = _trusted_logins.get(key)
+    if entry is None or token_version is None:
+        return False
+    seen, version = entry
+    return version == token_version and time.time() - seen < TRUSTED_LOGIN_TTL_SECONDS
 
 async def check_enquiry_rate_limit(request: Request):
     ip = get_client_ip(request)

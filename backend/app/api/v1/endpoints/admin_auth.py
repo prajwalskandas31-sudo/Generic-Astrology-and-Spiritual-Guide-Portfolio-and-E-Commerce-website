@@ -95,13 +95,16 @@ def _record_failure(db: AsyncSession, request: Request, email: str):
                severity="CRITICAL")
 
 
-def _check_rate_limit(request: Request, email: str):
+def _check_rate_limit(request: Request, email: str, admin: Optional[AdminUser] = None):
     # Per-IP cap on all attempts, failed passwords per (account, IP), and failed
     # passwords per account from anywhere (distributed guessing)
     if (
         login_limiter.is_rate_limited(f"ip:{get_client_ip(request)}")
         or login_failure_limiter.is_blocked(_failure_key(request, email))
-        or (account_failure_limiter.is_blocked(email) and not is_trusted_login(_failure_key(request, email)))
+        or (
+            account_failure_limiter.is_blocked(email)
+            and not is_trusted_login(_failure_key(request, email), admin.token_version if admin else None)
+        )
     ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -118,9 +121,9 @@ async def _get_admin(db: AsyncSession, email: str) -> Optional[AdminUser]:
 @router.post("/login", response_model=LoginResponse)
 async def login(payload: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     email = payload.email.strip().lower()
-    _check_rate_limit(request, email)
-
     admin = await _get_admin(db, email)
+    _check_rate_limit(request, email, admin)
+
     password_ok = verify_password(payload.password, admin.password_hash if admin else _DUMMY_HASH)
 
     if not admin or not admin.is_active or not password_ok:
@@ -131,7 +134,7 @@ async def login(payload: LoginRequest, request: Request, db: AsyncSession = Depe
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password.")
 
     token, expires_at = issue_admin_token(admin)
-    mark_trusted_login(_failure_key(request, email))
+    mark_trusted_login(_failure_key(request, email), admin.token_version)
     admin.last_login_at = datetime.datetime.utcnow()
     _audit(db, request, admin.email, admin.name, admin.role,
            "LOGIN", f"{admin.name} signed in to the Admin Portal")

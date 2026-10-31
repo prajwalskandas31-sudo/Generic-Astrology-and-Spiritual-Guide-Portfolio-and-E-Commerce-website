@@ -190,3 +190,9 @@ def test_distributed_guessing_is_capped_per_account(client):
     still_ok = client.post(f"{API}/admin/auth/login", headers=usual_device,
                            json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     assert still_ok.status_code == 200, still_ok.text
+
+    # Resetting the password revokes that device trust
+    client.portal.call(upsert_admin, ADMIN_EMAIL, ADMIN_PASSWORD)
+    revoked = client.post(f"{API}/admin/auth/login", headers=usual_device,
+                          json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    assert revoked.status_code == 429
